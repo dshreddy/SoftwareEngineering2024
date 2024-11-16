@@ -14,21 +14,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using SECloud.Interfaces;
-using SECloud.Models;
-using SECloud.Services;
-using Dashboard;        
+using UXModule;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Oauth2.v2;
 using Google.Apis.Oauth2.v2.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
-using Microsoft.Extensions.Logging;
-using System.Diagnostics;
-using System.Net.Http;
-using ViewModel.DashboardViewModel;
-using Google.Apis.Util;
-using UXModule.Views;
+using UXModule.ViewModel;
 
 namespace UXModule.Views
 {
@@ -37,25 +29,11 @@ namespace UXModule.Views
     /// </summary>
     public partial class LoginPage : Page
     {
+        private readonly string _userDataPath;
         private const string RedirectUri = "http://localhost:5041/signin-google";
         private static readonly string[] Scopes = { Oauth2Service.Scope.UserinfoProfile, Oauth2Service.Scope.UserinfoEmail };
         private readonly MainPageViewModel _viewModel;
-        private const string client_secret_json = @"
-        {   
-           ""web"":{
-            ""client_id"":""222768174287-pan40hlrb6cjs1jomg70frllg53abhdl.apps.googleusercontent.com"",
-            ""project_id"":""durable-footing-440910-f5"",
-            ""auth_uri"":""https://accounts.google.com/o/oauth2/auth"",
-            ""token_uri"":""https://oauth2.googleapis.com/token"",
-            ""auth_provider_x509_cert_url"":""https://www.googleapis.com/oauth2/v1/certs"",
-            ""client_secret"":""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"",
-            ""redirect_uris"":[""http://localhost:5041/signin-google""]
-           }
-        }"
-        ;
-
-        private readonly ICloud _cloudService;
-        private string? _userEmail;
+        private string client_secret_path = Path.GetFullPath(Path.Combine("..", "..", "..", "Model", "client_secret.json"));
 
         public LoginPage(MainPageViewModel viewModel)
         {
@@ -63,14 +41,15 @@ namespace UXModule.Views
 
             _viewModel = viewModel;
 
-            var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-            _cloudService = new CloudService(
-                baseUrl: "https://secloudapp-2024.azurewebsites.net/api",
-                team: "dashboard",
-                sasToken: "sp=racwdli&st=2024-11-15T10:35:50Z&se=2024-11-29T18:35:50Z&spr=https&sv=2022-11-02&sr=c&sig=MRaD0z23KNmNxhbGdUfquDnriqHWh7FDvCjwPSIjOs8%3D",
-                httpClient: new HttpClient(),
-                logger: loggerFactory.CreateLogger<CloudService>()
+            // Store files in user's AppData folder
+            string appDataPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "Dashboard"
             );
+
+            Directory.CreateDirectory(appDataPath);
+            _userDataPath = Path.Combine(appDataPath, "user_data.json");
+            //_userDataPath = "../../Models/Authentication/user_data.json";
 
             // Initialize StatusText
             StatusText = new TextBlock();
@@ -86,11 +65,16 @@ namespace UXModule.Views
                 {
                     File.Delete("token.json");
                 }
+                if (File.Exists(_userDataPath))
+                {
+                    File.Delete(_userDataPath);
+                }
 
                 // Clear the stored credentials in the FileDataStore
                 var credPath = "token.json";
                 var fileDataStore = new FileDataStore(credPath, true);
                 await fileDataStore.ClearAsync();
+
 
                 var credential = await GetGoogleOAuthCredentialAsync();
                 if (credential == null)
@@ -106,8 +90,7 @@ namespace UXModule.Views
                     return;
                 }
 
-                _userEmail = userInfo.Email;
-                await UploadUserInfoToCloud(userInfo);
+                SaveUserInfoToFile(userInfo);
 
                 // Navigate to HomePage and pass user info
                 var homePage = new HomePage(_viewModel);
@@ -134,6 +117,10 @@ namespace UXModule.Views
                     {
                         File.Delete("token.json");
                     }
+                    if (File.Exists(_userDataPath))
+                    {
+                        File.Delete(_userDataPath);
+                    }
                 });
 
                 // Clear the stored credentials in the FileDataStore
@@ -141,14 +128,11 @@ namespace UXModule.Views
                 var fileDataStore = new FileDataStore(credPath, true);
                 await fileDataStore.ClearAsync();
 
-                // Delete user_data.json from cloud
-                if (!string.IsNullOrEmpty(_userEmail))
-                {
-                    await DeleteUserInfoFromCloud(_userEmail);
-                }
-
                 MessageBox.Show("Signed out successfully.");
                 StatusText.Text = "Signed out. Please sign in again.";
+
+                // Clear the displayed user information
+                //ClearUserInfoDisplay();
             }
             catch (Exception ex)
             {
@@ -158,7 +142,7 @@ namespace UXModule.Views
 
         private async Task<UserCredential?> GetGoogleOAuthCredentialAsync()
         {
-            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(client_secret_json)))
+            using (var stream = new FileStream(client_secret_path, FileMode.Open, FileAccess.Read))
             {
                 var credPath = "token.json";
                 var clientSecrets = GoogleClientSecrets.FromStream(stream).Secrets;
@@ -168,7 +152,7 @@ namespace UXModule.Views
                     "user",
                     CancellationToken.None,
                     new FileDataStore(credPath, true),
-                    new Dashboard.LocalServerCodeReceiver(RedirectUri));
+                    new LocalServerCodeReceiver(RedirectUri));
             }
         }
 
@@ -177,14 +161,14 @@ namespace UXModule.Views
             var service = new Oauth2Service(new BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
-                ApplicationName = "Dashboard"
+                ApplicationName = "Google Sign-In WPF"
             });
 
             var userInfoRequest = service.Userinfo.Get();
             return await userInfoRequest.ExecuteAsync();
         }
 
-        private async Task UploadUserInfoToCloud(Userinfo userInfo)
+        private void SaveUserInfoToFile(Userinfo userInfo)
         {
             var userData = new
             {
@@ -196,22 +180,34 @@ namespace UXModule.Views
 
             var jsonOptions = new JsonSerializerOptions { WriteIndented = true };
             string jsonString = JsonSerializer.Serialize(userData, jsonOptions);
-
-            // Write JSON string to MemoryStream
-            using (var memoryStream = new MemoryStream(Encoding.UTF8.GetBytes(jsonString)))
-            {
-                // Upload the MemoryStream with a unique filename
-                var response = await _cloudService.UploadAsync($"{userInfo.Email}_user_data.json", memoryStream, "application/json");
-                Console.WriteLine(response.ToString());
-            }
+            File.WriteAllText(_userDataPath, jsonString);
         }
 
-        private async Task DeleteUserInfoFromCloud(string userEmail)
-        {
-            var response = await _cloudService.DeleteAsync($"{userEmail}_user_data.json");
-            Console.WriteLine(response.ToString());
-        }
+        //private void DisplayUserInfo(Userinfo userInfo)
+        //{
+        //    // Display the user info in a message box
+        //    string formattedDisplay =
+        //        $"Name: {userInfo.Name}\n" +
+        //        $"Email: {userInfo.Email}\n" +
+        //        $"Profile Picture URL: {userInfo.Picture}";
 
+        //    MessageBox.Show(formattedDisplay, "User Info", MessageBoxButton.OK);
+
+        //    // Display the user info in the application
+        //    UserName.Text = userInfo.Name;
+        //    EmailTextBlock.Text = userInfo.Email;
+        //    ProfileImage.Source = new BitmapImage(new Uri(userInfo.Picture));
+        //}
+
+
+        //private void ClearUserInfoDisplay()
+        //{
+        //    // Clear the user info from the application
+        //    NameTextBlock.Text = string.Empty;
+        //    EmailTextBlock.Text = string.Empty;
+        //    ProfileImage.Source = null;
+        //}
+        // Add the missing StatusText definition
         private TextBlock StatusText { get; set; }
     }
 }

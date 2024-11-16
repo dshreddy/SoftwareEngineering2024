@@ -14,8 +14,8 @@
         <!-- Define reusable colors and styles -->
         <SolidColorBrush x:Key="ButtonBackground" Color="#c23b22"/>
         <SolidColorBrush x:Key="ButtonHoverBackground" Color="#db5856"/>
-        <SolidColorBrush x:Key="StartButtonColor" Color="#190019"/>
-        <SolidColorBrush x:Key="StopButtonColor" Color="#2B124C"/>
+        <SolidColorBrush x:Key="StartButtonColor" Color="Green"/>
+        <SolidColorBrush x:Key="StopButtonColor" Color="#c23b22"/>
 
         <!-- Reusable Button Style -->
         <Style TargetType="Button" x:Key="DefaultButtonStyle">
@@ -38,8 +38,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="ButtonBorder"
-                            Background="{TemplateBinding Background}"
+                        <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="10">
@@ -48,11 +47,6 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{StaticResource ButtonHoverBackground}"/>
-                            </Trigger>
-                            <!-- Trigger for IsEnabled property -->
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="#FBE4D8" />
-                                <Setter Property="Foreground" Value="Gray" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -71,21 +65,8 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <TextBox Name="DirectoryPathTextBox" IsReadOnly="True" Text="{Binding RootDirectoryPath, Mode=OneWay}"/>
-                <Button Grid.Column="1" Height="30" Width="40" Content=".  .  ." 
-                    Command="{Binding BrowseFoldersCommand}" 
-                    Style="{StaticResource DefaultButtonStyle}" 
-                    Background="#DFB6B2" Foreground="Black">
-                    <Button.Template>
-                        <ControlTemplate TargetType="Button">
-                            <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Content="{TemplateBinding Content}"/>
-                            </Border>
-                        </ControlTemplate>
-                    </Button.Template>
-                </Button>
-            </Grid>
+            <Button Grid.Column="1" Content="..." Command="{Binding BrowseFoldersCommand}" Style="{StaticResource DefaultButtonStyle}"/>
+        </Grid>
 
         <!-- Main Content Area -->
         <Grid>
@@ -98,27 +79,25 @@
 
                 <Grid Grid.Column="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="4*"/>
+                        <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
 
-                        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                            <TreeView ItemsSource="{Binding Tree}" SelectedItemChanged="TreeView_SelectedItemChanged" Grid.Row="0" Background="#FBE4D8">
-                                <TreeView.ItemTemplate>
-                                    <HierarchicalDataTemplate DataType="{x:Type viewModel:Node}" ItemsSource="{Binding Children}">
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                            <CheckBox IsChecked="{Binding IsChecked}" Command="{Binding CheckBoxCommand}"/>
-                                            <Image Source="{Binding IconPath}" Width="18"/>
-                                            <Label Content="{Binding Name}"  FontWeight="Bold"/>
-                                        </StackPanel>
-                                    </HierarchicalDataTemplate>
-                                </TreeView.ItemTemplate>
-                            </TreeView>
-                        </ScrollViewer>
+                    <TreeView ItemsSource="{Binding Tree}" SelectedItemChanged="TreeView_SelectedItemChanged" Grid.Row="0" Background="LightYellow">
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type viewModel:Node}" ItemsSource="{Binding Children}">
+                                <StackPanel Background="LightYellow" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                    <CheckBox IsChecked="{Binding IsChecked}" Command="{Binding CheckBoxCommand}"/>
+                                    <Image Source="{Binding IconPath}" Width="18"/>
+                                    <Label Content="{Binding Name}"  FontWeight="Bold"/>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
 
-                        <StackPanel Background="#DFB6B2" Grid.Column="0" Grid.Row="1" Margin="5">
+                    <StackPanel Background="LightGray" Grid.Column="0" Grid.Row="3" Grid.RowSpan="2" Margin="5">
                         <TextBlock Text="File Metadata" FontWeight="Bold" Margin="0,0,0,5"/>
-                        <Grid Grid.ZIndex="1">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -129,8 +108,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                            </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" FontWeight="SemiBold" Margin="0,0,5,0"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedNode.Name}" />
@@ -143,10 +121,7 @@
 
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="IP Address:" FontWeight="SemiBold" Margin="0,0,5,0"/>
                             <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedNode.IpAddress}" />
-
-                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Last Modified:" FontWeight="SemiBold" Margin="0,0,5,0"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedNode.LastModified}" />
-                            </Grid>
+                        </Grid>
                     </StackPanel>
                 </Grid>
 
@@ -154,7 +129,7 @@
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
                 <!-- File Options in the right column -->
-                <StackPanel Grid.Column="2" Orientation="Vertical" Background="#854F6C">
+                <StackPanel Grid.Column="2" Orientation="Vertical">
                     <StackPanel Orientation="Horizontal">
                             <Label Content="Folders:" FontWeight="SemiBold"/>
                             <Label Content="{Binding FolderCount}"/>
@@ -185,16 +160,16 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <Button Grid.Row="0" Grid.Column="0" Content="Send Request" Command="{Binding SendRequestCommand}" Width="200" Height="30" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsSendRequestEnabled}"/>
+                        <Button Grid.Row="0" Grid.Column="0" Content="Send Request" Command="{Binding SendRequestCommand}" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsSendRequestEnabled}"/>
 
-                        <Button Grid.Row="0" Grid.Column="1" Content="Summarise" Command="{Binding SummarizeCommand}" Width="200" Height="30" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsSummarizeEnabled}"/>
+                        <Button Grid.Row="0" Grid.Column="1" Content="Summarise" Command="{Binding SummarizeCommand}" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsSummarizeEnabled}"/>
 
                         <Button Grid.Row="1" Grid.Column="0" Content="Start Cloning" Command="{Binding StartCloningCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsStartCloningEnabled}"/>
 
-                        <Button Grid.Row="1" Grid.Column="1" Content="Stop Session" Command="{Binding StopSessionCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StopButtonColor}" IsEnabled="{Binding IsStopSessionEnabled}" />
+                        <Button Grid.Row="1" Grid.Column="1" Content="Stop Cloning" Command="{Binding StopCloningCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StopButtonColor}" IsEnabled="{Binding IsStopCloningEnabled}" />
                     </Grid>
                     <Label Content="Log" FontWeight="Bold"/>
-                        <ListBox ItemsSource="{Binding LogMessages}" Width="450" Height="400" Margin="5" Background="#DFB6B2"/>
+                        <ListBox ItemsSource="{Binding LogMessages}" Width="450" Height="400" Margin="5" Background="LightGray"/>
                 </StackPanel>
             </Grid>
         </Grid>

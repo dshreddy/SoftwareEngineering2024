@@ -3,162 +3,163 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 
-namespace Networking.Queues;
-public class Queue : IQueue
+namespace Networking.Queues
 {
-    // Packets are enqueued to and dequeued from this queue
-    private Queue<Packet> _queue;
-
-    // Lock to ensure mutual exclusion
-    private readonly object _lock;
-
-    // Empty constructor
-    public Queue()
+    public class Queue : IQueue
     {
-        this._queue = new Queue<Packet>();
-        this._lock = new object();
-    }
+        // Packets are enqueued to and dequeued from this queue
+        private Queue<Packet> _queue;
 
-    /// <summary>
-    /// Inserts an element into the queue
-    /// </summary>
-    /// <param name="packet">
-    /// The packet to be inserted into the queue
-    /// </param>
-    /// <returns> void </returns>
-    public void Enqueue(Packet packet)
-    {
-        lock (_lock)
+        // Lock to ensure mutual exclusion
+        private readonly object _lock;
+
+        // Empty constructor
+        public Queue()
         {
-            _queue.Enqueue(packet);
+            this._queue = new Queue<Packet>();
+            this._lock = new object();
         }
-    }
 
-    /// <summary>
-    /// Removes and returns the front-most element in the queue
-    /// </summary>
-    /// <returns>
-    /// The front-most element of the queue
-    /// </returns>
-    public Packet Dequeue()
-    {
-        Packet packet = null;
-
-        lock (_lock)
+        /// <summary>
+        /// Inserts an element into the queue
+        /// </summary>
+        /// <param name="packet">
+        /// The packet to be inserted into the queue
+        /// </param>
+        /// <returns> void </returns>
+        public void Enqueue(Packet packet)
         {
-            try
+            lock (_lock)
             {
-                packet = _queue.Dequeue();
+                _queue.Enqueue(packet);
             }
-            catch (InvalidOperationException e)
+        }
+
+        /// <summary>
+        /// Removes and returns the front-most element in the queue
+        /// </summary>
+        /// <returns>
+        /// The front-most element of the queue
+        /// </returns>
+        public Packet Dequeue()
+        {
+            Packet packet = null;
+
+            lock (_lock)
             {
-                // Arises if the queue is empty
-                Trace.WriteLine($"{e.StackTrace}");
-                packet = null;
+                try
+                {
+                    packet = _queue.Dequeue();
+                }
+                catch(InvalidOperationException e)
+                {
+                    // Arises if the queue is empty
+                    Trace.WriteLine($"{e.StackTrace}");
+                    packet = null;
+                }
             }
+
+            return packet;
         }
 
-        return packet;
-    }
-
-    /// <summary>
-    /// Returns the front-most element in the queue without popping it
-    /// </summary>
-    /// <returns>
-    /// The front-most element of the queue
-    /// </returns>
-    public Packet Peek()
-    {
-        Packet start = null;
-
-        lock (_lock)
+        /// <summary>
+        /// Returns the front-most element in the queue without popping it
+        /// </summary>
+        /// <returns>
+        /// The front-most element of the queue
+        /// </returns>
+        public Packet Peek()
         {
-            try
+            Packet start = null;
+
+            lock (_lock)
             {
-                start = _queue.Peek();
+                try
+                {
+                    start = _queue.Peek();
+                }
+                catch(InvalidOperationException e)
+                {
+                    // Arises if the queue is empty
+                    Trace.WriteLine($"{e.StackTrace}");
+                    start = null;
+                }
             }
-            catch (InvalidOperationException e)
+
+            return start;
+        }
+
+        /// <summary>
+        /// Removes all elements in the queue
+        /// </summary>
+        /// <returns> void </returns>
+        public void Clear()
+        {
+            lock (_lock)
             {
-                // Arises if the queue is empty
-                Trace.WriteLine($"{e.StackTrace}");
-                start = null;
+                this._queue.Clear();
             }
         }
 
-        return start;
-    }
-
-    /// <summary>
-    /// Removes all elements in the queue
-    /// </summary>
-    /// <returns> void </returns>
-    public void Clear()
-    {
-        lock (_lock)
+        /// <summary>
+        /// Returns the size of the queue
+        /// </summary>
+        /// <returns>
+        /// Number of elements in the queue
+        /// </returns>
+        public int Size()
         {
-            this._queue.Clear();
-        }
-    }
+            int size = 0;
 
-    /// <summary>
-    /// Returns the size of the queue
-    /// </summary>
-    /// <returns>
-    /// Number of elements in the queue
-    /// </returns>
-    public int Size()
-    {
-        int size = 0;
-
-        lock (_lock)
-        {
-            size = _queue.Count;
-        }
-
-        return size;
-    }
-
-    /// <summary>
-    /// Returns the size of the queue
-    /// </summary>
-    /// <returns>
-    /// 'bool : true' if the queue is empty and 'bool : false' if not
-    /// </returns>
-    public bool IsEmpty()
-    {
-        bool isEmpty = true;
-
-        lock (_lock)
-        {
-            isEmpty = _queue.Count == 0;
-        }
-
-        return isEmpty;
-    }
-
-    /// <summary>
-    /// The 'ReceivingQueueListener' needs this function to keep listening for packets on the receiving queue
-    /// </summary>
-    /// <returns>
-    /// 'bool : true' if the queue is not empty, else the function keeps waiting for atleast one packet to appear in the queue
-    /// and does not return until then
-    /// </returns>
-    public bool WaitForPacket()
-    {
-        bool isEmpty = true;
-
-        while (true)
-        {
-            // Sleeping for some time
-            Thread.Sleep(100);
-
-            isEmpty = IsEmpty();
-
-            if (!isEmpty){
-                break;
+            lock (_lock)
+            {
+                size = _queue.Count;
             }
+
+            return size;
         }
 
-        return isEmpty;
+        /// <summary>
+        /// Returns the size of the queue
+        /// </summary>
+        /// <returns>
+        /// 'bool : true' if the queue is empty and 'bool : false' if not
+        /// </returns>
+        public bool IsEmpty()
+        {
+            bool isEmpty = true;
+
+            lock (_lock)
+            {
+                isEmpty = _queue.Count == 0;
+            }
+
+            return isEmpty;
+        }
+
+        /// <summary>
+        /// The 'ReceivingQueueListener' needs this function to keep listening for packets on the receiving queue
+        /// </summary>
+        /// <returns>
+        /// 'bool : true' if the queue is not empty, else the function keeps waiting for atleast one packet to appear in the queue
+        /// and does not return until then
+        /// </returns>
+        public bool WaitForPacket()
+        {
+            bool isEmpty = true;
+
+            while (true)
+            {
+                // Sleeping for some time
+                Thread.Sleep(100);
+
+                isEmpty = IsEmpty();
+
+                if (!isEmpty)
+                    break;
+            }
+
+            return isEmpty;
+        }
     }
 }

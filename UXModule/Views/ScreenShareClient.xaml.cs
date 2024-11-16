@@ -13,8 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Screenshare.ScreenShareClient;
-using Screenshare;
+using UXModule.ViewModel;
 
 namespace UXModule.Views
 {

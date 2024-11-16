@@ -1,32 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Networking\\Networking.csproj": {}
+    "C:\\Mac\\Home\\Downloads\\UXModule\\Networking\\Networking.csproj": {}
   },
   "projects": {
-    "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Networking\\Networking.csproj": {
+    "C:\\Mac\\Home\\Downloads\\UXModule\\Networking\\Networking.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Networking\\Networking.csproj",
+        "projectUniqueName": "C:\\Mac\\Home\\Downloads\\UXModule\\Networking\\Networking.csproj",
         "projectName": "Networking",
-        "projectPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Networking\\Networking.csproj",
+        "projectPath": "C:\\Mac\\Home\\Downloads\\UXModule\\Networking\\Networking.csproj",
         "packagesPath": "C:\\Users\\shr\\.nuget\\packages\\",
-        "outputPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Networking\\obj\\",
+        "outputPath": "C:\\Mac\\Home\\Downloads\\UXModule\\Networking\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\shr\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net8.0-windows"
+          "net8.0"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0-windows7.0": {
-            "targetAlias": "net8.0-windows",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -42,30 +42,12 @@
         }
       },
       "frameworks": {
-        "net8.0-windows7.0": {
-          "targetAlias": "net8.0-windows",
+        "net8.0": {
+          "targetAlias": "net8.0",
           "dependencies": {
-            "Google.Protobuf": {
+            "System.Windows.Forms.Ribbon35": {
               "target": "Package",
-              "version": "[3.28.3, )"
-            },
-            "Grpc.AspNetCore": {
-              "target": "Package",
-              "version": "[2.66.0, )"
-            },
-            "Grpc.Net.Client": {
-              "target": "Package",
-              "version": "[2.66.0, )"
-            },
-            "Grpc.Tools": {
-              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "suppressParent": "All",
-              "target": "Package",
-              "version": "[2.67.0, )"
-            },
-            "System.ServiceModel.Primitives": {
-              "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[3.5.8, )"
             }
           },
           "imports": [

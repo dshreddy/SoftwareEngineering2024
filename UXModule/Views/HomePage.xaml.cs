@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ViewModel.DashboardViewModel;
+using UXModule.ViewModel;
 
 namespace UXModule.Views
 {
@@ -21,7 +21,7 @@ namespace UXModule.Views
     /// </summary>
     public partial class HomePage : Page
     {
-        private readonly ViewModel.DashboardViewModel.MainPageViewModel _viewModel;
+        private readonly MainPageViewModel _viewModel;
 
         public HomePage(MainPageViewModel viewModel)
         {
@@ -29,7 +29,6 @@ namespace UXModule.Views
             _viewModel = viewModel;
             this.DataContext = _viewModel;
         }
-
 
         public void SetUserInfo(string userName, string userEmail, string userProfilePictureUrl)
         {

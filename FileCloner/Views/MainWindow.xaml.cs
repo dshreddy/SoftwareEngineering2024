@@ -7,25 +7,24 @@
  *
  * Description = Code behind for MainWindow. Initializes and navigates to MainPage.
  *****************************************************************************/
-using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace FileCloner.Views;
-[ExcludeFromCodeCoverage]
-
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
-public partial class MainWindow : Window
+namespace FileCloner.Views
 {
     /// <summary>
-    /// Creates an instance of the main window and navigates to the MainPage.
+    /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public MainWindow()
+    public partial class MainWindow : Window
     {
-        InitializeComponent();
-        Page mainPage = new MainPage();
-        MainFrame.Navigate(mainPage);
+        /// <summary>
+        /// Creates an instance of the main window and navigates to the MainPage.
+        /// </summary>
+        public MainWindow()
+        {
+            InitializeComponent();
+            Page mainPage = new MainPage();
+            MainFrame.Navigate(mainPage);
+        }
     }
 }

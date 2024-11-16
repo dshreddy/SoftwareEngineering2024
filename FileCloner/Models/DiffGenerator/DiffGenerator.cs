@@ -1,313 +1,270 @@
-﻿/******************************************************************************
- * Filename    = DiffGenerator.cs
- *
- * Author(s)      = Evans Samuel Biju
- * 
- * Project     = FileCloner
- *
- * Description = Creates a diff file
- *****************************************************************************/
-
-
-
-using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.Json;
-using FileCloner.Models.DiffGenerator;
+using System.Threading.Tasks;
 
-namespace FileCloner.Models.DiffGenerator;
-[ExcludeFromCodeCoverage]
-public class DiffGenerator
+namespace FileCloner.Models.DiffGenerator
 {
-    private string _diffFilePath;
-    private readonly object _syncLock = new();
-
-    public DiffGenerator(string diffFilePath)
+    public class DiffGenerator
     {
-        _diffFilePath = diffFilePath;
-    }
+        private string _diffFilePath;
+        private readonly object _syncLock = new();
 
-    public void GenerateSummary(List<string> jsonFiles)
-    {
-        Dictionary<string, FileMetadata> allFiles = new();
-
-        for (int i = 0; i < jsonFiles.Count; i++)
+        public DiffGenerator(string diffFilePath)
         {
-            try
+            _diffFilePath = diffFilePath;
+        }
+
+        public void GenerateSummary(List<string> jsonFiles)
+        {
+            Dictionary<string, FileMetadata> allFiles = new();
+
+            for (int i = 0; i < jsonFiles.Count; i++)
             {
-                string file = jsonFiles[i];
-
-
-
-                string ipAddress = Path.GetFileNameWithoutExtension(file);
-                string text = File.ReadAllText(file);
-                Root jsonRoot = JsonSerializer.Deserialize<Root>(text);
-
-                foreach (string rootKey in jsonRoot.Files.Keys)
+                try
                 {
-                    JsonElement jsonElement = jsonRoot.Files[rootKey]; // This is a JsonElement for root key (e.g., "A", "B")
-                    // Deserialize JsonElement into FileMetadata
-                    FileMetadata? rootFile = JsonSerializer.Deserialize<FileMetadata>(jsonElement.GetRawText());
-                    rootFile.Address = ipAddress;
+                    string file = jsonFiles[i];
 
-                    // Process the children of this root
-                    if (rootFile?.Children != null)
+
+
+                    string ipAddress = Path.GetFileNameWithoutExtension(file);
+
+                    // Console.WriteLine(ipAddress);
+                    string text = File.ReadAllText(file);
+                    Root jsonRoot = JsonSerializer.Deserialize<Root>(text);
+
+                    foreach (var rootKey in jsonRoot.Files.Keys)
                     {
+                        var jsonElement = jsonRoot.Files[rootKey]; // This is a JsonElement for root key (e.g., "A", "B")
 
-                        if (i == 0)
+                        // Deserialize JsonElement into FileMetadata
+                        var rootFile = JsonSerializer.Deserialize<FileMetadata>(jsonElement.GetRawText());
+                        rootFile.Address = ipAddress;
+
+
+                        // Process the children of this root
+                        if (rootFile?.Children != null)
                         {
-                            ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "White", rootKey);
+                            if (i == 0)
+                            {
+                                ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "White");
+                            }
+                            else
+                            {
+                                ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "#90ee90");
+                            }
                         }
-                        else
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error reading or deserializing file {jsonFiles[i]}: {ex.Message}");
+                }
+            }
+
+            // Write all files to the output file
+            WriteAllFilesToFile(allFiles, _diffFilePath);
+
+        }
+
+        // Recursive method to process children
+        public void ProcessChildren(Dictionary<string, FileMetadata> children, Dictionary<string, FileMetadata> allFiles, string IPaddress, string color)
+        {
+            //  Console.WriteLine("here guys?");
+            foreach (var (fileName, fileData) in children)
+            {
+
+
+                if (fileData.Children.Count > 0)
+                {
+                    // If this is a folder, recursively process its children
+                    fileData.Address = IPaddress;
+                    ProcessChildren(fileData.Children, allFiles, fileData.Address, color);
+                }
+                else
+                {
+                    // If this is a file, add or update it in the allFiles dictionary
+                    if (allFiles.TryGetValue(fileName, out var existingFile))
+                    {
+                        if (fileData.LastModified > existingFile.LastModified)
                         {
-                            ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "#90ee90", rootKey);
+                            if (fileData.Color != "#90ee90")
+                            {
+
+                                allFiles[fileName] = fileData;
+                                allFiles[fileName].Color = "#ffff00";
+                            }
+                            else
+                            {
+                                allFiles[fileName] = fileData;
+                                fileData.Color = "Green";
+                            }
+
                         }
                     }
                     else
                     {
-                        Console.WriteLine("null");
+                        allFiles[fileName] = fileData;
+                        allFiles[fileName].Color = color;
                     }
+                    fileData.Address = IPaddress;
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error reading or deserializing file {jsonFiles[i]}: {ex.Message}");
             }
         }
 
-        // Write all files to the output file
-        WriteAllFilesToFile(allFiles, _diffFilePath);
-
-    }
-    // Recursive method to process children
-    public void ProcessChildren(Dictionary<string, FileMetadata> children, Dictionary<string, FileMetadata> allFiles, string iPaddress, string color, string rootName)
-    {
 
 
-        foreach ((string fileName, FileMetadata fileData) in children)
+
+        public void Add_to_Tree(Node node, List<string> fullPath, int index, FileMetadata fileMetaData, string pathSoFar)
         {
-
-            fileData.InitDirectoryName = rootName;
-            if (fileData.Children.Count > 0)
+            if (index == fullPath.Count)
             {
-                // If this is a folder, recursively process its children
-                fileData.Address = iPaddress;
+                node.size = fileMetaData.Size;
 
-                ProcessChildren(fileData.Children, allFiles, fileData.Address, color, rootName);
             }
             else
             {
-                //we need relative file name ,only then it makes sense
-                string relativeFileName = "";
-                bool encountered = false;
-                foreach (string file in fileData.FullPath.Split('\\').ToList())
+                node.size = 0;
+            }
+
+            if (index >= fullPath.Count)
+            {
+                return;
+            }
+
+            if (fileMetaData.Color == "#ffff00")
+            {
+                node.color = "#ffff00";
+            }
+            else if (fileMetaData.Color == "#90ee90" && node.color != "#ffff00")
+            {
+                node.color = "#90ee90";
+            }
+
+
+
+
+            if (node.children.ContainsKey(fullPath[index]))
+            {
+
+                node = node.children[fullPath[index]];
+                Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.fullPath);
+
+
+            }
+            else
+            {
+
+                node.children[fullPath[index]] = new Node(fullPath[index], fileMetaData);
+
+
+
+                node.LastModified = node.LastModified > fileMetaData.LastModified
+                    ? node.LastModified
+                    : fileMetaData.LastModified;
+
+                node = node.children[fullPath[index]];
+                node.fullPath = pathSoFar + "\\" + fullPath[index];
+                //   node.IpAddress = fileMetaData.Address;
+
+                Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.fullPath);
+
+            }
+        }
+
+
+
+        public void WriteAllFilesToFile(Dictionary<string, FileMetadata> files, string outputFilePath)
+        {
+            // Creating a dictionary to store the final tree structure
+            Dictionary<string, Node> Tree_address = new();
+
+            lock (_syncLock)
+            {
+                using (StreamWriter writer = new StreamWriter(outputFilePath))
                 {
-
-                    if (encountered == true)
-                    {
-                        relativeFileName = relativeFileName + "\\" + file;
-                    }
-                    if (file == fileData.InitDirectoryName)
+                    foreach (var (fileName, fileData) in files)
                     {
 
-                        encountered = true;
-                    }
-
-                }
+                        List<string> result = fileData.FullPath.Split('/').ToList();
+                        // Console.WriteLine(fileData.Address);
 
 
-
-                // If this is a file, add or update it in the allFiles dictionary
-                if (allFiles.TryGetValue(relativeFileName, out FileMetadata? existingFile))
-                {
-                    if (fileData.LastModified > existingFile.LastModified)
-                    {
-                        if (fileData.Color != "#90ee90")
+                        if (Tree_address.ContainsKey(result[0]))
                         {
-                            allFiles[relativeFileName] = fileData;
-                            allFiles[relativeFileName].Color = "#ffff00";
+
+                            Add_to_Tree(Tree_address[result[0]], result, 1, fileData, Tree_address[result[0]].fullPath);
                         }
                         else
                         {
-                            allFiles[relativeFileName] = fileData;
-                            fileData.Color = "Green";
+                            // If not, create a new node and add it to the tree
+                            Tree_address[result[0]] = new Node(result[0], fileData);
+                            Tree_address[result[0]].fullPath = result[0];
+                            Add_to_Tree(Tree_address[result[0]], result, 1, fileData, Tree_address[result[0]].fullPath);
                         }
-
                     }
-                }
-                else
-                {
-                    allFiles[relativeFileName] = fileData;
-                    allFiles[relativeFileName].Color = color;
-                }
-                fileData.Address = iPaddress;
-                fileData.InitDirectoryName = rootName;
-            }
-        }
-    }
 
+                    // Start writing the tree structure to the file
+                    writer.WriteLine("{");
 
-    public void Add_to_Tree(Node node, List<string> fullPath, int index, FileMetadata fileMetaData, string pathSoFar)
-    {
-        if (index == fullPath.Count)
-        {
-
-            node.Size = fileMetaData.Size;
-
-        }
-        else
-        {
-            node.Size = 0;
-        }
-
-        if (index >= fullPath.Count)
-        {
-            return;
-        }
-
-        if (fileMetaData.Color == "#ffff00")
-        {
-            node.Color = "#ffff00";
-        }
-        else if (fileMetaData.Color == "#90ee90" && node.Color != "#ffff00")
-        {
-            node.Color = "#90ee90";
-        }
-
-        if (node._children.ContainsKey(fullPath[index]))
-        {
-            node = node._children[fullPath[index]];
-            Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.FullPath);
-        }
-        else
-        {
-
-            node._children[fullPath[index]] = new Node(fullPath[index], fileMetaData);
-
-
-            node.LastModified = node.LastModified > fileMetaData.LastModified
-                ? node.LastModified
-                : fileMetaData.LastModified;
-
-            node = node._children[fullPath[index]];
-            node.FullPath = pathSoFar + "\\" + fullPath[index];
-
-            for (int i = 0; i <= index; i++)
-            {
-                {
-                    node.RelativePaths = node.RelativePaths + "\\" + fullPath[i];
-                }
-                Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.FullPath);
-            }
-        }
-    }
-
-
-    public void WriteAllFilesToFile(Dictionary<string, FileMetadata> files, string outputFilePath)
-    {
-        // Creating a dictionary to store the final tree structure
-        Dictionary<string, Node> tree_address = new();
-        lock (_syncLock)
-        {
-            using StreamWriter writer = new StreamWriter(outputFilePath);
-            foreach ((string fileName, FileMetadata fileData) in files)
-            {
-                List<string> result = fileData.FullPath.Split('\\').ToList();
-
-
-                string absPath = "";
-                int count = 0;
-                foreach (string folderName in result)
-                {
-
-                    count += 1;
-                    if (folderName == fileData.InitDirectoryName)
+                    bool firstNode = true;
+                    foreach (KeyValuePair<string, Node> entry in Tree_address)
                     {
-                        absPath = absPath + "\\" + folderName;
-                        break;
+                        if (!firstNode)
+                        {
+                            writer.WriteLine(",");
+                        }
+                        firstNode = false;
+                        WriteNode(writer, entry.Value, 0);
                     }
-                    else
-                    {
-                        absPath = absPath + "\\" + folderName;
-                    }
-                }
-
-                result = result.Skip(count - 1).ToList();
 
 
-
-                if (tree_address.ContainsKey(absPath))
-                {
-
-                    Add_to_Tree(tree_address[absPath], result, 1, fileData, tree_address[absPath].FullPath);
-                }
-                else
-                {
-                    // If not, create a new node and add it to the tree
-                    tree_address[absPath] = new Node(result[0], fileData) {
-                        FullPath = absPath
-                    };
-                    Add_to_Tree(tree_address[absPath], result, 1, fileData, tree_address[absPath].FullPath);
+                    writer.WriteLine("}");
                 }
             }
 
-            // Start writing the tree structure to the file
-            writer.WriteLine("{");
-
-            bool firstNode = true;
-            foreach (KeyValuePair<string, Node> entry in tree_address)
-            {
-                if (!firstNode)
-                {
-                    writer.WriteLine(",");
-                }
-                firstNode = false;
-                WriteNode(writer, entry.Value, 0);
-            }
-
-
-            writer.WriteLine("}");
         }
 
-    }
-
-    public void WriteNode(StreamWriter writer, Node node, int indentLevel)
-    {
-        // Create indentation for better readability
-        string indent = new string(' ', indentLevel * 2);
-
-        // Write the node as a JSON-like structure
-        writer.WriteLine($"{indent}\"{node._node_name}\": {{");
-        writer.WriteLine($"{indent}  \"LAST_MODIFIED\": \"{node.LastModified:MM-dd-yyyy}\",");
-        writer.WriteLine($"{indent}  \"FULL_PATH\": \"{node.FullPath}\",");
-        writer.WriteLine($"{indent}  \"COLOR\": \"{node.Color}\",");
-        writer.WriteLine($"{indent}  \"ADDRESS\": \"{node.IpAddress}\",");
-        writer.WriteLine($"{indent}  \"NODE_SIZE\": \"{node.Size}\"");
-        writer.WriteLine($"{indent}  \"RELATIVE_PATH\": \"{node.RelativePaths}\"");
-
-
-        if (node._children.Count > 0)
+        public void WriteNode(StreamWriter writer, Node node, int indentLevel)
         {
-            // If there are children, recursively write them
-            writer.WriteLine($"{indent}  \"CHILDREN\": {{");
+            // Create indentation for better readability
+            string indent = new string(' ', indentLevel * 2);
 
-            bool firstChild = true;
-            foreach (KeyValuePair<string, Node> child in node._children)
+            // Write the node as a JSON-like structure
+            writer.WriteLine($"{indent}\"{node.node_name}\": {{");
+            writer.WriteLine($"{indent}  \"LAST_MODIFIED\": \"{node.LastModified:MM-dd-yyyy}\",");
+            writer.WriteLine($"{indent}  \"FULL_PATH\": \"{node.fullPath}/\",");
+            writer.WriteLine($"{indent}  \"COLOR\": \"{node.color}\",");
+            writer.WriteLine($"{indent}  \"ADDRESS\": \"{node.IpAddress}\",");
+            writer.WriteLine($"{indent}  \"NODE_SIZE\": \"{node.size}\"");
+
+
+            if (node.children.Count > 0)
             {
-                if (!firstChild)
-                {
-                    writer.WriteLine(",");
-                }
-                firstChild = false;
+                // If there are children, recursively write them
+                writer.WriteLine($"{indent}  \"CHILDREN\": {{");
 
-                WriteNode(writer, child.Value, indentLevel + 1);
+                bool firstChild = true;
+                foreach (var child in node.children)
+                {
+                    if (!firstChild)
+                    {
+                        writer.WriteLine(",");
+                    }
+                    firstChild = false;
+
+                    WriteNode(writer, child.Value, indentLevel + 1);
+                }
+
+                writer.WriteLine($"{indent}  }}");
             }
 
-            writer.WriteLine($"{indent}  }}");
+
+            writer.WriteLine($"{indent}}}");
         }
 
-
-        writer.WriteLine($"{indent}}}");
     }
-
 }

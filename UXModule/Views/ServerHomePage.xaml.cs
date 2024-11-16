@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ViewModel.DashboardViewModel;
+using UXModule.ViewModel;
 
 namespace UXModule.Views
 {
@@ -33,8 +33,9 @@ namespace UXModule.Views
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             bool response = _viewModel.ServerStopSession();
-            if (response) {
-            this.NavigationService.GoBack();
+            if (response)
+            {
+                this.NavigationService.GoBack();
             }
 
         }

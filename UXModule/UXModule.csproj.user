@@ -43,9 +43,6 @@
     <Compile Update="Views\ServerHomePage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\UpdaterPage.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\UploadPage.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -94,9 +91,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ServerHomePage.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="Views\UpdaterPage.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\UploadPage.xaml">

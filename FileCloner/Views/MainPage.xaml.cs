@@ -1,49 +1,48 @@
 ﻿/******************************************************************************
  * Filename    = MainPage.xaml.cs
  *
- * Author(s)      = Sai Hemanth Reddy & Sarath A
+ * Author      = Sai Hemanth Reddy
  * 
  * Project     = FileCloner
  *
  * Description = Code behind for MainPage
  *****************************************************************************/
-using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using FileCloner.ViewModels;
 
-namespace FileCloner.Views;
-[ExcludeFromCodeCoverage]
-
-/// <summary>
-/// Interaction logic for MainPage.xaml
-/// </summary>
-public partial class MainPage : Page
+namespace FileCloner.Views
 {
     /// <summary>
-    /// Creates an instance of the main page.
+    /// Interaction logic for MainPage.xaml
     /// </summary>
-    public MainPage()
+    public partial class MainPage : Page
     {
-        InitializeComponent();
-        try
+        /// <summary>
+        /// Creates an instance of the main page.
+        /// </summary>
+        public MainPage()
         {
-            // Create the ViewModel and set as data context.
-            MainPageViewModel viewModel = new();
-            DataContext = viewModel;
+            InitializeComponent();
+            try
+            {
+                // Create the ViewModel and set as data context.
+                MainPageViewModel viewModel = new();
+                DataContext = viewModel;
+            }
+            catch (Exception exception)
+            {
+                _ = MessageBox.Show(exception.Message);
+                Application.Current.Shutdown();
+            }
         }
-        catch (Exception exception)
-        {
-            _ = MessageBox.Show(exception.Message);
-            Application.Current.Shutdown();
-        }
-    }
 
-    private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-    {
-        if (DataContext is MainPageViewModel viewModel)
+        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            viewModel.SelectedNode = e.NewValue as Node;
+            if (DataContext is MainPageViewModel viewModel)
+            {
+                viewModel.SelectedNode = e.NewValue as Node;
+            }
         }
     }
 }

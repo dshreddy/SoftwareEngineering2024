@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "TvgK4BfpLbs=",
+  "dgSpecHash": "Rre5pvq/Pa8=",
   "success": true,
-  "projectFilePath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\TestCases\\TestCases.csproj",
+  "projectFilePath": "C:\\Mac\\Home\\Downloads\\UXModule\\TestCases\\TestCases.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\shr\\.nuget\\packages\\coverlet.collector\\6.0.0\\coverlet.collector.6.0.0.nupkg.sha512",
     "C:\\Users\\shr\\.nuget\\packages\\microsoft.codecoverage\\17.8.0\\microsoft.codecoverage.17.8.0.nupkg.sha512",

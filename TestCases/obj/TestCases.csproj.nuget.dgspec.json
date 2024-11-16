@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\TestCases\\TestCases.csproj": {}
+    "C:\\Mac\\Home\\Downloads\\UXModule\\TestCases\\TestCases.csproj": {}
   },
   "projects": {
-    "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\TestCases\\TestCases.csproj": {
+    "C:\\Mac\\Home\\Downloads\\UXModule\\TestCases\\TestCases.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\TestCases\\TestCases.csproj",
+        "projectUniqueName": "C:\\Mac\\Home\\Downloads\\UXModule\\TestCases\\TestCases.csproj",
         "projectName": "TestCases",
-        "projectPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\TestCases\\TestCases.csproj",
+        "projectPath": "C:\\Mac\\Home\\Downloads\\UXModule\\TestCases\\TestCases.csproj",
         "packagesPath": "C:\\Users\\shr\\.nuget\\packages\\",
-        "outputPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\TestCases\\obj\\",
+        "outputPath": "C:\\Mac\\Home\\Downloads\\UXModule\\TestCases\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\shr\\AppData\\Roaming\\NuGet\\NuGet.Config",

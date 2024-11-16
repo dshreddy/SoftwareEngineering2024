@@ -14,9 +14,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ViewModel;
-using Screenshare;
-//using WhiteboardGUI;
+using UXModule.ViewModel;
+using FileCloner.Views;
 
 namespace UXModule.Views
 {
@@ -25,22 +24,22 @@ namespace UXModule.Views
     /// </summary>
     public partial class MainPage : Page
     {
-       
+
         private static DashboardPage dashboardPage;
-        private static WhiteboardPage whiteboardPage;
-        private static UpdaterPage updaterPage;
+        //private static WhiteboardGUI.Views.MainPage whiteboardPage;
+        //private static UpdaterPage updaterPage;
         private static FileCloner.Views.MainPage fileClonerPage;
-        private static ScreensharePage screensharePage;
-        private static AnalyserPage analyserPage;
-        private static ChatPage chatPage;
-        private static UploadPage uploadPage;
+        //private static ScreensharePage screensharePage;
+        //private static AnalyserPage analyserPage;
+        //private static ChatPage chatPage;
+        //private static UploadPage uploadPage;
 
         private readonly string sessionType;
         private static Page _currentPage;
 
         public event PropertyChangingEventHandler? PropertyChanged;
 
-        public MainPage(string _sessionType, ViewModel.DashboardViewModel.MainPageViewModel mainPageViewModel, Page currentPage)
+        public MainPage(string _sessionType, MainPageViewModel mainPageViewModel, Page currentPage)
         {
             InitializeComponent();
             sessionType = _sessionType;
@@ -48,7 +47,7 @@ namespace UXModule.Views
             _currentPage = currentPage; 
 
             Main.Content = dashboardPage;
-            fileClonerPage = new FileCloner.Views.MainPage();
+           
         }
 
         private void DashboardClick(object sender, RoutedEventArgs e)
@@ -65,55 +64,57 @@ namespace UXModule.Views
 
         private void WhiteboardClick(object sender, RoutedEventArgs e)
         {
-           // whiteboardPage = new WhiteboardPage();
-           // Main.Content = whiteboardPage;
+            //whiteboardPage = new WhiteboardGUI.Views.MainPage();
+            //Main.Content = whiteboardPage;
         }
 
 
         private void FileClonerClick(object sender, RoutedEventArgs e)
         {
+            fileClonerPage = new FileCloner.Views.MainPage();
             Main.Content = fileClonerPage;
+
         }
 
         private void UpdaterClick(object sender, RoutedEventArgs e)
         {
 
-            updaterPage = new UpdaterPage();
-            Main.Content = updaterPage;
+            //updaterPage = new UpdaterPage();
+            //Main.Content = updaterPage;
 
         }
 
         private void AnalyserClick(object sender, RoutedEventArgs e)
         {
-            analyserPage = new AnalyserPage();
-            Main.Content = analyserPage;
+            //analyserPage = new AnalyserPage();
+            //Main.Content = analyserPage;
 
         }
 
         private void ScreenShareClick(object sender, RoutedEventArgs e)
         {
-            if(sessionType == "server")
-            {
-                Main.Content = new ScreenShareServer();
-            }
-            else
-            {
-                Main.Content = new ScreenShareClient();
-            }
+            //if(sessionType == "server")
+            //{
+            //    Main.Content = new ScreenShareServer();
+            //}
+            //else
+            //{
+            //    Main.Content = new ScreenShareClient();
+            //}
 
         }
 
         private void ChatButtonClick(object sender, RoutedEventArgs e)
         {
-            chatPage = new ChatPage();
-            Main.Content = chatPage;
+            //chatPage = new ChatPage();
+            //Main.Content = chatPage;
 
         }
 
         private void UploadClick(object sender, RoutedEventArgs e)
         {
-            uploadPage = new UploadPage();
-            Main.Content = uploadPage;
+            //uploadPage = new UploadPage();
+            //Main.Content = uploadPage;
 
         }
 

@@ -1,38 +1,33 @@
-﻿using FileCloner.Models.DiffGenerator;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FileCloner.Models.DiffGenerator;
-[ExcludeFromCodeCoverage]
-
-public class Node
+namespace FileCloner.Models.DiffGenerator
 {
-    public string _node_name;
-    public Dictionary<string, Node> _children;
-    public DateTime LastModified { get; set; }
-    public string IpAddress { get; set; }
-    public string Color { get; set; }
-
-    public string FullPath { get; set; }
-
-    public int? Size { get; set; }
-
-    public string RelativePaths { get; set; }
-
-    public Node(string node_name, FileMetadata fileContents)
+    public class Node
     {
-        this._node_name = node_name;
-        this._children = new Dictionary<string, Node>();
-        this.LastModified = fileContents.LastModified;
-        this.IpAddress = fileContents.Address;
-        this.Color = "White";
+        public string node_name;
+        public Dictionary<string, Node> children;
+        public DateTime LastModified { get; set; }
+        public string IpAddress { get; set; }
+        public string color { get; set; }
 
+        public string fullPath { get; set; }
+
+        public int ?size { get; set; }
+
+        public Node(string node_name, FileMetadata fileContents)
+        {
+            this.node_name = node_name;
+            this.children = new Dictionary<string, Node>();
+            this.LastModified = fileContents.LastModified;
+            this.IpAddress = fileContents.Address;
+            this.color = "White";
+
+
+        }
 
     }
-
 }
-
