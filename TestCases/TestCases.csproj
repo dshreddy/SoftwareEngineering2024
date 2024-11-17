@@ -20,4 +20,12 @@
     <Using Include="Xunit" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Networking\Communication\" />
+    <Folder Include="Networking\GrpcServices\" />
+    <Folder Include="Networking\Sockets\" />
+    <Folder Include="Networking\Serialization\" />
+    <Folder Include="Networking\Queues\" />
+  </ItemGroup>
+
 </Project>
