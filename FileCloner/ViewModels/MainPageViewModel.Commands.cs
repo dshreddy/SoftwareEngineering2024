@@ -41,7 +41,7 @@ namespace FileCloner.ViewModels
             Dispatcher.Invoke(() => {
                 MessageBox.Show("Summary is generated");
             });
-            TreeGenerator(Constants.outputFilePath);
+            TreeGenerator(Constants.OutputFilePath);
         }
 
         /// <summary>
@@ -51,15 +51,15 @@ namespace FileCloner.ViewModels
         {
             IsStartCloningEnabled = false;
             // Ensure that the directory for sender files exists
-            Directory.CreateDirectory(Constants.senderFilesFolderPath);
+            Directory.CreateDirectory(Constants.SenderFilesFolderPath);
             // clean the sender files folder before you start populating it with files
-            _fileExplorerServiceProvider.CleanFolder(Constants.senderFilesFolderPath);
+            _fileExplorerServiceProvider.CleanFolder(Constants.SenderFilesFolderPath);
 
             foreach (var entry in _selectedFiles)
             {
                 string key = entry.Key;
                 List<string> value = entry.Value;
-                string filePath = Path.Combine(Constants.senderFilesFolderPath, $"{key}.txt");
+                string filePath = Path.Combine(Constants.SenderFilesFolderPath, $"{key}.txt");
 
                 using (FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 using (StreamWriter writer = new StreamWriter(fs))

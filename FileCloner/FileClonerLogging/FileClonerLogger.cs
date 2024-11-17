@@ -26,7 +26,7 @@ namespace FileCloner.FileClonerLogging
     public class FileClonerLogger
     {
         // base path defined by folder
-        private static string _basePath = Constants.defaultFolderPath;
+        private static string _basePath = Constants.DefaultFolderPath;
         private static readonly string _logDirectory = Path.Combine(_basePath, "FileClonerLogs");
         private string? _logFile;
         private string _moduleName;

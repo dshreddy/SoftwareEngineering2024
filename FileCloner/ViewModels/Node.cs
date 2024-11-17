@@ -117,7 +117,7 @@ namespace FileCloner.ViewModels
             _color = "";
             _fullFilePath = "";
             Children = new ObservableCollection<Node>();
-            IconPath = new Uri(Constants.loadingIconPath, UriKind.Absolute);
+            IconPath = new Uri(Constants.LoadingIconPath, UriKind.Absolute);
             CheckBoxCommand = new RelayCommand(CheckBoxClick);
             Size = 0;
         }

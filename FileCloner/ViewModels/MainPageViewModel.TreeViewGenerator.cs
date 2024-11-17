@@ -22,7 +22,7 @@ namespace FileCloner.ViewModels
                 // Clear any existing nodes in the tree and reset counters
                 Tree.Clear();
                 ResetCounts();
-                if (filePath == Constants.outputFilePath)
+                if (filePath == Constants.OutputFilePath)
                 {
                     RootGenerator(filePath);
                     return;
@@ -32,7 +32,7 @@ namespace FileCloner.ViewModels
                 _fileExplorerServiceProvider.GenerateInputFile(RootDirectoryPath);
 
                 // Parse the input file and create tree nodes
-                RootGenerator(Constants.inputFilePath);
+                RootGenerator(Constants.InputFilePath);
             }
             catch (Exception e)
             {
@@ -59,7 +59,7 @@ namespace FileCloner.ViewModels
                     {
                         Name = root.Key,
                         IsFile = false,
-                        IconPath = new Uri(Constants.folderIconPath, UriKind.Absolute),
+                        IconPath = new Uri(Constants.FolderIconPath, UriKind.Absolute),
                         Color = color,
                         RelativePath = root.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "",
                         IpAddress = root.Value.TryGetProperty("ADDRESS", out JsonElement address) ? address.GetString() : null,
@@ -98,7 +98,7 @@ namespace FileCloner.ViewModels
                         Size = isFile ? sizeElement.GetInt32() : 0,
                         Parent = parentNode,
                         RelativePath = child.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "",
-                        IconPath = new Uri(isFile ? Constants.fileIconPath : Constants.folderIconPath, UriKind.Absolute)
+                        IconPath = new Uri(isFile ? Constants.FileIconPath : Constants.FolderIconPath, UriKind.Absolute)
                     };
                     if (color == "GREEN" || color == "RED")
                     {
