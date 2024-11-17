@@ -1,19 +1,18 @@
 ﻿using FileCloner.Models.NetworkService;
 
-namespace FileClonerUnitTests
+namespace FileClonerUnitTests;
+
+[TestClass]
+public sealed class FileClonerNetworkServiceUnitTests
 {
-    [TestClass]
-    public sealed class FileClonerNetworkServiceUnitTests
+    [TestInitialize]
+    public void Setup()
     {
-        [TestInitialize]
-        public void Setup()
-        {
 
-        }
+    }
 
-        [TestMethod]
-        public void TestMethod1()
-        {
-        }
+    [TestMethod]
+    public void TestMethod1()
+    {
     }
 }

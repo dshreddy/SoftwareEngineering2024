@@ -31,6 +31,8 @@ public class FileClonerLogger
     private string? _logFile;
     private string _moduleName;
 
+    public string LogFile { get; private set; }
+
     // lock to write to Log Files
     private object _syncLock = new();
 
@@ -50,6 +52,7 @@ public class FileClonerLogger
                 Directory.CreateDirectory(s_logDirectory);
             }
             _logFile = $"{s_logDirectory}\\FileCloner{_moduleName}.log";
+            LogFile = _logFile;
             if (!File.Exists(_logFile))
             {
                 File.Create(_logFile).Close();
