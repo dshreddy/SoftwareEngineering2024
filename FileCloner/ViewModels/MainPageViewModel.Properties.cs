@@ -115,13 +115,13 @@ partial class MainPageViewModel : ViewModelBase
             OnPropertyChanged(nameof(IsStartCloningEnabled));
         }
     }
-    private bool _isStopCloningEnabled;
-    public bool IsStopCloningEnabled
+    private bool _isStopSessionEnabled;
+    public bool IsStopSessionEnabled
     {
-        get => _isStopCloningEnabled;
+        get => _isStopSessionEnabled;
         set {
-            _isStopCloningEnabled = value;
-            OnPropertyChanged(nameof(IsStopCloningEnabled));
+            _isStopSessionEnabled = value;
+            OnPropertyChanged(nameof(IsStopSessionEnabled));
         }
     }
 
@@ -130,7 +130,7 @@ partial class MainPageViewModel : ViewModelBase
     public ICommand SendRequestCommand { get; }
     public ICommand SummarizeCommand { get; }
     public ICommand StartCloningCommand { get; }
-    public ICommand StopCloningCommand { get; }
+    public ICommand StopSessionCommand { get; }
 
     // Collection to store log messages for display
     public ObservableCollection<string> LogMessages { get; set; } = [];
