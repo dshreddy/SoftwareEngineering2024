@@ -79,25 +79,27 @@
 
                 <Grid Grid.Column="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="4*"/>
-                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <TreeView ItemsSource="{Binding Tree}" SelectedItemChanged="TreeView_SelectedItemChanged" Grid.Row="0" Background="LightYellow">
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate DataType="{x:Type viewModel:Node}" ItemsSource="{Binding Children}">
-                                <StackPanel Background="LightYellow" Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <CheckBox IsChecked="{Binding IsChecked}" Command="{Binding CheckBoxCommand}"/>
-                                    <Image Source="{Binding IconPath}" Width="18"/>
-                                    <Label Content="{Binding Name}"  FontWeight="Bold"/>
-                                </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
+                        <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Background="LightYellow">
+                            <TreeView ItemsSource="{Binding Tree}" SelectedItemChanged="TreeView_SelectedItemChanged" Grid.Row="0" Background="LightYellow">
+                                <TreeView.ItemTemplate>
+                                    <HierarchicalDataTemplate DataType="{x:Type viewModel:Node}" ItemsSource="{Binding Children}">
+                                        <StackPanel Background="LightYellow" Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                            <CheckBox IsChecked="{Binding IsChecked}" Command="{Binding CheckBoxCommand}"/>
+                                            <Image Source="{Binding IconPath}" Width="18"/>
+                                            <Label Content="{Binding Name}"  FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </HierarchicalDataTemplate>
+                                </TreeView.ItemTemplate>
+                            </TreeView>
+                        </ScrollViewer>
 
-                    <StackPanel Background="LightGray" Grid.Column="0" Grid.Row="3" Grid.RowSpan="2" Margin="5">
+                        <StackPanel Background="LightGray" Grid.Column="0" Grid.Row="1" Margin="5">
                         <TextBlock Text="File Metadata" FontWeight="Bold" Margin="0,0,0,5"/>
-                        <Grid>
+                        <Grid Grid.ZIndex="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
@@ -108,7 +110,8 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
                             <TextBlock Grid.Row="0" Grid.Column="0" Text="Name:" FontWeight="SemiBold" Margin="0,0,5,0"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedNode.Name}" />
@@ -121,7 +124,10 @@
 
                             <TextBlock Grid.Row="3" Grid.Column="0" Text="IP Address:" FontWeight="SemiBold" Margin="0,0,5,0"/>
                             <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedNode.IpAddress}" />
-                        </Grid>
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="Last Modified:" FontWeight="SemiBold" Margin="0,0,5,0"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedNode.LastModified}" />
+                            </Grid>
                     </StackPanel>
                 </Grid>
 
@@ -166,7 +172,7 @@
 
                         <Button Grid.Row="1" Grid.Column="0" Content="Start Cloning" Command="{Binding StartCloningCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsStartCloningEnabled}"/>
 
-                        <Button Grid.Row="1" Grid.Column="1" Content="Stop Cloning" Command="{Binding StopCloningCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StopButtonColor}" IsEnabled="{Binding IsStopCloningEnabled}" />
+                        <Button Grid.Row="1" Grid.Column="1" Content="Stop Session" Command="{Binding StopSessionCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StopButtonColor}" IsEnabled="{Binding IsStopCloningEnabled}" />
                     </Grid>
                     <Label Content="Log" FontWeight="Bold"/>
                         <ListBox ItemsSource="{Binding LogMessages}" Width="450" Height="400" Margin="5" Background="LightGray"/>
