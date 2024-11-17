@@ -3,7 +3,7 @@
 namespace Networking.Queues;
 public class ReceivingQueue
 {
-    public readonly IQueue queue = new Queue();
+    public readonly IQueue Queue = new Queue();
 
     /// <summary>
     /// Inserts the given packet into the queue
@@ -15,7 +15,7 @@ public class ReceivingQueue
     public void Enqueue(Packet packet)
     {
         Trace.WriteLine("[Networking] ReceivingQueue.Enqueue() function called.");
-        queue.Enqueue(packet);
+        Queue.Enqueue(packet);
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class ReceivingQueue
     public Packet Dequeue()
     {
         Trace.WriteLine("[Networking] ReceivingQueue.Dequeue() function called.");
-        return queue.Dequeue();
+        return Queue.Dequeue();
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ public class ReceivingQueue
     /// </returns>
     public Packet Peek()
     {
-        return queue.Peek();
+        return Queue.Peek();
     }
 
     /// <summary>
@@ -47,7 +47,7 @@ public class ReceivingQueue
     /// <returns> void </returns>
     public void Clear()
     {
-        queue.Clear();
+        Queue.Clear();
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public class ReceivingQueue
     /// </returns>
     public int Size()
     {
-        return queue.Size();
+        return Queue.Size();
     }
 
     /// <summary>
@@ -69,7 +69,7 @@ public class ReceivingQueue
     /// </returns>
     public bool IsEmpty()
     {
-        return queue.IsEmpty();
+        return Queue.IsEmpty();
     }
 
     /// <summary>
@@ -82,6 +82,6 @@ public class ReceivingQueue
     public bool WaitForPacket()
     {
         Trace.WriteLine("[Networking] ReceivingQueue.WaitForPacket() function called.");
-        return queue.WaitForPacket();
+        return Queue.WaitForPacket();
     }
 }
