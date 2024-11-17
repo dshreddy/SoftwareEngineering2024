@@ -12,7 +12,7 @@ using Grpc.Net.Client;
 using System.Net.Http;
 using GrpcClient;
 
-namespace Network.ServerServices
+namespace Networking.ServerServices
 {
     public class ServerServices : Server.ServerBase, ICommunicator
     {
@@ -43,13 +43,13 @@ namespace Network.ServerServices
 
             try
             {
-                foreach (var moduleToNotificationHandler in
+                foreach (KeyValuePair<string, INotificationHandler> moduleToNotificationHandler in
                                         _moduleToNotificationHanderMap)
                 {
                     TcpClient clientSocket = new();
                     string module =
                         moduleToNotificationHandler.Key;
-                    var notificationHandler =
+                    INotificationHandler notificationHandler =
                         moduleToNotificationHandler.Value;
                     notificationHandler.OnClientJoined(
                         clientSocket, ip, port);
@@ -293,16 +293,16 @@ namespace Network.ServerServices
         public override Task<disconnectResponse> disconnect(disconnectRequest request, ServerCallContext context)
         {
 
-            var clientId = request.ClientId;
+            string clientId = request.ClientId;
             Trace.WriteLine("[Networking] Client: " + clientId +
                     " has left. Removing client...");
 
-            foreach (var moduleToNotificationHandler in
+            foreach (KeyValuePair<string, INotificationHandler> moduleToNotificationHandler in
                     _moduleToNotificationHanderMap)
             {
                 string moduleName =
                     moduleToNotificationHandler.Key;
-                var notificationHandler =
+                INotificationHandler notificationHandler =
                     moduleToNotificationHandler.Value;
                 notificationHandler.OnClientLeft(clientId);
                 Trace.WriteLine("[Networking] Notifed " +
