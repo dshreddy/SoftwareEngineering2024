@@ -12,7 +12,7 @@ namespace Networking
         /// <summary>
         /// Called on the server when a new client joins
         /// </summary>
-        public void OnClientJoined(TcpClient socket)
+        public void OnClientJoined(TcpClient socket, string ip = null, string port = null)
         { }
 
         /// <summary>

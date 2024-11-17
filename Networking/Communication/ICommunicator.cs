@@ -22,7 +22,7 @@ namespace Networking.Communication
         /// Server side: If success then address of the server as a 
         ///  string of "IP:Port", else string "failure"
         /// </returns>
-        public string Start(string serverIP = null, 
+        public string Start(string serverIP = null,
             string serverPort = null);
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace Networking.Communication
         /// The socket which is connected to the client.
         /// </param>
         /// <returns> void </returns>
-        public void AddClient(string clientId, TcpClient socket);
+        public void AddClient(string clientId, TcpClient socket, string ip = null, string port = null);
 
         /// <summary>
         /// This function is to be called by the Dashboard module on
