@@ -8,13 +8,9 @@
  * Description = Updates the UI if any file gets cloned or gets newly created
  *               in the directory which we are referring to now.
  *****************************************************************************/
-using System;
-using System.Collections.Generic;
+
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileCloner.ViewModels;
 

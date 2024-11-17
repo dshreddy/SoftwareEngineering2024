@@ -12,104 +12,98 @@
  *****************************************************************************/
 
 using FileCloner.Models;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FileCloner.FileClonerLogging
+namespace FileCloner.FileClonerLogging;
+
+public class FileClonerLogger
 {
-    public class FileClonerLogger
+    // base path defined by folder
+    private static readonly string s_basePath = Constants.DefaultFolderPath;
+    private static readonly string s_logDirectory = Path.Combine(s_basePath, "FileClonerLogs");
+    private readonly string? _logFile;
+    private string _moduleName;
+
+    // lock to write to Log Files
+    private object _syncLock = new();
+
+    /// <summary>
+    /// Creates a Log File with the name moduleName.log inside the _logDirectory
+    /// </summary>
+    /// <param name="moduleName"></param>
+    public FileClonerLogger(string moduleName)
     {
-        // base path defined by folder
-        private static string _basePath = Constants.defaultFolderPath;
-        private static readonly string _logDirectory = Path.Combine(_basePath, "FileClonerLogs");
-        private string? _logFile;
-        private string _moduleName;
+        _moduleName = moduleName;
+        _syncLock = new();
 
-        // lock to write to Log Files
-        private object _syncLock = new();
-
-        /// <summary>
-        /// Creates a Log File with the name moduleName.log inside the _logDirectory
-        /// </summary>
-        /// <param name="moduleName"></param>
-        public FileClonerLogger(string moduleName)
+        try
         {
-            _moduleName = moduleName;
-            _syncLock = new();
-
-            try
+            if (!Directory.Exists(s_logDirectory))
             {
-                if (!Directory.Exists(_logDirectory))
-                {
-                    Directory.CreateDirectory(_logDirectory);
-                }
-                _logFile = $"{_logDirectory}\\FileCloner{_moduleName}.log";
-                if (!File.Exists(_logFile))
-                {
-                    File.Create(_logFile).Close();
-                }
-                lock (_syncLock)
-                {
-                    File.WriteAllText(_logFile, $"{_moduleName} : Logging Started\n");
-                }
+                Directory.CreateDirectory(s_logDirectory);
             }
-            catch (Exception ex)
+            _logFile = $"{s_logDirectory}\\FileCloner{_moduleName}.log";
+            if (!File.Exists(_logFile))
             {
-                Trace.WriteLine(ex.Message + "\n");
+                File.Create(_logFile).Close();
+            }
+            lock (_syncLock)
+            {
+                File.WriteAllText(_logFile, $"{_moduleName} : Logging Started\n");
             }
         }
-
-        /// <summary>
-        /// API to be called to Log onto the file
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="memberName"></param>
-        /// <param name="filePath"></param>
-        /// <param name="lineNumber"></param>
-        /// <param name="isErrorMessage"></param>
-        public void Log(string message,
-                [CallerMemberName] string memberName = "",
-                [CallerFilePath] string filePath = "",
-                [CallerLineNumber] int lineNumber = 0,
-                bool isErrorMessage = false)
+        catch (Exception ex)
         {
-            // string logToBeWritten = $"{_moduleName}:{filePath}->{memberName}->{lineNumber} :: {message}";
-            string logToBeWritten = $"{Path.GetFileName(filePath)}->{memberName}->{lineNumber} :: {message}";
-            if (isErrorMessage)
-            {
-                logToBeWritten = $"ERROR : {logToBeWritten}";
-            }
-            Write(logToBeWritten);
+            Trace.WriteLine(ex.Message + "\n");
         }
-
-        /// <summary>
-        /// Function which writes to the log File
-        /// </summary>
-        /// <param name="logToBeWritten"></param>
-        private void Write(string logToBeWritten)
-        {
-            if (_logFile != null)
-            {
-                lock (_syncLock)
-                {
-                    try
-                    {
-                        File.AppendAllText(_logFile, logToBeWritten + "\n");
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine($"FILECLONERTRACE : {ex.Message}\n");
-                    }
-                }
-            }
-        }
-
-
     }
+
+    /// <summary>
+    /// API to be called to Log onto the file
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="memberName"></param>
+    /// <param name="filePath"></param>
+    /// <param name="lineNumber"></param>
+    /// <param name="isErrorMessage"></param>
+    public void Log(string message,
+            [CallerMemberName] string memberName = "",
+            [CallerFilePath] string filePath = "",
+            [CallerLineNumber] int lineNumber = 0,
+            bool isErrorMessage = false)
+    {
+        // string logToBeWritten = $"{_moduleName}:{filePath}->{memberName}->{lineNumber} :: {message}";
+        string logToBeWritten = $"{Path.GetFileName(filePath)}->{memberName}->{lineNumber} :: {message}";
+        if (isErrorMessage)
+        {
+            logToBeWritten = $"ERROR : {logToBeWritten}";
+        }
+        Write(logToBeWritten);
+    }
+
+    /// <summary>
+    /// Function which writes to the log File
+    /// </summary>
+    /// <param name="logToBeWritten"></param>
+    private void Write(string logToBeWritten)
+    {
+        if (_logFile != null)
+        {
+            lock (_syncLock)
+            {
+                try
+                {
+                    File.AppendAllText(_logFile, logToBeWritten + "\n");
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"FILECLONERTRACE : {ex.Message}\n");
+                }
+            }
+        }
+    }
+
+
 }

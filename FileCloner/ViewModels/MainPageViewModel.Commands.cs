@@ -9,12 +9,7 @@
  *****************************************************************************/
 
 using FileCloner.Models;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace FileCloner.ViewModels;
@@ -51,7 +46,7 @@ partial class MainPageViewModel : ViewModelBase
         Dispatcher.Invoke(() => {
             MessageBox.Show("Summary is generated");
         });
-        TreeGenerator(Constants.outputFilePath);
+        TreeGenerator(Constants.OutputFilePath);
     }
 
     /// <summary>
@@ -61,15 +56,15 @@ partial class MainPageViewModel : ViewModelBase
     {
         IsStartCloningEnabled = false;
         // Ensure that the directory for sender files exists
-        Directory.CreateDirectory(Constants.senderFilesFolderPath);
+        Directory.CreateDirectory(Constants.SenderFilesFolderPath);
         // clean the sender files folder before you start populating it with files
-        _fileExplorerServiceProvider.CleanFolder(Constants.senderFilesFolderPath);
+        _fileExplorerServiceProvider.CleanFolder(Constants.SenderFilesFolderPath);
 
         foreach (KeyValuePair<string, List<string>> entry in SelectedFiles)
         {
             string key = entry.Key;
             List<string> value = entry.Value;
-            string filePath = Path.Combine(Constants.senderFilesFolderPath, $"{key}.txt");
+            string filePath = Path.Combine(Constants.SenderFilesFolderPath, $"{key}.txt");
 
             using FileStream fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
             using StreamWriter writer = new StreamWriter(fs);

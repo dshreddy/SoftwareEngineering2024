@@ -11,10 +11,7 @@
  *               managing selection states and updating counters for selected files
  *               and folders.
  *****************************************************************************/
-using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Net;
 using System.Windows.Input;
 using FileCloner.Models;
 
@@ -112,7 +109,7 @@ public class Node : ViewModelBase
         _color = "";
         _fullFilePath = "";
         Children = [];
-        IconPath = new Uri(Constants.loadingIconPath, UriKind.Absolute);
+        IconPath = new Uri(Constants.LoadingIconPath, UriKind.Absolute);
         CheckBoxCommand = new RelayCommand(CheckBoxClick);
         LastModified = "";
         Size = 0;
