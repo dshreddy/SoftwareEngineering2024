@@ -31,7 +31,7 @@ partial class MainPageViewModel : ViewModelBase
             _client.SendRequest();
             IsSendRequestEnabled = false;
             IsSummarizeEnabled = true;
-            IsStopCloningEnabled = true;
+            IsStopSessionEnabled = true;
             MessageBox.Show("Request sent successfully");
         }
         catch (Exception ex)
@@ -84,7 +84,7 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Stops the cloning process with a warning prompt.
     /// </summary>
-    private void StopCloning()
+    private void StopSession()
     {
         string message = "If you stop cloning, all incoming files related to the current session will be ignored.";
         string title = "WARNING";
@@ -98,7 +98,7 @@ partial class MainPageViewModel : ViewModelBase
         IsSendRequestEnabled = true;
         IsSummarizeEnabled = false;
         IsStartCloningEnabled = false;
-        IsStopCloningEnabled = false;
+        IsStopSessionEnabled = false;
         TreeGenerator(RootDirectoryPath);
     }
 }

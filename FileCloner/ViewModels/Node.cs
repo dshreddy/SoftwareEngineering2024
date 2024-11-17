@@ -54,6 +54,13 @@ public class Node : ViewModelBase
         set => _ipAddress = value;
     }
 
+    private string _lastModified;
+    public string LastModified
+    {
+        get => _lastModified;
+        set => _lastModified = value;
+    }
+
     private string _color;
 
     public string Color
@@ -104,9 +111,10 @@ public class Node : ViewModelBase
         _ipAddress = "localhost";
         _color = "";
         _fullFilePath = "";
-        Children = new ObservableCollection<Node>();
+        Children = [];
         IconPath = new Uri(Constants.loadingIconPath, UriKind.Absolute);
         CheckBoxCommand = new RelayCommand(CheckBoxClick);
+        LastModified = "";
         Size = 0;
     }
 

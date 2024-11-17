@@ -53,7 +53,7 @@ partial class MainPageViewModel : ViewModelBase
         SummarizeCommand = new RelayCommand(SummarizeResponses);
         StartCloningCommand = new RelayCommand(StartCloning);
         BrowseFoldersCommand = new RelayCommand(BrowseFolders);
-        StopCloningCommand = new RelayCommand(StopCloning);
+        StopSessionCommand = new RelayCommand(StopSession);
 
         //For watching files and updating any changes in the UI accordingly
         Thread fileWatcherThread = new(() => WatchFile(RootDirectoryPath));
@@ -63,13 +63,13 @@ partial class MainPageViewModel : ViewModelBase
         IsSendRequestEnabled = true;
         IsSummarizeEnabled = false;
         IsStartCloningEnabled = false;
-        IsStopCloningEnabled = false;
+        IsStopSessionEnabled = false;
 
         // Subscribe to CheckBoxClickEvent to update selection counts when a checkbox is clicked
         Node.CheckBoxClickEvent += UpdateCounts;
 
         // Initialize the Tree structure representing files and folders
-        Tree = new ObservableCollection<Node>();
+        Tree = [];
         TreeGenerator(_rootDirectoryPath);  // Load the initial tree structure
 
         // Initialize server and client for handling file transfer communication

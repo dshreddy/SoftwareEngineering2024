@@ -1,4 +1,5 @@
 ﻿using FileCloner.Models;
+using FileCloner.Models.DiffGenerator;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -60,6 +61,7 @@ partial class MainPageViewModel : ViewModelBase
                     IsFile = false,
                     IconPath = new Uri(Constants.folderIconPath, UriKind.Absolute),
                     Color = color,
+                    LastModified = DateTimeOffset.Parse(root.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : "").LocalDateTime.ToString(),
                     RelativePath = root.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "",
                     IpAddress = root.Value.TryGetProperty("ADDRESS", out JsonElement address) ? address.GetString() : null,
                     FullFilePath = root.Value.TryGetProperty("FULL_PATH", out JsonElement fullFilePath) ? fullFilePath.GetString() : "PATH NOT GIVEN!",
@@ -87,12 +89,12 @@ partial class MainPageViewModel : ViewModelBase
             {
                 bool isFile = child.Value.TryGetProperty("SIZE", out JsonElement sizeElement);
                 string color = child.Value.TryGetProperty("COLOR", out JsonElement colorProperty) ? colorProperty.GetString() : "";
-                var childNode = new Node
-                {
+                var childNode = new Node {
                     Name = child.Name,
                     Color = color,
                     IpAddress = child.Value.TryGetProperty("ADDRESS", out JsonElement address) ? address.GetString() : "localhost",
                     FullFilePath = child.Value.TryGetProperty("FULL_PATH", out JsonElement fullFilePath) ? fullFilePath.GetString() : "PATH NOT GIVEN!",
+                    LastModified = DateTimeOffset.Parse(child.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : "").LocalDateTime.ToString(),
                     IsFile = isFile,
                     Size = isFile ? sizeElement.GetInt32() : 0,
                     Parent = parentNode,
