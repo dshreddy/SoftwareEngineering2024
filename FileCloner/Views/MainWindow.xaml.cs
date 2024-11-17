@@ -10,21 +10,20 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace FileCloner.Views
+namespace FileCloner.Views;
+
+/// <summary>
+/// Interaction logic for MainWindow.xaml
+/// </summary>
+public partial class MainWindow : Window
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Creates an instance of the main window and navigates to the MainPage.
     /// </summary>
-    public partial class MainWindow : Window
+    public MainWindow()
     {
-        /// <summary>
-        /// Creates an instance of the main window and navigates to the MainPage.
-        /// </summary>
-        public MainWindow()
-        {
-            InitializeComponent();
-            Page mainPage = new MainPage();
-            MainFrame.Navigate(mainPage);
-        }
+        InitializeComponent();
+        Page mainPage = new MainPage();
+        MainFrame.Navigate(mainPage);
     }
 }

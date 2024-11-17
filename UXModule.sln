@@ -11,6 +11,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCases", "TestCases\Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileCloner", "FileCloner\FileCloner.csproj", "{51AD185D-8CDE-4F83-81B5-AEC14F1AEEF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileClonerForUnitTests", "FileClonerForUnitTests\FileClonerForUnitTests.csproj", "{D18EEAD7-AF1A-4F41-8AB4-A60D936C4E0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileClonerUnitTests", "FileClonerUnitTests\FileClonerUnitTests.csproj", "{57C3153A-FF0B-457E-B8E7-0507B3134EA6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{51AD185D-8CDE-4F83-81B5-AEC14F1AEEF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51AD185D-8CDE-4F83-81B5-AEC14F1AEEF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51AD185D-8CDE-4F83-81B5-AEC14F1AEEF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D18EEAD7-AF1A-4F41-8AB4-A60D936C4E0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D18EEAD7-AF1A-4F41-8AB4-A60D936C4E0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D18EEAD7-AF1A-4F41-8AB4-A60D936C4E0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D18EEAD7-AF1A-4F41-8AB4-A60D936C4E0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57C3153A-FF0B-457E-B8E7-0507B3134EA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57C3153A-FF0B-457E-B8E7-0507B3134EA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57C3153A-FF0B-457E-B8E7-0507B3134EA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57C3153A-FF0B-457E-B8E7-0507B3134EA6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
