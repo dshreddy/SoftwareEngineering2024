@@ -1,12 +1,11 @@
 ﻿using Microsoft.Extensions.Hosting;
-using Networking.ClientServices;
-using Networking.ServerServices;
 using Networking.Communication;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Networking.GrpcServices;
 
 public static class CommunicationFactory
 {
