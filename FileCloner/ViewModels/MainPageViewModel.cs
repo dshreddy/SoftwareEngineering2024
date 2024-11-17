@@ -11,18 +11,9 @@
  *               and starting file cloning.
  *****************************************************************************/
 
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Net.Http;
-using System.Text.Json;
-using System.Windows;
-using System.Diagnostics;
-using System.Windows.Input;
 using FileCloner.Models;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using FileCloner.Models.NetworkService;
-using System.Windows.Forms;
-using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace FileCloner.ViewModels;
 
@@ -38,12 +29,12 @@ partial class MainPageViewModel : ViewModelBase
     {
         s_instance = this; // Set instance for static access
 
-        if (!Directory.Exists(Constants.defaultFolderPath))
+        if (!Directory.Exists(Constants.DefaultFolderPath))
         {
-            Directory.CreateDirectory(Constants.defaultFolderPath);
+            Directory.CreateDirectory(Constants.DefaultFolderPath);
         }
         // Set default root directory path
-        RootDirectoryPath = Constants.defaultFolderPath;
+        RootDirectoryPath = Constants.DefaultFolderPath;
 
         // Initialize FileExplorerServiceProvider to manage file operations
         _fileExplorerServiceProvider = new FileExplorerServiceProvider();
@@ -75,11 +66,5 @@ partial class MainPageViewModel : ViewModelBase
         // Initialize server and client for handling file transfer communication
         _server = Server.GetServerInstance(UpdateLog);
         _client = new Client(UpdateLog);
-
-        // Register for application exit event to ensure resources are released
-        System.Windows.Application.Current.Exit += (sender, e) => {
-            _client.Stop();
-            _server.Stop();
-        };
     }
 }

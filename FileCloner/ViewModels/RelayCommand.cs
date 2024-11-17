@@ -9,7 +9,6 @@
  *
  * Description = Implements ICommand interface to allow binding actions to UI commands.
  *****************************************************************************/
-using System;
 using System.Windows.Input;
 
 namespace FileCloner.ViewModels;

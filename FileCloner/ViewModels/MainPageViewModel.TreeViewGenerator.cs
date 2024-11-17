@@ -1,12 +1,6 @@
 ﻿using FileCloner.Models;
-using FileCloner.Models.DiffGenerator;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace FileCloner.ViewModels;
@@ -23,7 +17,7 @@ partial class MainPageViewModel : ViewModelBase
             // Clear any existing nodes in the tree and reset counters
             Tree.Clear();
             ResetCounts();
-            if (filePath == Constants.outputFilePath)
+            if (filePath == Constants.OutputFilePath)
             {
                 RootGenerator(filePath);
                 return;
@@ -33,7 +27,7 @@ partial class MainPageViewModel : ViewModelBase
             _fileExplorerServiceProvider.GenerateInputFile(RootDirectoryPath);
 
             // Parse the input file and create tree nodes
-            RootGenerator(Constants.inputFilePath);
+            RootGenerator(Constants.InputFilePath);
         }
         catch (Exception e)
         {
@@ -59,7 +53,7 @@ partial class MainPageViewModel : ViewModelBase
                 var rootNode = new Node {
                     Name = root.Key,
                     IsFile = false,
-                    IconPath = new Uri(Constants.folderIconPath, UriKind.Absolute),
+                    IconPath = new Uri(Constants.FolderIconPath, UriKind.Absolute),
                     Color = color,
                     LastModified = DateTimeOffset.Parse(root.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : "").LocalDateTime.ToString(),
                     RelativePath = root.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "",
@@ -99,7 +93,7 @@ partial class MainPageViewModel : ViewModelBase
                     Size = isFile ? sizeElement.GetInt32() : 0,
                     Parent = parentNode,
                     RelativePath = child.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "",
-                    IconPath = new Uri(isFile ? Constants.fileIconPath : Constants.folderIconPath, UriKind.Absolute)
+                    IconPath = new Uri(isFile ? Constants.FileIconPath : Constants.FolderIconPath, UriKind.Absolute)
                 };
                 if (color == "GREEN" || color == "RED")
                 {
