@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
-using Network.ClientServices;
-using Network.ServerServices;
+using Networking.ClientServices;
+using Networking.ServerServices;
 using Networking.Communication;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
@@ -10,13 +10,13 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 public static class CommunicationFactory
 {
-    private static readonly CommunicatorClient _communicatorClient = new();
-    private static readonly CommunicatorServer _communicatorServer = new();
-    private static ClientServices _grpcClientServices;
-    private static ServerServices _grpcServerServices;
+    private static readonly CommunicatorClient s_communicatorClient = new();
+    private static readonly CommunicatorServer s_communicatorServer = new();
+    private static ClientServices s_grpcClientServices;
+    private static ServerServices s_grpcServerServices;
 
-    private static IHost _grpcHost; // Global static host variable
-    private static readonly object _lock = new(); // Lock for thread safety
+    private static IHost s_grpcHost; // Global static host variable
+    private static readonly object s_lock = new(); // Lock for thread safety
 
     /// <summary>
     /// Factory function to get the communicator.
@@ -33,14 +33,14 @@ public static class CommunicationFactory
         if (isGrpc)
         {
             // Ensure the host is initialized only once
-            if (_grpcHost == null)
+            if (s_grpcHost == null)
             {
-                lock (_lock)
+                lock (s_lock)
                 {
-                    if (_grpcHost == null)
+                    if (s_grpcHost == null)
                     {
                         int port = isClientSide ? 7009 : 7000;
-                        _grpcHost = Host.CreateDefaultBuilder()
+                        s_grpcHost = Host.CreateDefaultBuilder()
                             .ConfigureWebHostDefaults(webBuilder =>
                             {
                                 webBuilder.ConfigureServices(services =>
@@ -74,23 +74,23 @@ public static class CommunicationFactory
                             .Build();
 
                         // Start the host in a background thread
-                        _grpcHost.Start();
+                        s_grpcHost.Start();
 
                         // Initialize server services
-                        using var scope = _grpcHost.Services.CreateScope();
-                        _grpcServerServices = scope.ServiceProvider.GetRequiredService<ServerServices>();
-                        _grpcClientServices = scope.ServiceProvider.GetRequiredService<ClientServices>();
+                        using IServiceScope scope = s_grpcHost.Services.CreateScope();
+                        s_grpcServerServices = scope.ServiceProvider.GetRequiredService<ServerServices>();
+                        s_grpcClientServices = scope.ServiceProvider.GetRequiredService<ClientServices>();
                     }
                 }
             }
 
             // Return the appropriate instance
-            return isClientSide ? _grpcClientServices : _grpcServerServices;
+            return isClientSide ? s_grpcClientServices : s_grpcServerServices;
         }
         else
         {
             // Return non-gRPC instances
-            return isClientSide ? _communicatorClient : _communicatorServer;
+            return isClientSide ? s_communicatorClient : s_communicatorServer;
         }
     }
 }

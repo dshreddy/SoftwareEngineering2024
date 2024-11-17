@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using GrpcServer;
 
-namespace Network.ClientServices
+namespace Networking.ClientServices
 {
     public class ClientServices : Client.ClientBase, ICommunicator
     {
@@ -32,12 +32,6 @@ namespace Network.ClientServices
 
         [ExcludeFromCodeCoverage]
         public void RemoveClient(string clientId)
-        {
-            throw new NotImplementedException();
-        }
-
-        [ExcludeFromCodeCoverage]
-        public Dictionary<string, TcpClient> GetClientList()
         {
             throw new NotImplementedException();
         }
@@ -99,7 +93,7 @@ namespace Network.ClientServices
                     Ip = ip.ToString(),
                     Port = port.ToString() // default port that been set in the appsettings.json
                 };
-                var reply = client.connect(connectRequest);
+                connectResponse reply = client.connect(connectRequest);
                 Trace.WriteLine("[Networking] ClientServices" +
                    " started.");
                 return reply.ConnectionSuccess ? "success" : "failure";
