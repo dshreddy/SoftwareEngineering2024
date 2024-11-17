@@ -39,15 +39,15 @@ namespace UXModule.Views
 
         public event PropertyChangingEventHandler? PropertyChanged;
 
-        public MainPage(string _sessionType, MainPageViewModel mainPageViewModel, Page currentPage)
+        public MainPage(string sessionType, MainPageViewModel mainPageViewModel, Page currentPage)
         {
             InitializeComponent();
-            sessionType = _sessionType;
+            this.sessionType = sessionType;
             dashboardPage = new DashboardPage();
             _currentPage = currentPage; 
 
             Main.Content = dashboardPage;
-           
+            fileClonerPage = new FileCloner.Views.MainPage();
         }
 
         private void DashboardClick(object sender, RoutedEventArgs e)
@@ -71,9 +71,7 @@ namespace UXModule.Views
 
         private void FileClonerClick(object sender, RoutedEventArgs e)
         {
-            fileClonerPage = new FileCloner.Views.MainPage();
             Main.Content = fileClonerPage;
-
         }
 
         private void UpdaterClick(object sender, RoutedEventArgs e)
