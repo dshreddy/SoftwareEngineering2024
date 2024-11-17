@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-
 namespace Networking.Communication
 {
     public class CommunicatorServer : ICommunicator
@@ -309,7 +308,7 @@ namespace Networking.Communication
         /// The socket which is connected to the client.
         /// </param>
         /// <returns> void </returns>
-        public void AddClient(string clientId, TcpClient socket)
+        public void AddClient(string clientId, TcpClient socket, string? ip = null, string? port = null)
         {
             Trace.WriteLine("[Networking] " +
                 "CommunicatorServer.AddClient() function called.");

@@ -162,7 +162,7 @@ namespace Networking.Communication
         /// This function is to be called only on the server.
         /// </summary>
         [ExcludeFromCodeCoverage]
-        public void AddClient(string clientId, TcpClient socket)
+        public void AddClient(string clientId, TcpClient socket, string ip = null, string port = null)
         {
             throw new NotSupportedException();
         }
@@ -242,6 +242,7 @@ namespace Networking.Communication
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public Dictionary<string, TcpClient> GetClientList()
         {
             throw new NotImplementedException();
