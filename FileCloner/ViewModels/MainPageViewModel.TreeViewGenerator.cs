@@ -49,17 +49,27 @@ partial class MainPageViewModel : ViewModelBase
             foreach (KeyValuePair<string, JsonElement> root in rootDictionary)
             {
                 string color = root.Value.TryGetProperty("COLOR", out JsonElement colorProperty) ? colorProperty.GetString() : "";
+
+                // Safely parse the "LAST_MODIFIED" property
+                string lastModifiedStr = root.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : null;
+                string lastModifiedFormatted = null;
+                if (!string.IsNullOrEmpty(lastModifiedStr) && DateTimeOffset.TryParse(lastModifiedStr, out DateTimeOffset lastModifiedDate))
+                {
+                    lastModifiedFormatted = lastModifiedDate.LocalDateTime.ToString();
+                }
+
                 // Create a root node for each directory
                 var rootNode = new Node {
                     Name = root.Key,
                     IsFile = false,
                     IconPath = new Uri(Constants.FolderIconPath, UriKind.Absolute),
                     Color = color,
-                    LastModified = DateTimeOffset.Parse(root.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : "").LocalDateTime.ToString(),
+                    LastModified = lastModifiedFormatted ?? "Unknown", // Default to "Unknown" if parsing fails
                     RelativePath = root.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "",
                     IpAddress = root.Value.TryGetProperty("ADDRESS", out JsonElement address) ? address.GetString() : null,
                     FullFilePath = root.Value.TryGetProperty("FULL_PATH", out JsonElement fullFilePath) ? fullFilePath.GetString() : "PATH NOT GIVEN!",
                 };
+
                 // Add root node to the tree and increment folder count
                 Tree.Add(rootNode);
                 FolderCount++;
@@ -68,8 +78,9 @@ partial class MainPageViewModel : ViewModelBase
         }
         catch (Exception e)
         {
-            throw new Exception(e.Message);
+            throw new Exception($"An error occurred: {e.Message}", e);
         }
+
     }
 
     /// <summary>
