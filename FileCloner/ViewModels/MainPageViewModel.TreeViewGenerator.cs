@@ -43,7 +43,9 @@ partial class MainPageViewModel : ViewModelBase
         catch (Exception e)
         {
             // Show error if tree generation fails
-            MessageBox.Show(e.Message);
+            Dispatcher.Invoke(() => {
+                MessageBox.Show($"[TreeViewGenerator] {e.Message}");
+            });
         }
     }
 

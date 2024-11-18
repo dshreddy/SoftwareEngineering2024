@@ -67,7 +67,7 @@ partial class MainPageViewModel : ViewModelBase
         // clean the sender files folder before you start populating it with files
         _fileExplorerServiceProvider.CleanFolder(Constants.SenderFilesFolderPath);
 
-        //Iterate through all the selected files (marked with checkbox)
+        //Iterate through all the selected files (marked with checkbox) and write it into the file
         foreach (KeyValuePair<string, List<string>> entry in SelectedFiles)
         {
             string key = entry.Key;
@@ -98,10 +98,13 @@ partial class MainPageViewModel : ViewModelBase
         {
             _client.StopCloning();
         }
+        //Revert back to initial state once the session is stopped.
         IsSendRequestEnabled = true;
         IsSummarizeEnabled = false;
         IsStartCloningEnabled = false;
         IsStopSessionEnabled = false;
+
+        //Load the initial tree view of our own system once the session is stopped.
         TreeGenerator(RootDirectoryPath);
     }
 }
