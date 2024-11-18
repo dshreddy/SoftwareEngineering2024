@@ -3,7 +3,7 @@
  *
  * Author(s)   = Neeraj Krishna N
  * 
- * Project     = FileClonerForUnitTests
+ * Project     = FileClonerTestCases
  *
  * Description = UnitTests for FileClonerLogger
  *****************************************************************************/
