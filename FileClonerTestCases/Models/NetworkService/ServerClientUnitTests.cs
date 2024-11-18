@@ -6,7 +6,7 @@ using Networking.Serialization;
 namespace FileClonerTestCases;
 
 [TestClass]
-public class ServerUnitTests
+public class ServerClientUnitTests
 {
     private Server? _server;
     private Client? _client;
