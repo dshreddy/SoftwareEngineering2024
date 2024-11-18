@@ -1,14 +1,4 @@
-﻿/******************************************************************************
- * Filename    = ServerClientUnitTests.cs
- *
- * Author(s)   = Neeraj Krishna N
- * 
- * Project     = FileClonerTestCases
- *
- * Description = UnitTests for Models/Server and Models/Client
- *****************************************************************************/
-
-using System.Text;
+﻿using System.Text;
 using FileCloner.Models;
 using FileCloner.Models.NetworkService;
 using Networking.Serialization;
@@ -46,22 +36,7 @@ public class ServerClientUnitTests
 
         if (!File.Exists(s_filePath))
         {
-            FileStream fileStream = File.Create(s_filePath);
-            fileStream.Dispose(); // Explicitly close the stream
-        }
-
-        if (!Directory.Exists(Constants.ReceivedFilesFolderPath))
-        {
-            Directory.CreateDirectory(Constants.ReceivedFilesFolderPath);
-        }
-    }
-
-    [TestCleanup]
-    public void Cleanup()
-    {
-        if (Directory.Exists(Constants.ReceivedFilesFolderPath))
-        {
-            Directory.Delete(Constants.ReceivedFilesFolderPath, true);
+            File.Create(s_filePath);
         }
     }
 
@@ -91,13 +66,13 @@ public class ServerClientUnitTests
     public void TestServerMethods()
     {
         _server.OnClientLeft("");
+
     }
 
     [TestMethod]
     public void TestClientMethods()
     {
-        FileStream fileStream = File.Create(Path.Combine(Constants.ReceivedFilesFolderPath, "dummy.txt"));
-        fileStream.Dispose(); // Explicitly close the stream
+        File.Create(Path.Combine(Constants.ReceivedFilesFolderPath, "dummy.txt"));
         _client?.SendRequest();
 
         _client?.OnResponseReceived(s_message);
