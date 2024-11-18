@@ -135,7 +135,7 @@
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
                 <!-- File Options in the right column -->
-                <StackPanel Grid.Column="2" Orientation="Vertical">
+                <StackPanel Grid.Column="2" Orientation="Vertical" Background="White">
                     <StackPanel Orientation="Horizontal">
                             <Label Content="Folders:" FontWeight="SemiBold"/>
                             <Label Content="{Binding FolderCount}"/>

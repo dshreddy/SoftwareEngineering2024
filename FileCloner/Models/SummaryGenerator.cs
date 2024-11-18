@@ -129,8 +129,10 @@ public class SummaryGenerator
         {
             if (element.TryGetProperty("LAST_MODIFIED", out JsonElement newLastModifiedProp) && existingMetadata.ContainsKey("LAST_MODIFIED"))
             {
+                //Get the new Timestamp as a string from the last modified key - and sets its UTC value.
                 DateTime newTimestamp = DateTime.Parse(newLastModifiedProp.GetString()!, null, DateTimeStyles.AdjustToUniversal);
-                DateTime existingTimestamp = DateTime.Parse(existingMetadata["LAST_MODIFIED"].ToString() ?? "12:00:00", null, DateTimeStyles.AdjustToUniversal);
+                //Same as the new time stamp, but this time set a default value such that the new time stamp is greater than existing timestamp always.
+                DateTime existingTimestamp = DateTime.Parse(existingMetadata["LAST_MODIFIED"].ToString() ?? DateTime.MinValue.ToString("o"), null, DateTimeStyles.AdjustToUniversal);
 
                 if (newTimestamp > existingTimestamp)
                 {
