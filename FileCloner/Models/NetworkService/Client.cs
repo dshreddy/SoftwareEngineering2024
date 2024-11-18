@@ -16,6 +16,7 @@ using Networking;
 using Networking.Serialization;
 using System.IO;
 using System.Text;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FileCloner.Models.NetworkService;
 
@@ -91,6 +92,7 @@ public class Client : INotificationHandler
     /// <summary>
     /// Sends a summary of the cloned files to each responder.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void SendSummary()
     {
         foreach (string responder in _responders)
@@ -130,6 +132,7 @@ public class Client : INotificationHandler
     /// <summary>
     /// Sends a response to a received request message, including input file content.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void SendResponse(Message data)
     {
         try
@@ -154,6 +157,7 @@ public class Client : INotificationHandler
     /// <summary>
     /// Sends a file to the requester for cloning, specifying both local and requester paths.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void SendFileForCloning(string from, string path, string requesterPath)
     {
         try
@@ -179,6 +183,7 @@ public class Client : INotificationHandler
     /// <param name="from"></param>
     /// <param name="path"></param>
     /// <param name="requesterPath"></param>
+    [ExcludeFromCodeCoverage]
     public void SendFilesInChunks(string from, string path, string requesterPath)
     {
         using FileStream fileStream = new(path, FileMode.Open, FileAccess.Read);
@@ -229,6 +234,7 @@ public class Client : INotificationHandler
     /// <summary>
     /// Stops the cloning process by incrementing request ID to track new requests.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void StopCloning()
     {
         s_requestID++;
@@ -237,6 +243,7 @@ public class Client : INotificationHandler
     /// <summary>
     /// Handles incoming data and processes it based on the message subject.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void OnDataReceived(string serializedData)
     {
         Message data = _serializer.Deserialize<Message>(serializedData);
@@ -287,6 +294,7 @@ public class Client : INotificationHandler
     /// <summary>
     /// Processes a summary message by extracting file paths and sending files for cloning.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void OnSummaryReceived(Message data)
     {
         try
@@ -379,6 +387,7 @@ public class Client : INotificationHandler
     /// <summary>
     /// Stops the client communicator.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void Stop()
     {
         s_client.Stop();

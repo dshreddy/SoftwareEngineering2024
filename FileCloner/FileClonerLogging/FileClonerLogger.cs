@@ -5,7 +5,7 @@
  * 
  * Project     = FileCloner
  *
- * Description = A custom implementation of Logger class, which logs to a file
+ * Description = A custom implementation of a Logger class, which logs to a file
  *              named FileClonerModuleName.log in the log directory. Helps 
  *              developers in analysing any unforeseen error during the usage
  *              of the application
@@ -23,6 +23,7 @@ public class FileClonerLogger
     // base path defined by folder
     private static readonly string s_basePath = Constants.DefaultFolderPath;
     private static readonly string s_logDirectory = Path.Combine(s_basePath, "FileClonerLogs");
+    public string LogFile { get; private set; }
     private readonly string? _logFile;
     private string _moduleName;
 
@@ -45,6 +46,7 @@ public class FileClonerLogger
                 Directory.CreateDirectory(s_logDirectory);
             }
             _logFile = $"{s_logDirectory}\\FileCloner{_moduleName}.log";
+            LogFile = _logFile;
             if (!File.Exists(_logFile))
             {
                 File.Create(_logFile).Close();
