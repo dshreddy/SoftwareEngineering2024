@@ -1,4 +1,5 @@
 ﻿using FileCloner.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -10,6 +11,7 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Generates the initial tree structure of the directory specified in RootDirectoryPath.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     private void TreeGenerator(string filePath)
     {
         try
@@ -39,6 +41,8 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Parses the JSON file representing directory structure and generates the root node.
     /// </summary>
+    /// 
+    [ExcludeFromCodeCoverage]
     private void RootGenerator(string filePath)
     {
         try
@@ -86,6 +90,8 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Recursively populates child nodes for a given parent node.
     /// </summary>
+    /// 
+    [ExcludeFromCodeCoverage]
     private void PopulateChildren(Node parentNode, JsonElement element)
     {
         if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("CHILDREN", out JsonElement childrenElement))

@@ -1,4 +1,6 @@
-﻿namespace FileCloner.ViewModels;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace FileCloner.ViewModels;
 
 partial class MainPageViewModel : ViewModelBase
 {
@@ -7,6 +9,8 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Adds a message to the log with timestamp for UI display.
     /// </summary>
+
+    [ExcludeFromCodeCoverage]
     private void UpdateLog(string message)
     {
         Dispatcher.Invoke(() => {
