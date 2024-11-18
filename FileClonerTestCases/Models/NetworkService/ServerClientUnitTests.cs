@@ -3,7 +3,7 @@
  *
  * Author(s)   = Neeraj Krishna N
  * 
- * Project     = FileClonerUnitTests
+ * Project     = FileClonerTestCases
  *
  * Description = UnitTests for Models/Server and Models/Client
  *****************************************************************************/
