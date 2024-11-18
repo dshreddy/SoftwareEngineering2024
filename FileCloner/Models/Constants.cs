@@ -27,8 +27,8 @@ public class Constants
     );
 
     // Icon Paths
-    public static readonly string LoadingIconPath = Path.GetFullPath(Path.Combine("..", "..", "..","..","FileCloner","Assets", "Images", "loading.png"));
-    public static readonly string FileIconPath = Path.GetFullPath(Path.Combine("..", "..", "..","..","FileCloner", "Assets", "Images", "file.png"));
+    public static readonly string LoadingIconPath = Path.GetFullPath(Path.Combine("..", "..", "..", "..", "FileCloner", "Assets", "Images", "loading.png"));
+    public static readonly string FileIconPath = Path.GetFullPath(Path.Combine("..", "..", "..", "..", "FileCloner", "Assets", "Images", "file.png"));
     public static readonly string FolderIconPath = Path.GetFullPath(Path.Combine("..", "..", "..", "..", "FileCloner", "Assets", "Images", "folder.png"));
 
 
