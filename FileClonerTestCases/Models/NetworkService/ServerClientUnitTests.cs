@@ -1,4 +1,14 @@
-﻿using System.Text;
+﻿/******************************************************************************
+ * Filename    = ServerClientUnitTests.cs
+ *
+ * Author(s)   = Neeraj Krishna N
+ * 
+ * Project     = FileClonerUnitTests
+ *
+ * Description = UnitTests for Models/Server and Models/Client
+ *****************************************************************************/
+
+using System.Text;
 using FileCloner.Models;
 using FileCloner.Models.NetworkService;
 using Networking.Serialization;
