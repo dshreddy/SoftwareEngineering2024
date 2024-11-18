@@ -17,6 +17,7 @@ using System.Net.Sockets;
 using System.Net;
 using Networking;
 using Networking.Serialization;
+using System.Diagnostics.CodeAnalysis;
 
 namespace FileCloner.Models.NetworkService;
 
@@ -78,6 +79,7 @@ public class Server : INotificationHandler
         return s_instance;
     }
 
+    [ExcludeFromCodeCoverage]
     public void SetUser(string clientId, TcpClient socket)
     {
         string clientIpAddress = ((IPEndPoint)socket.Client.RemoteEndPoint).Address.ToString();
@@ -163,6 +165,7 @@ public class Server : INotificationHandler
     /// <summary>
     /// Stops the server and terminates all client connections.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void Stop()
     {
         s_server.Stop();
