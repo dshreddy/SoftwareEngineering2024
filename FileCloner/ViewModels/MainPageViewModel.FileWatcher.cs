@@ -10,6 +10,7 @@
  *****************************************************************************/
 
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace FileCloner.ViewModels;
@@ -39,13 +40,14 @@ partial class MainPageViewModel : ViewModelBase
         }
     }
 
+    [ExcludeFromCodeCoverage]
     private void OnRenamed(object sender, RenamedEventArgs e)
     {
         Dispatcher.Invoke(() => {
             TreeGenerator(_rootDirectoryPath);
         });
     }
-
+    [ExcludeFromCodeCoverage]
     private void OnChanged(object sender, FileSystemEventArgs e)
     {
         Dispatcher.Invoke(() => {

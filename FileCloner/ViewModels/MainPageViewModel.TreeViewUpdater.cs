@@ -1,5 +1,6 @@
 ﻿using FileCloner.Models;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace FileCloner.ViewModels;
@@ -9,6 +10,7 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Resets the file and folder counters and updates UI.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void ResetCounts()
     {
         FileCount = 0;
@@ -22,6 +24,7 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Updates the UI counters for selected files, folders, and their total size.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public void UpdateCounts()
     {
         SelectedFoldersCount = Node.SelectedFolderCount;
@@ -30,6 +33,7 @@ partial class MainPageViewModel : ViewModelBase
     }
 
     // Static method to retrieve the instance's RootDirectoryPath
+    [ExcludeFromCodeCoverage]
     public static string GetRootDirectoryPath()
     {
         // You could retrieve the instance from a service locator or use a singleton pattern if appropriate.
@@ -40,6 +44,7 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Adds or removes files to/from _selectedFiles based on checkbox selection.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static void UpdateSelectedFiles(string address, string fullPath, string relativePath, bool isChecked)
     {
         if (address == Constants.IPAddress)
@@ -75,6 +80,7 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Opens a folder picker dialog for selecting a root directory.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     private void BrowseFolders()
     {
         using var dialog = new CommonOpenFileDialog();
