@@ -23,11 +23,16 @@ partial class MainPageViewModel : ViewModelBase
     {
         try
         {
+            //Send a broadcast request to intiate the file cloning process using the client instance
             _client.SendRequest();
+
+            //After sending a request, the only valid options is to summarize or to stop the session 
             IsSendRequestEnabled = false;
             IsSummarizeEnabled = true;
             IsStopSessionEnabled = true;
-            MessageBox.Show("Request sent successfully");
+            Dispatcher.Invoke(() => {
+                MessageBox.Show("Request sent successfully");
+            });
         }
         catch (Exception ex)
         {
@@ -41,6 +46,8 @@ partial class MainPageViewModel : ViewModelBase
     private void SummarizeResponses()
     {
         SummaryGenerator.GenerateSummary();
+
+        //After summarising, the only valid option will be to start the cloning
         IsSummarizeEnabled = false;
         IsStartCloningEnabled = true;
         Dispatcher.Invoke(() => {
@@ -60,6 +67,7 @@ partial class MainPageViewModel : ViewModelBase
         // clean the sender files folder before you start populating it with files
         _fileExplorerServiceProvider.CleanFolder(Constants.SenderFilesFolderPath);
 
+        //Iterate through all the selected files (marked with checkbox)
         foreach (KeyValuePair<string, List<string>> entry in SelectedFiles)
         {
             string key = entry.Key;

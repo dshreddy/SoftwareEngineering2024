@@ -1,4 +1,15 @@
-﻿using FileCloner.Models.NetworkService;
+﻿/******************************************************************************
+ * Filename    = MainPageViewModel.Properties.cs
+ *
+ * Author(s)      = Sai Hemanth Reddy & Sarath A
+ * 
+ * Project     = FileCloner
+ *
+ * Description = Defines all the properties that are to be viewed in the UI.
+ *****************************************************************************/
+
+
+using FileCloner.Models.NetworkService;
 using FileCloner.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -18,6 +29,7 @@ partial class MainPageViewModel : ViewModelBase
         }
     }
 
+    //Keeps track of the node which is currently selected.
     private Node _selectedNode;
     public Node SelectedNode
     {
@@ -83,6 +95,8 @@ partial class MainPageViewModel : ViewModelBase
         }
     }
 
+    //Properties which check if one of the four command buttons
+    //are enabled or not.
     private bool _isSendRequestEnabled;
     public bool IsSendRequestEnabled
     {
