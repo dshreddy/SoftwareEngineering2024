@@ -29,7 +29,7 @@ namespace UXModule.Views
             _viewModel = viewModel;
             this.DataContext = _viewModel;
 
-
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -40,5 +40,6 @@ namespace UXModule.Views
                 this.NavigationService.GoBack();
             }
         }
+
     }
 }

@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Net.Sockets;
+using System.Net;
 
 namespace Screenshare.ScreenShareClient
 {
@@ -32,8 +34,8 @@ namespace Screenshare.ScreenShareClient
         private readonly ScreenProcessor _processor;
 
         // Name and Id of the current client user
-        private string? _name = "";
-        private string? _id = "";
+        private string? _name = "Shivanand";
+        private string? _id = "192.168.254.157";
 
         // Tokens added to be able to stop the thread execution
         private bool _confirmationCancellationToken;
@@ -65,11 +67,12 @@ namespace Screenshare.ScreenShareClient
         {
             _capturer = new ScreenCapturer();
             _processor = new ScreenProcessor(_capturer);
+            _id = findIp();
             if (!isDebugging)
             {
                 _communicator = CommunicationFactory.GetCommunicator(true);
                 _communicator.Subscribe(Utils.ModuleIdentifier, this, true);
-              // _communicator.Start("192.168.100.227", "56264");
+                _communicator.Start("10.128.5.227", "60620");
             }
 
             try
@@ -91,11 +94,23 @@ namespace Screenshare.ScreenShareClient
 
             Trace.WriteLine(Utils.GetDebugMessage("Successfully stopped image processing", withTimeStamp: true));
         }
+        public string findIp()
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip.ToString();
+                }
+            }
+            throw new Exception("No IPv4 address found for this device.");
+        }
 
-        
+
         /// On timeout stop screensharing and make the viewmodel's sharingscreen boolean
         /// value as false for letting viewmodel know that screenshare stopped
-        
+
         public void OnTimeOut()
         {
             StopScreensharing();
@@ -247,7 +262,7 @@ namespace Screenshare.ScreenShareClient
                 string serializedData = JsonSerializer.Serialize(dataPacket);
 
                 Trace.WriteLine(Utils.GetDebugMessage($"Sent frame {cnt} of size {serializedData.Length}", withTimeStamp: true));
-                if (dataPacket != null || dataPacket.Data== null)
+                if (dataPacket != null || dataPacket.Data== null || dataPacket.ChangedPixels == null || dataPacket.Data =="")
                 {
                     _communicator.Send(serializedData, Utils.ModuleIdentifier, null);
                     cnt++;
@@ -270,9 +285,5 @@ namespace Screenshare.ScreenShareClient
             Trace.WriteLine(Utils.GetDebugMessage("Successfully started image sending"));
         }
 
-        public static ScreenshareClient? GetInstance(global::Screenshare.ScreenShareClient.ScreenshareClientViewModel screenshareClientViewModel)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ViewModel.DashboardViewModel
 {
+    /// <summary>
+    /// A basic command that runs an Action
+    /// </summary>
     public class RelayCommand : ICommand
     {
         private readonly Action<object> mAction;

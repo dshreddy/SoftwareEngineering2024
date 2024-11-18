@@ -53,7 +53,14 @@ namespace Screenshare.ScreenShareClient
 
             lock (_capturedFrame)
             {
-                return _capturedFrame.Dequeue();
+                if (_capturedFrame.Count  !=0 )
+                {
+                    return _capturedFrame.Dequeue();
+                }
+                else
+                {
+                    return null ;
+                }
             }
         }
 
@@ -89,7 +96,7 @@ namespace Screenshare.ScreenShareClient
                                 Bitmap img = _screenshot.MakeScreenshot();
                                 if (img != null)
                                 {
-                                    Thread.Sleep(200);
+                                    Thread.Sleep(100);
                                     _capturedFrame.Enqueue(img);
                                 }
                             }
@@ -101,7 +108,7 @@ namespace Screenshare.ScreenShareClient
                         else
                         {
                             // Sleep for some time, if queue is filled 
-                            while (_capturedFrame.Count > MaxQueueLength / 2)
+                            while (_capturedFrame.Count > (MaxQueueLength / 5))
                                 _capturedFrame.Dequeue();
 
                         }

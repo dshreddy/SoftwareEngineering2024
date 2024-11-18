@@ -8,7 +8,7 @@ using System.Windows.Data;
 using System.Windows.Markup;
 using Dashboard;
 
-namespace ViewModel.DashboardViewModel
+namespace UXModule
 {
     /// <summary>
     /// A base value converter that allows direct XAML usage

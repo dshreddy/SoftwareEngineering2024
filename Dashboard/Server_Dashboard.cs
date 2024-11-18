@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Networking;
 using Networking.Communication;
+//using FileCloner.Models.NetworkService;
 
 namespace Dashboard
 {
@@ -22,18 +23,35 @@ namespace Dashboard
         StartOfMeeting
     }
 
+    [JsonSerializable(typeof(DashboardDetails))]
+    public class DashboardDetails
+    {
+        [JsonInclude]
+        public UserDetails? User { get; set; }
+        [JsonInclude]
+        public bool IsConnected { get; set; }
+        [JsonInclude]
+        public Action Action { get; set; }
+        [JsonInclude]
+        public string? msg { get; set; }
+    }
+
     public class Server_Dashboard : INotificationHandler
     {
         private ICommunicator _communicator;
         private string UserName { get; set; }
         private string UserEmail { get; set; }
-        private string ProfilePictureUrl { get; set; } // Added this line
+        private string ProfilePictureUrl { get; set; }
+        private string ServerIp {  get; set; }
+        private string ServerPort { get; set; }
 
         public int total_user_count = 1;  // Start at 1 since server is user 1
         public int current_user_count = 1;
 
         public ObservableCollection<UserDetails> ServerUserList { get; private set; } = new ObservableCollection<UserDetails>();
         public ObservableCollection<UserDetails> TotalServerUserList { get; private set; } = new ObservableCollection<UserDetails>();
+
+        //public Server _fileClonerInstance = Server.GetServerInstance();
 
 
         public Server_Dashboard(ICommunicator communicator, string username, string useremail, string profilePictureUrl)
@@ -48,14 +66,14 @@ namespace Dashboard
 
         public string Initialize()
         {
-            // Create and add server user
+            
             var server_user = new UserDetails
             {
                 userName = UserName,
                 userEmail = UserEmail,
                 userId = "1",
                 IsHost = true,
-                ProfilePictureUrl = ProfilePictureUrl // Set profile picture URL
+                ProfilePictureUrl = ProfilePictureUrl
             };
             ServerUserList.Add(server_user);
             TotalServerUserList.Add(server_user);
@@ -68,28 +86,15 @@ namespace Dashboard
             if (server_credentials != "failure")
             {
                 string[] parts = server_credentials.Split(':');
-                string server_ip = parts[0];
-                string server_port = parts[1];
+                ServerIp = parts[0];
+                ServerPort = parts[1];
 
                 // Notify that server user is ready
                 OnPropertyChanged(nameof(ServerUserList));
             }
+            Trace.WriteLine("[DashboardServer] started server");
             return server_credentials;
         }
-
-        [JsonSerializable(typeof(DashboardDetails))]
-        public class DashboardDetails
-        {
-            [JsonInclude]
-            public UserDetails? User { get; set; }
-            [JsonInclude]
-            public bool IsConnected { get; set; }
-            [JsonInclude]
-            public Action Action { get; set; }
-            [JsonInclude]
-            public string? msg { get; set; }
-        }
-
 
         public void BroadcastMessage(string message)
         {
@@ -121,7 +126,7 @@ namespace Dashboard
                     Console.WriteLine("Error: Deserialized message is null");
                     return;
                 }
-
+                Trace.WriteLine("[Dashserver]"+details.Action);
                 switch (details.Action)
                 {
                     case Action.ClientUserConnected:
@@ -143,7 +148,7 @@ namespace Dashboard
 
         private void HandleUserConnected(DashboardDetails details)
         {
-            Trace.WriteLine("[dashServer] received client info");
+            Trace.WriteLine("[DashboardServer] received client info");
             if (details?.User != null)
             {
                 var userToUpdate = ServerUserList.FirstOrDefault(u => u.userId == details.User.userId);
@@ -188,8 +193,6 @@ namespace Dashboard
                     // Trigger UI update
                     OnPropertyChanged(nameof(ServerUserList));
                 }
-
-
             }
         }
 
@@ -202,27 +205,19 @@ namespace Dashboard
                 {
                     DashboardDetails dashboardMessage = new()
                     {
+                        User = details.User,
                         Action = Action.ServerUserLeft,
                         msg = "User with " + userToRemove.userName + " Left"
                     };
+
+                    current_user_count--;
                     string json_message = JsonSerializer.Serialize(dashboardMessage);
                     ServerUserList.Remove(userToRemove);
                     OnPropertyChanged(nameof(ServerUserList));
                     BroadcastMessage(json_message);
                 }
+                Trace.WriteLine($"[Dashboard server] {userToRemove.userName} left"); 
             }
-        }
-
-        private void HandleEndOfMeeting()
-        {
-            DashboardDetails dashboardMessage = new()
-            {
-                Action = Action.ServerEnd,
-                msg = "Meeting Ended"
-            };
-            string json_message = JsonSerializer.Serialize(dashboardMessage);
-            BroadcastMessage(json_message);
-            ServerUserList.Clear();
         }
 
         private void HandleStartOfMeeting()
@@ -241,13 +236,13 @@ namespace Dashboard
             string json_message = JsonSerializer.Serialize(dashboardMessage);
             BroadcastMessage(json_message);
             ServerUserList.Clear();
-
+            //_communicator.Stop();
             return true;
         }
             
             
 
-        public void OnClientJoined(TcpClient socket)
+        public void OnClientJoined(TcpClient socket, string? ip, string? port)
         {
             total_user_count++;
             current_user_count++;
@@ -264,6 +259,8 @@ namespace Dashboard
 
             _communicator.AddClient(newUserId, socket);
 
+            //_fileClonerInstance.SetUser(newUserId,socket);
+
             // Send only the userId to the new client
             DashboardDetails dashboardMessage = new DashboardDetails
             {
@@ -275,14 +272,12 @@ namespace Dashboard
             string json_message = JsonSerializer.Serialize(dashboardMessage);
             _communicator.Send(json_message, "Dashboard", newUserId);
 
-            Trace.WriteLine($"Client joined with ID: {newUserId}");
         }
 
         public void OnClientLeft(string clientId)
         {
             var userLeaving = ServerUserList.FirstOrDefault(u => u.userId == clientId);
 
-            Trace.WriteLine("[Dash server onclientleft ]" + clientId);
             if (userLeaving != null)
             {
                 DashboardDetails dashboardMessage = new()

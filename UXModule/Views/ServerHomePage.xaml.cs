@@ -33,9 +33,8 @@ namespace UXModule.Views
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             bool response = _viewModel.ServerStopSession();
-            if (response)
-            {
-                this.NavigationService.GoBack();
+            if (response) {
+            this.NavigationService.GoBack();
             }
 
         }

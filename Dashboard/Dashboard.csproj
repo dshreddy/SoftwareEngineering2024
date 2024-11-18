@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Google.Apis" Version="1.68.0" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
+    <PackageReference Include="LiveCharts.Wpf" Version="0.9.7" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
     <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
     <PackageReference Include="System.Drawing.Common" Version="9.0.0" />
@@ -16,6 +17,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Networking\Networking.csproj" />
+    <ProjectReference Include="..\Screenshare\Screenshare.csproj" />
+    <ProjectReference Include="..\SoftwareEngineering2024-UpdaterNew\Updater\Updater.csproj" />
   </ItemGroup>
 
   <ItemGroup>

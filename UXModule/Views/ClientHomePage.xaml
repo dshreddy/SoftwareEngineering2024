@@ -3,50 +3,179 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:UXModule.Views"
+      xmlns:local="clr-namespace:ViewModel.DashboardViewModel;assembly=ViewModel"
+      xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ClientHomePage">
 
+    <Grid Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="121*"/>
+            <RowDefinition Height="436*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-    <Grid Background="white">
-        <!-- Title Bar with Dashboard and Username -->
-        <Border Background="#FF4A90E2" Height="40" HorizontalAlignment="Stretch" VerticalAlignment="Top">
+        <!-- Header with Time and User Info -->
+        <Border Grid.Row="0" Background="#F5F5F5" Padding="15,10" Margin="0,0,0,121" Grid.RowSpan="2">
             <Grid>
-                <!-- Dashboard Text on the Left -->
-                <TextBlock Text="Dashboard" VerticalAlignment="Center" Margin="10,0,0,0"
-                           Foreground="White" FontSize="16" FontWeight="Bold" HorizontalAlignment="Left" />
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
 
-                <!-- User Name Text on the Right with Binding -->
-                <TextBlock Text="{Binding UserName}" VerticalAlignment="Center" Margin="0,0,10,0"
-                           Foreground="White" FontSize="14" HorizontalAlignment="Right" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Ellipse Width="32" Height="32" Margin="0,0,10,0">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="{Binding ProfilePicURL}"/>
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <TextBlock Text="{Binding UserName}" 
+               Margin="0,0,0,0" 
+               VerticalAlignment="Center" 
+               FontWeight="Bold"/>
+                </StackPanel>
             </Grid>
         </Border>
 
-        <!-- Participants List in the Right Corner -->
-        <Border HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,50,10,0" Padding="10"
-                BorderBrush="Black" BorderThickness="1" Width="150" Height="369">
-            <StackPanel>
-                <TextBlock Text="Participants" FontWeight="Bold" Margin="0,0,0,5" />
+        <!-- Main Content -->
+        <Grid Grid.Row="1" Margin="15,15,15,15" Grid.RowSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" MinWidth="250"/>
+                <ColumnDefinition Width="*" MinWidth="400"/>
+            </Grid.ColumnDefinitions>
 
-                <!-- ListBox to Display Participant Names -->
-                <ListView ItemsSource="{Binding UserDetailsList}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="10">
-                                <Ellipse Width="50" Height="50" VerticalAlignment="Center">
-                                    <Ellipse.Fill>
-                                        <ImageBrush ImageSource="{Binding ProfilePictureUrl}" />
-                                    </Ellipse.Fill>
-                                </Ellipse>
-                                <!-- Username Field -->
-                                <TextBlock Text="{Binding userName}" FontSize="16" VerticalAlignment="Center" Margin="10,0,0,0" />
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackPanel>
+            <!-- Left Panel - Fixed Width -->
+            <Grid Grid.Column="0" Margin="0,0,15,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Participants Header -->
+                <TextBlock Grid.Row="0" Text="Participants" 
+                        FontSize="18" FontWeight="SemiBold" 
+                        Margin="0,0,0,10"/>
+
+                <!-- Participants List with ScrollViewer -->
+                <Border Grid.Row="1" BorderThickness="1" BorderBrush="#E0E0E0" 
+                       CornerRadius="4" Background="White">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" 
+                               HorizontalScrollBarVisibility="Auto"
+                               MaxHeight="300">
+                        <!-- Set max height for scrolling -->
+                        <ItemsControl ItemsSource="{Binding UserDetailsList}" 
+                                   Margin="5">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="8" Margin="0,2" 
+                                           Background="#F8F9FA" CornerRadius="4">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Ellipse Width="32" Height="32" Margin="0,0,10,0">
+                                                <Ellipse.Fill>
+                                                    <ImageBrush ImageSource="{Binding ProfilePictureUrl}"/>
+                                                </Ellipse.Fill>
+                                            </Ellipse>
+
+                                            <TextBlock Grid.Column="1" 
+                                                    Text="{Binding userName}"
+                                                    VerticalAlignment="Center"
+                                                    TextTrimming="CharacterEllipsis"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+
+            </Grid>
+
+            <!-- Right Panel - Charts -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="20"/>
+                    <!-- Spacing between charts -->
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- First Chart -->
+                <Border Grid.Row="0" BorderThickness="1" BorderBrush="#E0E0E0" 
+                       CornerRadius="4" Background="White">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Users Over Time" 
+                                FontSize="16" FontWeight="SemiBold"
+                                Margin="15,10,0,0"/>
+                        <lvc:CartesianChart 
+     Grid.Row="1"
+     Series="{Binding SeriesCollection}"
+     DisableAnimations="True"
+     Hoverable="True"
+     DataTooltip="{Binding DataTooltip}"
+     Margin="15">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Title="Time" FontSize="12">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator Step="1"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Title="Number of Users" FontSize="12" MinValue="0">
+                                    <lvc:Axis.Separator>
+                                        <lvc:Separator Step="1"/>
+                                    </lvc:Axis.Separator>
+                                </lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
+                        </lvc:CartesianChart>
+                    </Grid>
+                </Border>
+
+                <!-- Second Chart -->
+                <Border Grid.Row="2" BorderThickness="1" BorderBrush="#E0E0E0" 
+                       CornerRadius="4" Background="White">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Additional Chart" 
+                                FontSize="16" FontWeight="SemiBold"
+                                Margin="15,10,0,0"/>
+
+                        <!-- Add your second chart here -->
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Footer with End Session Button -->
+        <Border Grid.Row="3" Background="#F5F5F5" Padding="15">
+            <Button Content="Leave Session" Click="Button_Click"
+                   HorizontalAlignment="Center"
+                   Padding="20,10"
+                   BorderThickness="0">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="4"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
         </Border>
-        <Button Content="Leave Session" FontSize="16" Padding="0" HorizontalAlignment="Left" Margin="342,377,0,0" VerticalAlignment="Top" Height="42" Width="144" Click="Button_Click"/>
     </Grid>
+
+
 </Page>

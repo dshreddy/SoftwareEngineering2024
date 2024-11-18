@@ -12,75 +12,26 @@ using Networking;
 using Networking.Communication;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using static Dashboard.Server_Dashboard;
-
+using System.Linq.Expressions;
+using Screenshare;
 
 
 namespace Dashboard
 {
-    [JsonSerializable(typeof(UserDetails))]
-    public class UserDetails : INotifyPropertyChanged
-    {
-        private string? _userName;
-        private string? _profilePictureUrl;
-
-        [JsonInclude]
-        public string? userName
-        {
-            get { return _userName; }
-            set
-            {
-                if (_userName != value)
-                {
-                    _userName = value;
-                    OnPropertyChanged(nameof(userName));
-                }
-            }
-        }
-
-        [JsonInclude]
-        public bool IsHost { get; set; }
-
-        [JsonInclude]
-        public string? userId { get; set; }
-
-        [JsonInclude]
-        public string? userEmail { get; set; }
-
-        [JsonInclude]
-        public string? ProfilePictureUrl
-        {
-            get { return _profilePictureUrl; }
-            set
-            {
-                if (_profilePictureUrl != value)
-                {
-                    _profilePictureUrl = value;
-                    OnPropertyChanged(nameof(ProfilePictureUrl));
-                }
-            }
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
+   
     public class Client_Dashboard : INotificationHandler, INotifyPropertyChanged
     {
         private ICommunicator _communicator;
         private string UserName { get; set; }
         private string UserEmail { get; set; }
         private string UserID { get; set; }
-
         private string UserProfileUrl { get; set; }
-
+        public int CurrentUserCount { get; set; }
 
 
         public ObservableCollection<UserDetails> ClientUserList { get; set; } = new ObservableCollection<UserDetails>();
+
+        Screenshare.ScreenShareClient.ScreenshareClient  _screenShareClient = Screenshare.ScreenShareClient.ScreenshareClient.GetInstance();
 
         public Client_Dashboard(ICommunicator communicator, string username, string useremail, string pictureURL)
         {
@@ -96,6 +47,7 @@ namespace Dashboard
         public string Initialize(string serverIP, string serverPort)
         {
             string server_response = _communicator.Start(serverIP, serverPort);
+            Trace.WriteLine("[DashboardClient] client connected to server");
             return server_response;
         }
 
@@ -134,27 +86,41 @@ namespace Dashboard
             {
                 Console.WriteLine($"Error sending message: {ex.Message}");
             }
+            Trace.WriteLine("[DashboardClient] sent user info to server");
+
+            _screenShareClient.SetUserDetails(username, UserID);
+
+             //WhiteboardGUI.ViewModel.MainPageViewModel WBviewModel = WhiteboardGUI.ViewModel.MainPageViewModel.WhiteboardInstance;
+             //WBviewModel.SetUserDetails(UserName, UserID);
+
+
+
+            Trace.WriteLine("[DashboardServer] sent info to whiteboard client");
+
         }
 
         public bool ClientLeft()
         {
             DashboardDetails details = new DashboardDetails
             {
-                User = new UserDetails { userName = UserName },
+                User = new UserDetails { userName = UserName , userId = UserID },
                 Action = Action.ClientUserLeft
             };
             string json_message = JsonSerializer.Serialize(details);
+
             try
             {
+
                 _communicator.Send(json_message, "Dashboard", null);
-                _communicator.Stop();
-                return true;
+                Trace.WriteLine("[Dashboardclient] left session gracefully");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error sending message: {ex.Message}");
-                return false;
+                Trace.WriteLine($"{ex.Message}");
             }
+            //_communicator.Stop();
+            return true;
+            
         }
 
         public void OnDataReceived(string message)
@@ -167,7 +133,7 @@ namespace Dashboard
                     Console.WriteLine("Error: Deserialized message is null");
                     return;
                 }
-
+                Trace.WriteLine("[DashClient]"+details.Action);
                 switch (details.Action)
                 {
                     case Action.ServerSendUserID:
@@ -194,6 +160,7 @@ namespace Dashboard
                 if (userList != null)
                 {
                     ClientUserList = new ObservableCollection<UserDetails>(userList);
+                    CurrentUserCount = userList.Count;
                 }
                 else
                 {
@@ -227,7 +194,7 @@ namespace Dashboard
                 UserDetails userData = message.User;
                 string newuserid = userData.userId;
 
-                Trace.WriteLine($"[Dash client] User Connected: {userData.userName}, {userData.ProfilePictureUrl}");
+                Trace.WriteLine($"[Dash client] User Connected: {userData.userName}");
 
                 if (ClientUserList.Count >= int.Parse(newuserid))
                 {
@@ -237,6 +204,7 @@ namespace Dashboard
                 {
                     ClientUserList.Add(userData);
                 }
+                CurrentUserCount++;
                 OnPropertyChanged(nameof(ClientUserList));
             }
             else
@@ -249,7 +217,8 @@ namespace Dashboard
         {
             if (message.User != null && message.User.userId != null)
             {
-
+                Trace.WriteLine("[Dashboard client] some random client left");
+                CurrentUserCount--;
                 string leftuserid = message.User.userId;
 
                 foreach (var user in ClientUserList)
@@ -259,6 +228,7 @@ namespace Dashboard
                         ClientUserList.Remove(user);
                     }
                 }
+                OnPropertyChanged(nameof(ClientUserList));
             }
             else
             {
@@ -268,6 +238,8 @@ namespace Dashboard
 
         private void HandleEndOfMeeting()
         {
+
+            ClientUserList.Clear();
             _communicator.Stop();
         }
 

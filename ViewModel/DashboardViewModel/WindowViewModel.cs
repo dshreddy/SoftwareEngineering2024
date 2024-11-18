@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows;
+using System.Windows.Input;
 using Dashboard;
-using System.ComponentModel;
+
+
 
 namespace ViewModel.DashboardViewModel
 {
-    public class WindowViewModel
+    //viewmodel for custom window
+    public class WindowViewModel : INotifyPropertyChanged
     {
         #region Private Members
 
@@ -89,7 +94,7 @@ namespace ViewModel.DashboardViewModel
                 return new CornerRadius(CornerRadius);
             }
         }
-        public int CaptionHeightSize { get; set; } = 42;
+        public int CaptionHeightSize{get;set;} =42;
 
         public GridLength CaptionHeightGridLength
         {
@@ -164,11 +169,11 @@ namespace ViewModel.DashboardViewModel
             return new Point(position.X + mwindow.Left, position.Y + mwindow.Top);
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void OnPropertyChanged(string property)
+        protected virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(property));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

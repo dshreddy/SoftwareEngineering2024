@@ -82,7 +82,14 @@ namespace Screenshare.ScreenShareClient
             lock (_processedFrame)
             {
                 Trace.WriteLine(Utils.GetDebugMessage("Successfully sent frame", withTimeStamp: true));
-                return _processedFrame.Dequeue();
+                if (_processedFrame.Count != 0)
+                {
+                    return _processedFrame.Dequeue();
+                }
+                else
+                {
+                    return ("",null);
+                }
             }
         }
 
@@ -173,24 +180,26 @@ namespace Screenshare.ScreenShareClient
                 Bitmap? img = _capturer.GetImage(ref _cancellationToken);
                 if (_cancellationToken)
                     break;
-
-                Debug.Assert(img != null, Utils.GetDebugMessage("img is null"));
-                (string, List<PixelDifference>) serialized_buffer = Compress(img);
-
-                lock (_processedFrame)
+                if (img != null)
                 {
-                    if (_processedFrame.Count < MaxQueueLength)
+                    Debug.Assert(img != null, Utils.GetDebugMessage("img is null"));
+                    (string, List<PixelDifference>) serialized_buffer = Compress(img);
+
+                    lock (_processedFrame)
                     {
-                        _processedFrame.Enqueue(serialized_buffer);
+                        if (_processedFrame.Count < MaxQueueLength)
+                        {
+                            _processedFrame.Enqueue(serialized_buffer);
+                        }
+                        else
+                        {
+                            // Sleep for some time, if queue is filled 
+                            while (_processedFrame.Count > (MaxQueueLength / 5))
+                                _processedFrame.Dequeue();
+                        }
                     }
-                    else
-                    {
-                        // Sleep for some time, if queue is filled 
-                        while (_processedFrame.Count > MaxQueueLength / 2)
-                            _processedFrame.Dequeue();
-                    }
+                    prevImage = img;
                 }
-                prevImage = img;
             }
         }
 
@@ -207,14 +216,14 @@ namespace Screenshare.ScreenShareClient
             try
             {
                 img = _capturer.GetImage(ref _cancellationToken);
-                Debug.Assert(!_cancellationToken);
+                //Debug.Assert(!_cancellationToken);
             }
             catch (Exception e)
             {
                 Trace.WriteLine(Utils.GetDebugMessage($"Failed to cancel processor task: {e.Message}", withTimeStamp: true));
             }
 
-            Debug.Assert(img != null, Utils.GetDebugMessage("img is null"));
+            //Debug.Assert(img != null, Utils.GetDebugMessage("img is null"));
             _capturedImageHeight = img.Height;
             _capturedImageWidth = img.Width;
 
@@ -317,8 +326,8 @@ namespace Screenshare.ScreenShareClient
                 // not null then process the image using the previous image
                 if (prevImage != null && _newRes == _currentRes)
                 {
-                    //new_img = Process(img, prevImage);
-                    new_img = null;
+                   // new_img = Process(img, prevImage);
+                   new_img = null;
                 }
                 // else we need to update the current res with the new res and change the resolution
                 // of captured image to the new resolution
@@ -329,7 +338,7 @@ namespace Screenshare.ScreenShareClient
             }
             // compressing image to the current  resolution values
             img = new Bitmap(img, _currentRes.Width, _currentRes.Height);
-            new_img = null;
+           // new_img = null;
 
             // if no processing happened then send the whole image
             if (new_img == null)

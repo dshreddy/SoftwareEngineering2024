@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Screenshare")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+18df809b2416a5cf5d1ea0007834fe9e3e833d48")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+977fdb36dc08fd1b8a2f8caaea6e031ec004ce08")]
 [assembly: System.Reflection.AssemblyProductAttribute("Screenshare")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Screenshare")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

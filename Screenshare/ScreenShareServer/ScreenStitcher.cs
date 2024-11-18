@@ -1,5 +1,7 @@
 ﻿
 using System;
+
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,7 +10,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-
 
 namespace Screenshare.ScreenShareServer
 {
@@ -155,13 +156,40 @@ namespace Screenshare.ScreenShareServer
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully stopped the processing task for the client with id {_sharedClientScreen.Id}", withTimeStamp: true));
         }
 
-        
+
         /// Function to stitch new frame over old image. If the data sent from client
         /// has '1' in front then it is a complete image and hence the Process function
         /// is not used. Otherwise, the data will have a '0' in front of it and we will
         /// have to compute the XOR (using process function) in order to find the current
         /// image.
-        
+        public static bool IsBase64String(string base64)
+        {
+            // Null or empty string check
+            if (string.IsNullOrEmpty(base64))
+                return false;
+
+            // Match valid Base64 strings using regex
+            var base64Regex = new Regex(@"^[a-zA-Z0-9\+/]*={0,2}$", RegexOptions.None);
+            if (!base64Regex.IsMatch(base64))
+                return false;
+
+            // Ensure the string length is a multiple of 4
+            if (base64.Length % 4 != 0)
+                return false;
+
+            try
+            {
+                // Try decoding the string
+                Convert.FromBase64String(base64);
+                return true;
+            }
+            catch
+            {
+                // Decoding failed
+                return false;
+            }
+        }
+
         private Bitmap Stitch(Bitmap? oldImage, (string, List<PixelDifference>) newFrame)
         {
 
@@ -180,24 +208,32 @@ namespace Screenshare.ScreenShareServer
             }
             byte[]? deser;
             Trace.WriteLine(Utils.GetDebugMessage($"oooooooooooooooooooooooooooooooooooooooooooooo", withTimeStamp: false));
-            deser = Convert.FromBase64String(newFrame.Item1);
-            deser = DecompressByteArray(deser);
-
-            MemoryStream ms = new(deser);
-            var xor_bitmap = new Bitmap(ms);
-            var newResolution = new Resolution() { Height = xor_bitmap.Height, Width = xor_bitmap.Width };
-
-
-            if (oldImage == null || newResolution != _resolution)
+            string base64String = newFrame.Item1; // Replace with your string
+            if (IsBase64String(base64String))
             {
-                oldImage = new Bitmap(newResolution.Width, newResolution.Height);
+                deser = Convert.FromBase64String(base64String);
+                deser = DecompressByteArray(deser);
+                MemoryStream ms = new(deser);
+                var xor_bitmap = new Bitmap(ms);
+                var newResolution = new Resolution() { Height = xor_bitmap.Height, Width = xor_bitmap.Width };
+
+
+                if (oldImage == null || newResolution != _resolution)
+                {
+                    oldImage = new Bitmap(newResolution.Width, newResolution.Height);
+                }
+
+
+
+                oldImage = xor_bitmap;
+
+                _resolution = newResolution;
+                //   Console.WriteLine("Successfully decoded Base64 string.");
             }
+            
+            //deser = Convert.FromBase64String(newFrame.Item1);
 
-
-
-            oldImage = xor_bitmap;
-
-            _resolution = newResolution;
+            
             return oldImage;
         }
     }
