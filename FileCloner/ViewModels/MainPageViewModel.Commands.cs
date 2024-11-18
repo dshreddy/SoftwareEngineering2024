@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 using FileCloner.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Windows.Forms;
 
@@ -19,20 +20,17 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Sends a request to initiate the file cloning process.
     /// </summary>
+
+    [ExcludeFromCodeCoverage]
     private void SendRequest()
     {
         try
         {
-            //Send a broadcast request to intiate the file cloning process using the client instance
             _client.SendRequest();
-
-            //After sending a request, the only valid options is to summarize or to stop the session 
             IsSendRequestEnabled = false;
             IsSummarizeEnabled = true;
             IsStopSessionEnabled = true;
-            Dispatcher.Invoke(() => {
-                MessageBox.Show("Request sent successfully");
-            });
+            MessageBox.Show("Request sent successfully");
         }
         catch (Exception ex)
         {
@@ -43,11 +41,11 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Generates and displays a summary of responses.
     /// </summary>
+
+    [ExcludeFromCodeCoverage]
     private void SummarizeResponses()
     {
         SummaryGenerator.GenerateSummary();
-
-        //After summarising, the only valid option will be to start the cloning
         IsSummarizeEnabled = false;
         IsStartCloningEnabled = true;
         Dispatcher.Invoke(() => {
@@ -59,6 +57,9 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Starts the cloning process by creating files from selected items.
     /// </summary>
+    /// 
+
+    [ExcludeFromCodeCoverage]
     private void StartCloning()
     {
         IsStartCloningEnabled = false;
@@ -67,7 +68,6 @@ partial class MainPageViewModel : ViewModelBase
         // clean the sender files folder before you start populating it with files
         _fileExplorerServiceProvider.CleanFolder(Constants.SenderFilesFolderPath);
 
-        //Iterate through all the selected files (marked with checkbox) and write it into the file
         foreach (KeyValuePair<string, List<string>> entry in SelectedFiles)
         {
             string key = entry.Key;
@@ -87,6 +87,9 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Stops the cloning process with a warning prompt.
     /// </summary>
+    /// 
+
+    [ExcludeFromCodeCoverage]
     private void StopSession()
     {
         string message = "If you stop cloning, all incoming files related to the current session will be ignored.";
@@ -98,13 +101,10 @@ partial class MainPageViewModel : ViewModelBase
         {
             _client.StopCloning();
         }
-        //Revert back to initial state once the session is stopped.
         IsSendRequestEnabled = true;
         IsSummarizeEnabled = false;
         IsStartCloningEnabled = false;
         IsStopSessionEnabled = false;
-
-        //Load the initial tree view of our own system once the session is stopped.
         TreeGenerator(RootDirectoryPath);
     }
 }

@@ -1,10 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿/******************************************************************************
+ * Filename    = DiffGenerator.cs
+ *
+ * Author(s)      = Evans Samuel Biju
+ * 
+ * Project     = FileCloner
+ *
+ * Description = Creates a diff file
+ *****************************************************************************/
+
+
+
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
+using FileCloner.Models.DiffGenerator;
 
 namespace FileCloner.Models.DiffGenerator;
 
@@ -32,7 +40,7 @@ public class DiffGenerator
 
                 string ipAddress = Path.GetFileNameWithoutExtension(file);
 
-                // Console.WriteLine(ipAddress);
+         
                 string text = File.ReadAllText(file);
                 Root jsonRoot = JsonSerializer.Deserialize<Root>(text);
 
@@ -44,18 +52,23 @@ public class DiffGenerator
                     FileMetadata? rootFile = JsonSerializer.Deserialize<FileMetadata>(jsonElement.GetRawText());
                     rootFile.Address = ipAddress;
 
-
+                    
                     // Process the children of this root
                     if (rootFile?.Children != null)
                     {
+                  
                         if (i == 0)
                         {
-                            ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "White");
+                            ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "White", rootKey);
                         }
                         else
                         {
-                            ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "#90ee90");
+                            ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "#90ee90", rootKey);
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("null");
                     }
                 }
             }
@@ -71,35 +84,59 @@ public class DiffGenerator
     }
 
     // Recursive method to process children
-    public void ProcessChildren(Dictionary<string, FileMetadata> children, Dictionary<string, FileMetadata> allFiles, string ipAddress, string color)
+    public void ProcessChildren(Dictionary<string, FileMetadata> children, Dictionary<string, FileMetadata> allFiles, string iPaddress, string color, string rootName)
     {
-        //  Console.WriteLine("here guys?");
+ 
+
         foreach ((string fileName, FileMetadata fileData) in children)
         {
-
+    
+            fileData.InitDirectoryName = rootName;
 
             if (fileData.Children.Count > 0)
             {
+
                 // If this is a folder, recursively process its children
-                fileData.Address = ipAddress;
-                ProcessChildren(fileData.Children, allFiles, fileData.Address, color);
+                fileData.Address = iPaddress;
+            
+                ProcessChildren(fileData.Children, allFiles, fileData.Address, color, rootName);
             }
             else
             {
+                //we need relative file name ,only then it makes sense
+                string relativeFileName = "";
+                bool encountered = false;
+                foreach (string file in fileData.FullPath.Split('\\').ToList())
+                {
+                  
+                    if (encountered == true)
+                    {
+                        relativeFileName = relativeFileName + "\\" + file;
+                    }
+                    if (file == fileData.InitDirectoryName)
+                    {
+                    
+                        encountered = true;
+                    }
+
+                }
+       
+
+
                 // If this is a file, add or update it in the allFiles dictionary
-                if (allFiles.TryGetValue(fileName, out FileMetadata? existingFile))
+                if (allFiles.TryGetValue(relativeFileName, out FileMetadata? existingFile))
                 {
                     if (fileData.LastModified > existingFile.LastModified)
                     {
                         if (fileData.Color != "#90ee90")
                         {
 
-                            allFiles[fileName] = fileData;
-                            allFiles[fileName].Color = "#ffff00";
+                            allFiles[relativeFileName] = fileData;
+                            allFiles[relativeFileName].Color = "#ffff00";
                         }
                         else
                         {
-                            allFiles[fileName] = fileData;
+                            allFiles[relativeFileName] = fileData;
                             fileData.Color = "Green";
                         }
 
@@ -107,10 +144,11 @@ public class DiffGenerator
                 }
                 else
                 {
-                    allFiles[fileName] = fileData;
-                    allFiles[fileName].Color = color;
+                    allFiles[relativeFileName] = fileData;
+                    allFiles[relativeFileName].Color = color;
                 }
-                fileData.Address = ipAddress;
+                fileData.Address = iPaddress;
+                fileData.InitDirectoryName = rootName;
             }
         }
     }
@@ -120,14 +158,17 @@ public class DiffGenerator
 
     public void Add_to_Tree(Node node, List<string> fullPath, int index, FileMetadata fileMetaData, string pathSoFar)
     {
+
+
         if (index == fullPath.Count)
         {
-            node.size = fileMetaData.Size;
+
+            node.Size = fileMetaData.Size;
 
         }
         else
         {
-            node.size = 0;
+            node.Size = 0;
         }
 
         if (index >= fullPath.Count)
@@ -137,28 +178,28 @@ public class DiffGenerator
 
         if (fileMetaData.Color == "#ffff00")
         {
-            node.color = "#ffff00";
+            node.Color = "#ffff00";
         }
-        else if (fileMetaData.Color == "#90ee90" && node.color != "#ffff00")
+        else if (fileMetaData.Color == "#90ee90" && node.Color != "#ffff00")
         {
-            node.color = "#90ee90";
+            node.Color = "#90ee90";
         }
 
 
 
 
-        if (node.children.ContainsKey(fullPath[index]))
+        if (node._children.ContainsKey(fullPath[index]))
         {
 
-            node = node.children[fullPath[index]];
-            Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.fullPath);
+            node = node._children[fullPath[index]];
+            Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.FullPath);
 
 
         }
         else
         {
 
-            node.children[fullPath[index]] = new Node(fullPath[index], fileMetaData);
+            node._children[fullPath[index]] = new Node(fullPath[index], fileMetaData);
 
 
 
@@ -166,21 +207,30 @@ public class DiffGenerator
                 ? node.LastModified
                 : fileMetaData.LastModified;
 
-            node = node.children[fullPath[index]];
-            node.fullPath = pathSoFar + "\\" + fullPath[index];
-            //   node.IpAddress = fileMetaData.Address;
+            node = node._children[fullPath[index]];
+            node.FullPath = pathSoFar + "\\" + fullPath[index];
 
-            Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.fullPath);
+            for (int i = 0; i <= index; i++)
+            {
+                {
+                    node.RelativePaths = node.RelativePaths + "\\" + fullPath[i];
+                }
 
+
+
+
+
+                Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.FullPath);
+
+            }
         }
     }
-
 
 
     public void WriteAllFilesToFile(Dictionary<string, FileMetadata> files, string outputFilePath)
     {
         // Creating a dictionary to store the final tree structure
-        Dictionary<string, Node> treeAddress = new();
+        Dictionary<string, Node> tree_address = new();
 
         lock (_syncLock)
         {
@@ -188,22 +238,43 @@ public class DiffGenerator
             foreach ((string fileName, FileMetadata fileData) in files)
             {
 
-                List<string> result = fileData.FullPath.Split('/').ToList();
-                // Console.WriteLine(fileData.Address);
 
+                List<string> result = fileData.FullPath.Split('\\').ToList();
+              
 
-                if (treeAddress.ContainsKey(result[0]))
+                string absPath = "";
+                int count = 0;
+                foreach (string folderName in result)
                 {
 
-                    Add_to_Tree(treeAddress[result[0]], result, 1, fileData, treeAddress[result[0]].fullPath);
+                    count += 1;
+                    if (folderName == fileData.InitDirectoryName)
+                    {
+                        absPath = absPath + "\\" + folderName;
+                        break;
+                    }
+                    else
+                    {
+                        absPath = absPath + "\\" + folderName;
+                    }
+                }
+           
+                result = result.Skip(count - 1).ToList();
+
+
+
+                if (tree_address.ContainsKey(absPath))
+                {
+
+                    Add_to_Tree(tree_address[absPath], result, 1, fileData, tree_address[absPath].FullPath);
                 }
                 else
                 {
                     // If not, create a new node and add it to the tree
-                    treeAddress[result[0]] = new Node(result[0], fileData) {
-                        fullPath = result[0]
+                    tree_address[absPath] = new Node(result[0], fileData) {
+                        FullPath = absPath
                     };
-                    Add_to_Tree(treeAddress[result[0]], result, 1, fileData, treeAddress[result[0]].fullPath);
+                    Add_to_Tree(tree_address[absPath], result, 1, fileData, tree_address[absPath].FullPath);
                 }
             }
 
@@ -211,7 +282,7 @@ public class DiffGenerator
             writer.WriteLine("{");
 
             bool firstNode = true;
-            foreach (KeyValuePair<string, Node> entry in treeAddress)
+            foreach (KeyValuePair<string, Node> entry in tree_address)
             {
                 if (!firstNode)
                 {
@@ -233,21 +304,22 @@ public class DiffGenerator
         string indent = new string(' ', indentLevel * 2);
 
         // Write the node as a JSON-like structure
-        writer.WriteLine($"{indent}\"{node.node_name}\": {{");
+        writer.WriteLine($"{indent}\"{node._node_name}\": {{");
         writer.WriteLine($"{indent}  \"LAST_MODIFIED\": \"{node.LastModified:MM-dd-yyyy}\",");
-        writer.WriteLine($"{indent}  \"FULL_PATH\": \"{node.fullPath}/\",");
-        writer.WriteLine($"{indent}  \"COLOR\": \"{node.color}\",");
+        writer.WriteLine($"{indent}  \"FULL_PATH\": \"{node.FullPath}\",");
+        writer.WriteLine($"{indent}  \"COLOR\": \"{node.Color}\",");
         writer.WriteLine($"{indent}  \"ADDRESS\": \"{node.IpAddress}\",");
-        writer.WriteLine($"{indent}  \"NODE_SIZE\": \"{node.size}\"");
+        writer.WriteLine($"{indent}  \"NODE_SIZE\": \"{node.Size}\"");
+        writer.WriteLine($"{indent}  \"RELATIVE_PATH\": \"{node.RelativePaths}\"");
 
 
-        if (node.children.Count > 0)
+        if (node._children.Count > 0)
         {
             // If there are children, recursively write them
             writer.WriteLine($"{indent}  \"CHILDREN\": {{");
 
             bool firstChild = true;
-            foreach (KeyValuePair<string, Node> child in node.children)
+            foreach (KeyValuePair<string, Node> child in node._children)
             {
                 if (!firstChild)
                 {

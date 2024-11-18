@@ -21,7 +21,7 @@ public class MainPageViewModelTests
         Directory.CreateDirectory(_testFolderPath);
 
         // Update Constants.DefaultFolderPath temporarily for testing
-
+       
     }
 
     [TestCleanup]
