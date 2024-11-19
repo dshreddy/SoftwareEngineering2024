@@ -251,7 +251,7 @@ public class Client : INotificationHandler
         string from = data.From;
 
         // Prevent processing self-sent messages
-        if (from != Constants.IPAddress && s_requestID == data.RequestID)
+        if (from != Constants.IPAddress || s_requestID != data.RequestID)
         {
             //logAction?.Invoke($"[Client] Received {subject} from {from}");
 
