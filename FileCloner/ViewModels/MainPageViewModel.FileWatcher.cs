@@ -40,6 +40,7 @@ partial class MainPageViewModel : ViewModelBase
         //Setting event handlers for the changes
         watcher.Created += new FileSystemEventHandler(OnChanged);
         watcher.Deleted += new FileSystemEventHandler(OnChanged);
+        watcher.Changed += new FileSystemEventHandler(OnChanged);
         watcher.Renamed += new RenamedEventHandler(OnRenamed);
 
         watcher.EnableRaisingEvents = true;
