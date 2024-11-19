@@ -13,6 +13,7 @@
 
 using System.IO;
 using System.Text.Json;
+using FileCloner.FileClonerLogging;
 
 namespace FileCloner.Models;
 
@@ -22,8 +23,10 @@ namespace FileCloner.Models;
 /// </summary>
 public class FileExplorerServiceProvider
 {
+    private FileClonerLogger _logger = new("FileExplorerServiceProvider");
     public void CleanFolder(string folderPath)
     {
+        _logger.Log($"Cleaning Folder {folderPath}");
         if (Directory.Exists(folderPath))
         {
             foreach (string file in Directory.GetFiles(folderPath))
@@ -42,6 +45,7 @@ public class FileExplorerServiceProvider
         try
         {
             string targetPath = Constants.InputFilePath;
+            _logger.Log($"Generating Input file in {targetPath}");
 
             // Generate the directory structure dictionary
             Dictionary<string, object> directoryStructure = ParseDirectory(sourceDirPath, sourceDirPath);
@@ -57,6 +61,7 @@ public class FileExplorerServiceProvider
         }
         catch (Exception e)
         {
+            _logger.Log($"THROWING EXCEPTION : {e.Message}", isErrorMessage: true);
             throw new InvalidOperationException("Failed to generate input file", e);
         }
     }
@@ -69,6 +74,7 @@ public class FileExplorerServiceProvider
     /// <returns>Dictionary representing the directory and its contents.</returns>
     private Dictionary<string, object> ParseDirectory(string dirPath, string sourceDirPath)
     {
+        _logger.Log($"Parsing Directory dirPath: {dirPath}, sourceDirPath: {sourceDirPath}");
         // Directory information object for accessing properties
         var dirInfo = new DirectoryInfo(dirPath);
 

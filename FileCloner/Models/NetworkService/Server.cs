@@ -18,6 +18,7 @@ using System.Net;
 using Networking;
 using Networking.Serialization;
 using System.Diagnostics.CodeAnalysis;
+using FileCloner.FileClonerLogging;
 
 namespace FileCloner.Models.NetworkService;
 
@@ -30,6 +31,8 @@ public class Server : INotificationHandler
     // Instance of the server communicator for managing connections
     private static CommunicatorServer s_server =
         (CommunicatorServer)CommunicationFactory.GetCommunicator(isClientSide: false);
+
+    private FileClonerLogger _logger = new("Server");
 
     // Dictionary to store the mapping of client IP addresses to their unique IDs
     private static Dictionary<string, string> s_clientList = new();
@@ -53,6 +56,7 @@ public class Server : INotificationHandler
     private Server()
     {
         s_server.Subscribe(Constants.ModuleName, this, false);
+        _logger.Log($"Server Subscribed to messages {Constants.ModuleName}");
     }
 
     /// <summary>
@@ -97,6 +101,7 @@ public class Server : INotificationHandler
         }
 
         _logAction?.Invoke($"[Server] {clientIpAddress} Joined");
+        _logger.Log($"[Server] {clientIpAddress} Joined");
     }
 
     /// <summary>
@@ -120,6 +125,7 @@ public class Server : INotificationHandler
             if (message.To == Constants.Broadcast)
             {
                 s_server.Send(serializedData, Constants.ModuleName, null); // Broadcast to all
+                _logger.Log("Sending Broadcast");
             }
             else
             {
@@ -131,16 +137,19 @@ public class Server : INotificationHandler
                     if (!s_clientList.TryGetValue(message.To, out targetClientId))
                     {
                         _logAction?.Invoke($"[Server] Target client {message.To} not found");
+                        _logger.Log($"[Server] Target client {message.To} not found");
                         return;
                     }
                 }
 
                 s_server.Send(serializedData, Constants.ModuleName, targetClientId); // Send to the target client
+                _logger.Log($"Sending to {targetClientId}");
             }
         }
         catch (Exception e)
         {
             _logAction?.Invoke("[Server] Error in sending data: " + e.Message);
+            _logger.Log("[Server] Error in sending data: " + e.Message, isErrorMessage: true);
         }
     }
 
@@ -160,6 +169,7 @@ public class Server : INotificationHandler
                 s_clientList.Remove(clientEntry.Key); // Safely remove the client
             }
         }
+        _logger.Log($"Client with Client ID {clientId}");
     }
 
     /// <summary>
@@ -169,5 +179,6 @@ public class Server : INotificationHandler
     public void Stop()
     {
         s_server.Stop();
+        _logger.Log($"Server Stopping");
     }
 }
