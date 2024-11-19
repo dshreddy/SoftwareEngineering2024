@@ -27,6 +27,7 @@ public class Node : ViewModelBase
     // UI Bindings
     public ObservableCollection<Node> Children { get; }
 
+    //If it is set to true we will update it with a check in the UI
     private bool _isChecked;
     public bool IsChecked
     {
@@ -37,6 +38,7 @@ public class Node : ViewModelBase
         }
     }
 
+    //The following properties store the metadata of a node (which can be a file or a folder).
     private string _fullFilePath;
 
     public string FullFilePath
@@ -121,7 +123,7 @@ public class Node : ViewModelBase
     {
         IsChecked = _isChecked;
 
-        if(IsFile)
+        if (IsFile)
         {
             MainPageViewModel.UpdateSelectedFiles(IpAddress, FullFilePath, RelativePath , IsChecked);
         }

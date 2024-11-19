@@ -1,3 +1,13 @@
+/******************************************************************************
+ * Filename    = MainPageViewModel.TreeViewGenerator.cs
+ *
+ * Author(s)      = Sai Hemanth Reddy & Sarath A
+ * 
+ * Project     = FileCloner
+ *
+ * Description = Generates the tree view of the directory selected, by recursively 
+ *               populating node and its children with data.
+ *****************************************************************************/
 ﻿using FileCloner.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -47,16 +57,54 @@ partial class MainPageViewModel : ViewModelBase
     {
         try
         {
-            string jsonContent = File.ReadAllText(filePath);
-            Dictionary<string, JsonElement>? rootDictionary = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonContent);
+            // Clear any existing nodes in the tree and reset counters
+            Tree.Clear();
+            ResetCounts();
+            if (filePath == Constants.OutputFilePath)
+            {
+                RootGenerator(filePath);
+                return;
+            }
 
+            // Generate input file representing the structure of the root directory
+            _fileExplorerServiceProvider.GenerateInputFile(RootDirectoryPath);
+
+            // Parse the input file and create tree nodes
+            RootGenerator(Constants.InputFilePath);
+        }
+        catch (Exception e)
+        {
+            // Show error if tree generation fails
+            Dispatcher.Invoke(() => {
+                MessageBox.Show($"[TreeViewGenerator] {e.Message}");
+            });
+        }
+    }
+
+    /// <summary>
+    /// Parses the JSON file representing directory structure and generates the root node.
+    /// </summary>
+    private void RootGenerator(string filePath)
+    {
+        try
+        {
+            string? jsonContent = File.ReadAllText(filePath);
+            Dictionary<string, JsonElement>? rootDictionary = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(jsonContent);
+            //Color and last modified fields will be set from the input/output .json files.
+            string? color;
+            string? lastModifiedStr;
+            string? lastModifiedFormatted;
+            if (rootDictionary == null)
+            {
+                return;
+            }
             foreach (KeyValuePair<string, JsonElement> root in rootDictionary)
             {
-                string color = root.Value.TryGetProperty("COLOR", out JsonElement colorProperty) ? colorProperty.GetString() : "";
+                color = root.Value.TryGetProperty("COLOR", out JsonElement colorProperty) ? colorProperty.GetString() : "";
 
                 // Safely parse the "LAST_MODIFIED" property
-                string lastModifiedStr = root.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : null;
-                string lastModifiedFormatted = null;
+                lastModifiedStr = root.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : null;
+                lastModifiedFormatted = null;
                 if (!string.IsNullOrEmpty(lastModifiedStr) && DateTimeOffset.TryParse(lastModifiedStr, out DateTimeOffset lastModifiedDate))
                 {
                     lastModifiedFormatted = lastModifiedDate.LocalDateTime.ToString();
@@ -67,11 +115,11 @@ partial class MainPageViewModel : ViewModelBase
                     Name = root.Key,
                     IsFile = false,
                     IconPath = new Uri(Constants.FolderIconPath, UriKind.Absolute),
-                    Color = color,
+                    Color = color ?? "WHITE",
                     LastModified = lastModifiedFormatted ?? "Unknown", // Default to "Unknown" if parsing fails
-                    RelativePath = root.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "",
-                    IpAddress = root.Value.TryGetProperty("ADDRESS", out JsonElement address) ? address.GetString() : null,
-                    FullFilePath = root.Value.TryGetProperty("FULL_PATH", out JsonElement fullFilePath) ? fullFilePath.GetString() : "PATH NOT GIVEN!",
+                    RelativePath = (root.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "") ?? "UNKNOWN",
+                    IpAddress = (root.Value.TryGetProperty("ADDRESS", out JsonElement address) ? address.GetString() : null) ?? "localhost",
+                    FullFilePath = (root.Value.TryGetProperty("FULL_PATH", out JsonElement fullFilePath) ? fullFilePath.GetString() : "PATH NOT GIVEN!") ?? "PATH NOT GIVEN!",
                 };
 
                 // Add root node to the tree and increment folder count
@@ -90,7 +138,6 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Recursively populates child nodes for a given parent node.
     /// </summary>
-    /// 
     [ExcludeFromCodeCoverage]
     private void PopulateChildren(Node parentNode, JsonElement element)
     {
@@ -99,17 +146,18 @@ partial class MainPageViewModel : ViewModelBase
             foreach (JsonProperty child in childrenElement.EnumerateObject())
             {
                 bool isFile = child.Value.TryGetProperty("SIZE", out JsonElement sizeElement);
-                string color = child.Value.TryGetProperty("COLOR", out JsonElement colorProperty) ? colorProperty.GetString() : "";
+                string? color = child.Value.TryGetProperty("COLOR", out JsonElement colorProperty) ? colorProperty.GetString() : "";
+                //Reading properties from the json file and updating the Node in the UI
                 var childNode = new Node {
                     Name = child.Name,
-                    Color = color,
-                    IpAddress = child.Value.TryGetProperty("ADDRESS", out JsonElement address) ? address.GetString() : "localhost",
-                    FullFilePath = child.Value.TryGetProperty("FULL_PATH", out JsonElement fullFilePath) ? fullFilePath.GetString() : "PATH NOT GIVEN!",
-                    LastModified = DateTimeOffset.Parse(child.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : "").LocalDateTime.ToString(),
+                    Color = color ?? "WHITE",
+                    IpAddress = (child.Value.TryGetProperty("ADDRESS", out JsonElement address) ? address.GetString() : "localhost") ?? "localhost",
+                    FullFilePath = (child.Value.TryGetProperty("FULL_PATH", out JsonElement fullFilePath) ? fullFilePath.GetString() : "PATH NOT GIVEN!") ?? "PATH NOT GIVEN!",
+                    LastModified = DateTimeOffset.Parse((child.Value.TryGetProperty("LAST_MODIFIED", out JsonElement lastModified) ? lastModified.GetString() : "") ?? "UNKNOWN").LocalDateTime.ToString(),
                     IsFile = isFile,
                     Size = isFile ? sizeElement.GetInt32() : 0,
                     Parent = parentNode,
-                    RelativePath = child.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "",
+                    RelativePath = (child.Value.TryGetProperty("RELATIVE_PATH", out JsonElement relativePath) ? relativePath.GetString() : "") ?? "",
                     IconPath = new Uri(isFile ? Constants.FileIconPath : Constants.FolderIconPath, UriKind.Absolute)
                 };
                 if (color == "GREEN" || color == "RED")
@@ -132,5 +180,4 @@ partial class MainPageViewModel : ViewModelBase
             }
         }
     }
-
 }

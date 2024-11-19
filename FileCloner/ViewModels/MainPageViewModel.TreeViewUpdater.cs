@@ -1,4 +1,14 @@
-﻿using FileCloner.Models;
+﻿/******************************************************************************
+ * Filename    = MainPageViewModel.TreeViewGenerator.cs
+ *
+ * Author(s)      = Sai Hemanth Reddy & Sarath A
+ * 
+ * Project     = FileCloner
+ *
+ * Description = Utility functions for updating the state of the UI.
+ *****************************************************************************/
+
+using FileCloner.Models;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;

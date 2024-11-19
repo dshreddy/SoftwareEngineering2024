@@ -129,12 +129,14 @@ public class SummaryGenerator
         {
             if (element.TryGetProperty("LAST_MODIFIED", out JsonElement newLastModifiedProp) && existingMetadata.ContainsKey("LAST_MODIFIED"))
             {
+                //Get the new Timestamp as a string from the last modified key - and sets its UTC value.
                 DateTime newTimestamp = DateTime.Parse(newLastModifiedProp.GetString()!, null, DateTimeStyles.AdjustToUniversal);
-                DateTime existingTimestamp = DateTime.Parse(existingMetadata["LAST_MODIFIED"].ToString(), null, DateTimeStyles.AdjustToUniversal);
+                //Same as the new time stamp, but this time set a default value such that the new time stamp is greater than existing timestamp always.
+                DateTime existingTimestamp = DateTime.Parse(existingMetadata["LAST_MODIFIED"].ToString() ?? DateTime.MinValue.ToString("o"), null, DateTimeStyles.AdjustToUniversal);
 
                 if (newTimestamp > existingTimestamp)
                 {
-                    string previousColor = existingMetadata["COLOR"].ToString();
+                    string previousColor = existingMetadata["COLOR"].ToString() ?? "WHITE";
                     string newColor = previousColor == "GREEN" ? "GREEN" : "RED";
 
                     Dictionary<string, object> newMetadata = ParseFileMetadata(element, newColor, relativePath);
@@ -159,8 +161,7 @@ public class SummaryGenerator
                 // Initialize the address entry with a "CHILDREN" dictionary if it doesn't exist
                 if (!groupedByAddress.ContainsKey(addressStr))
                 {
-                    groupedByAddress[addressStr] = new Dictionary<string, object>
-                    {
+                    groupedByAddress[addressStr] = new Dictionary<string, object> {
                         ["CHILDREN"] = new Dictionary<string, Dictionary<string, object>>()
                     };
                 }
