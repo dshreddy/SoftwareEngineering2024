@@ -39,19 +39,15 @@ public class DiffGenerator
 
 
                 string ipAddress = Path.GetFileNameWithoutExtension(file);
-
-         
                 string text = File.ReadAllText(file);
                 Root jsonRoot = JsonSerializer.Deserialize<Root>(text);
 
                 foreach (string rootKey in jsonRoot.Files.Keys)
                 {
                     JsonElement jsonElement = jsonRoot.Files[rootKey]; // This is a JsonElement for root key (e.g., "A", "B")
-
                     // Deserialize JsonElement into FileMetadata
                     FileMetadata? rootFile = JsonSerializer.Deserialize<FileMetadata>(jsonElement.GetRawText());
                     rootFile.Address = ipAddress;
-
                     
                     // Process the children of this root
                     if (rootFile?.Children != null)
@@ -82,7 +78,6 @@ public class DiffGenerator
         WriteAllFilesToFile(allFiles, _diffFilePath);
 
     }
-
     // Recursive method to process children
     public void ProcessChildren(Dictionary<string, FileMetadata> children, Dictionary<string, FileMetadata> allFiles, string iPaddress, string color, string rootName)
     {
@@ -92,10 +87,8 @@ public class DiffGenerator
         {
     
             fileData.InitDirectoryName = rootName;
-
             if (fileData.Children.Count > 0)
             {
-
                 // If this is a folder, recursively process its children
                 fileData.Address = iPaddress;
             
@@ -130,7 +123,6 @@ public class DiffGenerator
                     {
                         if (fileData.Color != "#90ee90")
                         {
-
                             allFiles[relativeFileName] = fileData;
                             allFiles[relativeFileName].Color = "#ffff00";
                         }
@@ -154,12 +146,8 @@ public class DiffGenerator
     }
 
 
-
-
     public void Add_to_Tree(Node node, List<string> fullPath, int index, FileMetadata fileMetaData, string pathSoFar)
     {
-
-
         if (index == fullPath.Count)
         {
 
@@ -185,22 +173,15 @@ public class DiffGenerator
             node.Color = "#90ee90";
         }
 
-
-
-
         if (node._children.ContainsKey(fullPath[index]))
         {
-
             node = node._children[fullPath[index]];
             Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.FullPath);
-
-
         }
         else
         {
 
             node._children[fullPath[index]] = new Node(fullPath[index], fileMetaData);
-
 
 
             node.LastModified = node.LastModified > fileMetaData.LastModified
@@ -215,13 +196,7 @@ public class DiffGenerator
                 {
                     node.RelativePaths = node.RelativePaths + "\\" + fullPath[i];
                 }
-
-
-
-
-
                 Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.FullPath);
-
             }
         }
     }
@@ -231,14 +206,11 @@ public class DiffGenerator
     {
         // Creating a dictionary to store the final tree structure
         Dictionary<string, Node> tree_address = new();
-
         lock (_syncLock)
         {
             using StreamWriter writer = new StreamWriter(outputFilePath);
             foreach ((string fileName, FileMetadata fileData) in files)
             {
-
-
                 List<string> result = fileData.FullPath.Split('\\').ToList();
               
 
