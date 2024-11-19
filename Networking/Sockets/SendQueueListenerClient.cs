@@ -76,7 +76,7 @@ namespace Networking.Sockets
             {
                 // keep waiting while boolean to run the thread is
                 // set to true and sending queue is empty
-                while (_runSendQueueListenerThread && 
+                while (_runSendQueueListenerThread &&
                     _sendingQueue.IsEmpty())
                 {
                     Thread.Sleep(100);

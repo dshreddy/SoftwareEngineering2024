@@ -34,7 +34,7 @@ namespace Networking.Sockets
         /// <param name="socket">
         /// The socket on which to listen.
         /// </param>
-        public SocketListener(ReceivingQueue receivingQueue, 
+        public SocketListener(ReceivingQueue receivingQueue,
             TcpClient socket)
         {
             _receivingQueue = receivingQueue;
@@ -62,7 +62,7 @@ namespace Networking.Sockets
                 Trace.WriteLine("[Networking] SocketListener thread " +
                     "started.");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Trace.WriteLine("[Networking] Error in " +
                     "SocketListener.Start(): " + e.Message);

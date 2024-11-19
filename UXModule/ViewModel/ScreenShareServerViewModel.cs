@@ -1,7 +1,7 @@
-﻿ 
+﻿
 // Defines the "ScreenshareServerViewModel" class which represents the
 // view model for screen sharing on the server side machine.
- 
+
 
 using System;
 using System.Collections.Generic;
@@ -19,82 +19,82 @@ using UXModule.Model;
 
 namespace UXModule.ViewModel
 {
-     
+
     // Represents the view model for screen sharing on the server side machine.
-     
+
     public class ScreenshareServerViewModel :
         INotifyPropertyChanged, // Notifies the UX that a property value has changed.
         IMessageListener,       // Notifies the UX that subscribers list has been updated.
         IDisposable             // Handle cleanup work for the allocated resources.
     {
-         
+
         // The only singleton instance for this class.
-         
+
         private static ScreenshareServerViewModel? _instance;
 
-         
+
         // Underlying data model.
-         
+
         private readonly ScreenshareServer? _model;
 
-         
+
         // List of all the clients sharing their screens. This list first contains
         // the clients which are marked as pinned and then the rest of the clients
         // in lexicographical order of their name.
-         
+
         private List<SharedClientScreen> _subscribers;
 
-         
+
         // Track whether Dispose has been called.
-         
+
         private bool _disposed;
 
-         
+
         // The clients which are on the current page.
-         
+
         private readonly ObservableCollection<SharedClientScreen> _currentWindowClients;
 
-         
+
         // The current page that the server is viewing.
-         
+
         private int _currentPage;
 
-         
+
         // The total number of pages.
-         
+
         private int _totalPages;
 
-         
+
         // Whether the current page that the server is viewing is last page or not.
-         
+
         private bool _isLastPage;
 
-         
+
         // The current number of rows of the grid displayed on the screen.
-         
+
         private int _currentPageRows;
 
-         
+
         // The current number of columns of the grid displayed on the screen.
-         
+
         private int _currentPageColumns;
 
-         
+
         // Whether the popup is open or not.
-         
+
         private bool _isPopupOpen;
 
-         
+
         // The text to be displayed on the popup.
-         
+
         private string _popupText;
 
-         
+
         // The dispatcher operation returned from the calls to BeginInvoke.
 
         private DispatcherOperation? _updateViewOperation, _displayPopupOperation;
 
-         
+
         // Creates an instance of the "ScreenshareServerViewModel" which represents the
         // view model for screen sharing on the server side. It also instantiates the instance
         // of the underlying data model.
@@ -102,7 +102,7 @@ namespace UXModule.ViewModel
         {
             // Get the instance of the underlying data model.
             _model = ScreenshareServer.GetInstance(this, isDebugging);
-            
+
             // Always display the first page initially.
             _currentPage = InitialPageNumber;
 
@@ -120,11 +120,11 @@ namespace UXModule.ViewModel
             Trace.WriteLine(Utils.GetDebugMessage("Successfully created an instance for the view model", withTimeStamp: true));
         }
 
-         
+
         // Destructor for the class that will perform some cleanup tasks.
         // This destructor will run only if the Dispose method does not get called.
         // It gives the class the opportunity to finalize.
-         
+
         ~ScreenshareServerViewModel()
         {
             // Do not re-create Dispose clean-up code here.
@@ -133,12 +133,12 @@ namespace UXModule.ViewModel
             Dispose(disposing: false);
         }
 
-         
+
         // Property changed event raised when a property is changed on a component.
-         
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
-         
+
         // Notifies that subscribers list has been changed.
         // This will happen when a client either starts or stops screen sharing.
 
@@ -160,7 +160,7 @@ namespace UXModule.ViewModel
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully updated the subscribers list", withTimeStamp: true));
         }
 
-         
+
         // Notifies that a client has started screen sharing.
 
         public void OnScreenshareStart(string clientId, string clientName)
@@ -171,7 +171,7 @@ namespace UXModule.ViewModel
             DisplayPopup($"{clientName} has started screen sharing");
         }
 
-         
+
         // Notifies that a client has stopped screen sharing.
 
         public void OnScreenshareStop(string clientId, string clientName)
@@ -182,9 +182,9 @@ namespace UXModule.ViewModel
             DisplayPopup($"{clientName} has stopped screen sharing");
         }
 
-         
+
         // Implement "IDisposable". Disposes the managed and unmanaged resources.
-         
+
         public void Dispose()
         {
             Dispose(disposing: true);
@@ -204,16 +204,16 @@ namespace UXModule.ViewModel
         public static int InitialNumberOfCols { get; } = 1;
         public static bool InitialIsLastPage { get; } = true;
 
-         
+
         // Gets the maximum number of tiles of the shared screens
         // on a single page that will be shown to the server.
-         
+
         public static int MaxTiles { get; } = 9;
 
-         
+
         // Acts as a map from the number of screens on the current window to
         // the number of rows and columns of the grid displayed on the screen.
-         
+
         public static List<(int Row, int Column)> NumRowsColumns { get; } = new()
         {
             (1, 1),  // 0 Total Screen.
@@ -228,15 +228,14 @@ namespace UXModule.ViewModel
             (3, 3)   // 9 Total Screens.
         };
 
-         
+
         // Gets the clients which are on the current page.
-         
+
         public ObservableCollection<SharedClientScreen> CurrentWindowClients
         {
             get => _currentWindowClients;
 
-            private set
-            {
+            private set {
                 // Note, to update the whole list, we can't simply assign it equal
                 // to the new list. We need to clear the list first and add new elements
                 // into the list to be able to see the changes on the UI.
@@ -249,15 +248,14 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Gets the current page that the server is viewing.
-         
+
         public int CurrentPage
         {
             get => _currentPage;
 
-            private set
-            {
+            private set {
                 if (_currentPage != value)
                 {
                     _currentPage = value;
@@ -266,15 +264,14 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Gets the total number of pages.
-         
+
         public int TotalPages
         {
             get => _totalPages;
 
-            private set
-            {
+            private set {
                 if (_totalPages != value)
                 {
                     _totalPages = value;
@@ -283,15 +280,14 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Gets whether the current page that the server is viewing is last page or not.
-         
+
         public bool IsLastPage
         {
             get => _isLastPage;
 
-            private set
-            {
+            private set {
                 if (_isLastPage != value)
                 {
                     _isLastPage = value;
@@ -300,15 +296,14 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Gets the current number of rows of the grid displayed on the screen.
-         
+
         public int CurrentPageRows
         {
             get => _currentPageRows;
 
-            private set
-            {
+            private set {
                 if (_currentPageRows != value)
                 {
                     _currentPageRows = value;
@@ -317,15 +312,14 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Gets the current number of columns of the grid displayed on the screen.
-         
+
         public int CurrentPageColumns
         {
             get => _currentPageColumns;
 
-            private set
-            {
+            private set {
                 if (_currentPageColumns != value)
                 {
                     _currentPageColumns = value;
@@ -334,16 +328,15 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Gets whether the popup is open or not.
-         
+
         public bool IsPopupOpen
         {
             get => _isPopupOpen;
 
             // Don't keep the setter private, as it is bind using two-way binding.
-            set
-            {
+            set {
                 if (_isPopupOpen != value)
                 {
                     _isPopupOpen = value;
@@ -352,15 +345,14 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Gets the text to be displayed on the popup.
-         
+
         public string PopupText
         {
             get => _popupText;
 
-            private set
-            {
+            private set {
                 if (_popupText != value)
                 {
                     _popupText = value;
@@ -369,17 +361,17 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Gets the dispatcher to the main thread. In case it is not available
         // (such as during unit testing) the dispatcher associated with the
         // current thread is returned.
-         
+
         public static Dispatcher ApplicationMainThreadDispatcher =>
             (System.Windows.Application.Current?.Dispatcher != null) ?
                     System.Windows.Application.Current.Dispatcher :
                     Dispatcher.CurrentDispatcher;
 
-         
+
         // Gets a singleton instance of "ScreenshareServerViewModel" class.
 
         public static ScreenshareServerViewModel GetInstance(bool isDebugging = false)
@@ -389,7 +381,7 @@ namespace UXModule.ViewModel
             return _instance;
         }
 
-         
+
         // Recomputes current window clients using the pagination logic
         // and notifies the UX. It also notifies the old and new clients
         // about the new status of sending image packets.
@@ -479,7 +471,7 @@ namespace UXModule.ViewModel
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully recomputed current window clients for the page {this.CurrentPage}", withTimeStamp: true));
         }
 
-         
+
         // Mark the client as pinned and switch to the page of that client.
         public void OnPin(string clientId)
         {
@@ -522,7 +514,7 @@ namespace UXModule.ViewModel
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully pinned the client with id: {clientId}", withTimeStamp: true));
         }
 
-         
+
         // Mark the client as pinned and switch to the previous (or the first) page.
 
         public void OnUnpin(string clientId)
@@ -561,7 +553,7 @@ namespace UXModule.ViewModel
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully unpinned the client with id: {clientId}", withTimeStamp: true));
         }
 
-         
+
         // It executes in two distinct scenarios.
         // If disposing equals true, the method has been called directly
         // or indirectly by a user's code. Managed and unmanaged resources
@@ -590,7 +582,7 @@ namespace UXModule.ViewModel
             _disposed = true;
         }
 
-         
+
         // Moves the subscribers marked as pinned to the front of the list
         // keeping the lexicographical order of their name.
         private static List<SharedClientScreen> MovePinnedSubscribers(List<SharedClientScreen> subscribers)
@@ -617,7 +609,7 @@ namespace UXModule.ViewModel
             return pinnedSubscribers.Concat(unpinnedSubscribers).ToList();
         }
 
-         
+
         // Rearranges the subscribers list by first having the Pinned subscribers followed by
         // the unpinned subscribers. The pinned and unpinned subscribers are kept in the
         // lexicographical order of their names.
@@ -634,7 +626,7 @@ namespace UXModule.ViewModel
             return MovePinnedSubscribers(sortedSubscribers);
         }
 
-         
+
         // Gets the tile dimensions in the grid displayed on the screen
         // based on the number of rows and columns presented.
         private static (int Height, int Width) GetTileDimensions(int rows, int columns)
@@ -658,7 +650,7 @@ namespace UXModule.ViewModel
             return (tileHeight, tileWidth);
         }
 
-         
+
         // Starts the processing task for the clients.
 
         private static void StartProcessingForClients(List<SharedClientScreen> clients)
@@ -671,8 +663,7 @@ namespace UXModule.ViewModel
                     // The lambda function takes the final image from the final image queue
                     // of the client and set it as the "CurrentImage" variable for the client
                     // and notify the UX about the same.
-                    client.StartProcessing(new Action<int>((taskId) =>
-                    {
+                    client.StartProcessing(new Action<int>((taskId) => {
                         // Loop till the task is not canceled.
                         while (client.TaskId == taskId)
                         {
@@ -687,8 +678,7 @@ namespace UXModule.ViewModel
                                 // by taking the processed images from its final image queue.
                                 _ = ApplicationMainThreadDispatcher.BeginInvoke(
                                         DispatcherPriority.Normal,
-                                        new Action<Bitmap>((image) =>
-                                        {
+                                        new Action<Bitmap>((image) => {
                                             if (image != null)
                                             {
                                                 BitmapImage img = Utils.BitmapToBitmapImage(image);
@@ -717,7 +707,7 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Stops the processing task for the clients.
         private static void StopProcessingForClients(List<SharedClientScreen> clients)
         {
@@ -736,7 +726,7 @@ namespace UXModule.ViewModel
             }
         }
 
-         
+
         // Notify the previous/new window clients to stop/send their image packets.
         // It also asks the previous/new window clients to stop/start their image processing.
 
@@ -767,7 +757,7 @@ namespace UXModule.ViewModel
             Trace.WriteLine(Utils.GetDebugMessage("Successfully notified the previous window clients", withTimeStamp: true));
         }
 
-         
+
         // Updates the view with the new values provided.
         private void UpdateView(
             List<SharedClientScreen> newWindowClients,
@@ -784,8 +774,7 @@ namespace UXModule.ViewModel
                 DispatcherPriority.Normal,
                 new Action<
                     ObservableCollection<SharedClientScreen>, int, int, int, int, bool, (int Height, int Width)
-                >((clients, pageNum, numRows, numCols, totalPages, isLastPage, tileDimensions) =>
-                {
+                >((clients, pageNum, numRows, numCols, totalPages, isLastPage, tileDimensions) => {
                     lock (this)
                     {
                         foreach (SharedClientScreen screen in clients)
@@ -812,14 +801,13 @@ namespace UXModule.ViewModel
             );
         }
 
-         
+
         // Used to display the popup on the UI with the given message.
         private void DisplayPopup(string message)
         {
             _displayPopupOperation = ApplicationMainThreadDispatcher.BeginInvoke(
                 DispatcherPriority.Normal,
-                new Action<string>((text) =>
-                {
+                new Action<string>((text) => {
                     lock (this)
                     {
                         // Close the popup if it was already opened before.
@@ -833,7 +821,7 @@ namespace UXModule.ViewModel
             );
         }
 
-         
+
         // Computes the number of subscribers to skip up to current page.
         private int GetCountToSkip(int currentPageNum)
         {
@@ -860,7 +848,7 @@ namespace UXModule.ViewModel
             return countToSkip;
         }
 
-         
+
         // Compute the page of the client on which the client screen is displayed.
         private int GetClientPage(string clientId)
         {
@@ -911,7 +899,7 @@ namespace UXModule.ViewModel
             return 1;
         }
 
-         
+
         // Gets the total number of pages formed in screen share view.
         private int GetTotalPages()
         {
@@ -951,7 +939,7 @@ namespace UXModule.ViewModel
             return pageNum;
         }
 
-         
+
         // Handles the property changed event raised on a component.
         private void OnPropertyChanged(string property)
         {

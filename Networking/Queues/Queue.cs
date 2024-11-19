@@ -51,7 +51,7 @@ namespace Networking.Queues
                 {
                     packet = _queue.Dequeue();
                 }
-                catch(InvalidOperationException e)
+                catch (InvalidOperationException e)
                 {
                     // Arises if the queue is empty
                     Trace.WriteLine($"{e.StackTrace}");
@@ -78,7 +78,7 @@ namespace Networking.Queues
                 {
                     start = _queue.Peek();
                 }
-                catch(InvalidOperationException e)
+                catch (InvalidOperationException e)
                 {
                     // Arises if the queue is empty
                     Trace.WriteLine($"{e.StackTrace}");

@@ -13,47 +13,47 @@ using UXModule.ViewModel;
 
 namespace UXModule.Model
 {
-    
+
     /// Represents the data model for screen sharing on the server side machine.
-    
+
     public class ScreenshareServer :
         INotificationHandler, // To receive packets from the networking.
         ITimerManager,        // Handles the timeout for screen sharing of clients.
         IDisposable           // Handle cleanup work for the allocated resources.
     {
-        
+
         /// The only singleton instance for this class.
-        
+
         private static ScreenshareServer? _instance;
 
-        
+
         /// The networking object used to subscribe to the networking module
         /// and to send the packets to the clients.
-        
-        public  ICommunicator? _communicator;
 
-        
+        public ICommunicator? _communicator;
+
+
         /// The subscriber which should be notified when subscribers list change.
         /// Here it will be the view model.
-        
+
         private readonly IMessageListener _listener;
 
-        
+
         /// The map between each client ID and their corresponding "SharedScreenObject"
         /// to keep track of all the active subscribers (screen sharers).
-        
+
         private readonly Dictionary<string, SharedClientScreen> _subscribers;
 
-        
+
         /// Track whether Dispose has been called.
-        
+
         private bool _disposed;
 
-        
+
         /// Creates an instance of "ScreenshareServer" which represents the
         /// data model for screen sharing on the server side machine.
-        
-     
+
+
         protected ScreenshareServer(IMessageListener listener, bool isDebugging)
         {
             if (!isDebugging)
@@ -72,11 +72,11 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage("Successfully created an instance of ScreenshareServer", withTimeStamp: true));
         }
 
-        
+
         /// Destructor for the class that will perform some cleanup tasks.
         /// This destructor will run only if the Dispose method does not get called.
         /// It gives the class the opportunity to finalize.
-        
+
         ~ScreenshareServer()
         {
             // Do not re-create Dispose clean-up code here.
@@ -85,11 +85,11 @@ namespace UXModule.Model
             Dispose(disposing: false);
         }
 
-        
+
         /// Implements "INotificationHandler". It will be invoked when a data packet
         /// comes for the screen share module from the client to the server. Based on
         /// the header in the packet received, it will do further processing.
-        
+
         /// <param name="serializedData">
         /// Data received inside the packet from the client.
         /// </param>
@@ -170,22 +170,23 @@ namespace UXModule.Model
 
 
 #pragma warning disable CA1822 // Mark members as static.
-        public void OnClientJoined(TcpClient socket) {
-           /* Trace.WriteLine("aeaeaeaeaeaeae");
-            string address = GetAddressFromSocket(socket, otherEnd: true);
-            Trace.WriteLine(address);
-            // _logger.Log($"Client Joined : {address}");
-            Console.WriteLine($"Client Joined : {address}");
-            /*  lock (_syncLock)
-              {
-                  _clientDictionary.Add(address, socket);
-              }*/
-          /*  string serverIP = address.Split('_')[0];
-            string serverPort = address.Split('_')[1];
-            _communicator.AddClient(serverIP, socket); 
-           */ 
-            
-          //  _fileReceiverServer.AddClient($"{serverIP}:{serverPort}", socket);
+        public void OnClientJoined(TcpClient socket)
+        {
+            /* Trace.WriteLine("aeaeaeaeaeaeae");
+             string address = GetAddressFromSocket(socket, otherEnd: true);
+             Trace.WriteLine(address);
+             // _logger.Log($"Client Joined : {address}");
+             Console.WriteLine($"Client Joined : {address}");
+             /*  lock (_syncLock)
+               {
+                   _clientDictionary.Add(address, socket);
+               }*/
+            /*  string serverIP = address.Split('_')[0];
+              string serverPort = address.Split('_')[1];
+              _communicator.AddClient(serverIP, socket); 
+             */
+
+            //  _fileReceiverServer.AddClient($"{serverIP}:{serverPort}", socket);
 
         }
 #pragma warning restore CA1822 // Mark members as static.
@@ -205,20 +206,20 @@ namespace UXModule.Model
             }
         }
 
-        
+
         /// Implements "ITimerManager". Callback which will be invoked when the timeout occurs for the
         /// CONFIRMATION packet not received by the client.
-        
-  
+
+
         public void OnTimeOut(object? source, ElapsedEventArgs e, string clientId)
         {
             DeregisterClient(clientId);
             Trace.WriteLine(Utils.GetDebugMessage($"Timeout occurred for the client with id: {clientId}", withTimeStamp: true));
         }
 
-        
+
         /// Implement "IDisposable". Disposes the managed and unmanaged resources.
-        
+
         public void Dispose()
         {
             Dispose(disposing: true);
@@ -231,10 +232,10 @@ namespace UXModule.Model
             GC.SuppressFinalize(this);
         }
 
-        
+
         /// Gets a singleton instance of "ScreenshareServer" class.
-        
-       
+
+
         public static ScreenshareServer GetInstance(IMessageListener listener, bool isDebugging = false)
         {
             Debug.Assert(listener != null, Utils.GetDebugMessage("listener is found null"));
@@ -244,12 +245,12 @@ namespace UXModule.Model
             return _instance;
         }
 
-        
+
         /// Used to send various data packets to the clients.
         /// Also provide them the resolution of the image to send if asking
         /// the clients to send the image packet.
-        
-     
+
+
         public void BroadcastClients(List<string> clientIds, string headerVal, (int Rows, int Cols) numRowsColumns)
         {
             Debug.Assert(_communicator != null, Utils.GetDebugMessage("_communicator is found null"));
@@ -298,7 +299,7 @@ namespace UXModule.Model
             }
         }
 
-        
+
         /// It executes in two distinct scenarios.
         /// If disposing equals true, the method has been called directly
         /// or indirectly by a user's code. Managed and unmanaged resources
@@ -306,8 +307,8 @@ namespace UXModule.Model
         /// If disposing equals false, the method has been called by the
         /// runtime from inside the destructor and we should not reference
         /// other objects. Only unmanaged resources can be disposed.
-        
-      
+
+
         protected virtual void Dispose(bool disposing)
         {
             // Check to see if Dispose has already been called.
@@ -341,17 +342,17 @@ namespace UXModule.Model
             _disposed = true;
         }
 
-        
+
         /// Add this client to list of screen sharers. It also notifies the view
         /// model that a new client has started presenting screen.
-        
-  
+
+
         private void RegisterClient(string clientId, string clientName)
         {
             Debug.Assert(_subscribers != null, Utils.GetDebugMessage("_subscribers is found null"));
-            
+
             // Acquire lock because timer threads could also execute simultaneously.
-           
+
             lock (_subscribers)
             {
                 // Check if the clientId is present in the screen sharers list.
@@ -379,11 +380,11 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully registered the client- Id: {clientId}, Name: {clientName}", withTimeStamp: true));
         }
 
-        
+
         /// Remove this client from the list of screen sharers. It also
         /// asks the client object to stop all its processing and notify the
         /// view model that a client has stopped screen sharing.
-  
+
         private void DeregisterClient(string clientId)
         {
             Debug.Assert(_subscribers != null, Utils.GetDebugMessage("_subscribers is found null"));
@@ -429,14 +430,14 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully removed the client with Id {clientId}", withTimeStamp: true));
         }
 
-        
+
         /// Adds the image received from the client to the client's image queue.
-        
- 
+
+
         private void PutImage(string clientId, string image, List<PixelDifference> change, bool full)
         {
             Trace.WriteLine("aaaaaaaaaaaaaaaaaaaaa");
-                             
+
             Debug.Assert(_subscribers != null, Utils.GetDebugMessage("_subscribers is found null"));
 
             // Acquire lock because timer threads could also execute simultaneously.
@@ -464,9 +465,9 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully received image of the client with Id: {clientId}", withTimeStamp: true));
         }
 
-        
+
         /// Reset the timer for the client.
-        
+
 
         private void UpdateTimer(string clientId)
         {
@@ -498,9 +499,9 @@ namespace UXModule.Model
             }
         }
 
-        
+
         /// Notifies the view model with the updates list of screen sharers.
-        
+
         private void NotifyUX()
         {
             Debug.Assert(_subscribers != null, Utils.GetDebugMessage("_subscribers is found null"));
@@ -517,9 +518,9 @@ namespace UXModule.Model
             _listener.OnSubscribersChanged(sharedClientScreens);
         }
 
-        
+
         /// Notifies the view model about a client has either started or stopped screen sharing.
-        
+
         /// <param name="clientId">
         /// Id of the client who started or stopped screen sharing.
         /// </param>

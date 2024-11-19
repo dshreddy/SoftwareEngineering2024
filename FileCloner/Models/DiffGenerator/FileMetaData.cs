@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace FileCloner.Models.DiffGenerator;
-
+[ExcludeFromCodeCoverage]
 /// <summary>
 /// Represents metadata for a file or folder, including properties for size, 
 /// last modification date, path, and hierarchical relationships.

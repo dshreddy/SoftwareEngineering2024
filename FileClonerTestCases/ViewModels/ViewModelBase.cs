@@ -25,7 +25,7 @@ public class ViewModelBaseTests
 
         // Assert
         Assert.IsNotNull(dispatcher, "Dispatcher should not be null.");
-       // Assert.AreEqual(dispatcher, Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher, "Dispatcher did not return the expected dispatcher.");
+        // Assert.AreEqual(dispatcher, Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher, "Dispatcher did not return the expected dispatcher.");
     }
 }
 

@@ -35,8 +35,7 @@ public class LocalServerCodeReceiver : ICodeReceiver
 
             try
             {
-                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                {
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo {
                     FileName = authorizationUrl,
                     UseShellExecute = true
                 });

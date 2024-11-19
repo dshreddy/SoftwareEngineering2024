@@ -17,7 +17,7 @@ namespace Networking.Serialization
         /// <returns>
         /// The serialized string of the generic object
         /// </returns>
-        public string Serialize<T> (T genericObject)
+        public string Serialize<T>(T genericObject)
         {
             if (genericObject == null)
             {
@@ -80,7 +80,7 @@ namespace Networking.Serialization
         /// <returns>
         /// The original object after deserializing the string
         /// </returns>
-        public T Deserialize<T> (string serializedString)
+        public T Deserialize<T>(string serializedString)
         {
             XmlSerializer xmlSerializer;
             try

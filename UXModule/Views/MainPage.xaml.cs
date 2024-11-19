@@ -44,7 +44,7 @@ namespace UXModule.Views
             InitializeComponent();
             this.sessionType = sessionType;
             dashboardPage = new DashboardPage();
-            _currentPage = currentPage; 
+            _currentPage = currentPage;
 
             Main.Content = dashboardPage;
             fileClonerPage = new FileCloner.Views.MainPage();
