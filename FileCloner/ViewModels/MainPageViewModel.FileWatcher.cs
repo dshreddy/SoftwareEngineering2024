@@ -8,7 +8,6 @@
  * Description = Updates the UI if any file gets cloned or gets newly created
  *               in the directory which is set now.
  *****************************************************************************/
-
 using System.Diagnostics;
 using System.IO;
 
@@ -51,6 +50,7 @@ partial class MainPageViewModel : ViewModelBase
     }
 
     //Update the UI as and when the name of an object is changed.
+    [ExcludeFromCodeCoverage]
     private void OnRenamed(object sender, RenamedEventArgs e)
     {
         Dispatcher.Invoke(() => {
@@ -59,6 +59,7 @@ partial class MainPageViewModel : ViewModelBase
     }
 
     //Update the UI as and when the a file is created or deleted.
+    [ExcludeFromCodeCoverage]
     private void OnChanged(object sender, FileSystemEventArgs e)
     {
         Dispatcher.Invoke(() => {

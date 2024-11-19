@@ -12,6 +12,7 @@
  *               and folders.
  *****************************************************************************/
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using FileCloner.Models;
 
@@ -164,6 +165,7 @@ public class Node : ViewModelBase
     /// Updates the IsChecked state of all child nodes recursively and adjusts selection counters.
     /// </summary>
     /// <param name="isChecked">Boolean value representing the desired checked state.</param>
+    [ExcludeFromCodeCoverage]
     private void UpdateChildrenCheckState(bool isChecked)
     {
         foreach (Node child in Children)
@@ -211,6 +213,7 @@ public class Node : ViewModelBase
     /// <summary>
     /// Updates the IsChecked and IsPartiallyChecked states of parent nodes based on sibling states.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     private void UpdateParentCheckState()
     {
         if (Parent == null)

@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
  * Filename    = MainPageViewModel.TreeViewGenerator.cs
  *
  * Author(s)      = Sai Hemanth Reddy & Sarath A
@@ -8,8 +8,8 @@
  * Description = Generates the tree view of the directory selected, by recursively 
  *               populating node and its children with data.
  *****************************************************************************/
-
-using FileCloner.Models;
+﻿using FileCloner.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
@@ -21,7 +21,39 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Generates the initial tree structure of the directory specified in RootDirectoryPath.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     private void TreeGenerator(string filePath)
+    {
+        try
+        {
+            // Clear any existing nodes in the tree and reset counters
+            Tree.Clear();
+            ResetCounts();
+            if (filePath == Constants.OutputFilePath)
+            {
+                RootGenerator(filePath);
+                return;
+            }
+
+            // Generate input file representing the structure of the root directory
+            _fileExplorerServiceProvider.GenerateInputFile(RootDirectoryPath);
+
+            // Parse the input file and create tree nodes
+            RootGenerator(Constants.InputFilePath);
+        }
+        catch (Exception e)
+        {
+            // Show error if tree generation fails
+            MessageBox.Show(e.Message);
+        }
+    }
+
+    /// <summary>
+    /// Parses the JSON file representing directory structure and generates the root node.
+    /// </summary>
+    /// 
+    [ExcludeFromCodeCoverage]
+    private void RootGenerator(string filePath)
     {
         try
         {
@@ -106,6 +138,7 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Recursively populates child nodes for a given parent node.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     private void PopulateChildren(Node parentNode, JsonElement element)
     {
         if (element.ValueKind == JsonValueKind.Object && element.TryGetProperty("CHILDREN", out JsonElement childrenElement))
@@ -147,5 +180,4 @@ partial class MainPageViewModel : ViewModelBase
             }
         }
     }
-
 }

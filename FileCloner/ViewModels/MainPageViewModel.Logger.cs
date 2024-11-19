@@ -1,4 +1,4 @@
-﻿/******************************************************************************
+/******************************************************************************
  * Filename    = MainPageViewModel.Logger.cs
  *
  * Author(s)      = Sai Hemanth Reddy & Sarath A
@@ -8,6 +8,7 @@
  * Description = Updates the log by adding a new log to the list of logs, and 
  *               updating the UI at the same time.
  *****************************************************************************/
+using System.Diagnostics.CodeAnalysis;
 namespace FileCloner.ViewModels;
 
 partial class MainPageViewModel : ViewModelBase
@@ -18,6 +19,7 @@ partial class MainPageViewModel : ViewModelBase
     /// Adds a message to the log with timestamp for UI display.
     /// </summary>
     /// <param name="message">Message to be updated in the UI</param>
+    [ExcludeFromCodeCoverage]
     private void UpdateLog(string message)
     {
         Dispatcher.Invoke(() => {

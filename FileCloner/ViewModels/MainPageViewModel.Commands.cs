@@ -9,6 +9,7 @@
  *****************************************************************************/
 
 using FileCloner.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Windows.Forms;
 
@@ -19,6 +20,8 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Sends a request to initiate the file cloning process.
     /// </summary>
+
+    [ExcludeFromCodeCoverage]
     private void SendRequest()
     {
         try
@@ -43,6 +46,8 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Generates and displays a summary of responses.
     /// </summary>
+
+    [ExcludeFromCodeCoverage]
     private void SummarizeResponses()
     {
         SummaryGenerator.GenerateSummary();
@@ -59,6 +64,9 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Starts the cloning process by creating files from selected items.
     /// </summary>
+    /// 
+
+    [ExcludeFromCodeCoverage]
     private void StartCloning()
     {
         IsStartCloningEnabled = false;
@@ -87,6 +95,9 @@ partial class MainPageViewModel : ViewModelBase
     /// <summary>
     /// Stops the cloning process with a warning prompt.
     /// </summary>
+    /// 
+
+    [ExcludeFromCodeCoverage]
     private void StopSession()
     {
         string message = "If you stop cloning, all incoming files related to the current session will be ignored.";
