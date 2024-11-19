@@ -1763,6 +1763,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
         "dependencies": {
+          "FileCloner": "1.0.0",
           "Google.Apis": "1.68.0",
           "Google.Apis.Auth": "1.68.0",
           "LiveCharts.Wpf": "0.9.7",
@@ -5602,19 +5603,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\sabar\\.nuget\\packages\\": {}
+    "C:\\Users\\shr\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\SoftwareEnGG\\SoftwareEngineering2024\\UXModule\\UXModule.csproj",
+      "projectUniqueName": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\UXModule\\UXModule.csproj",
       "projectName": "UXModule",
-      "projectPath": "C:\\SoftwareEnGG\\SoftwareEngineering2024\\UXModule\\UXModule.csproj",
-      "packagesPath": "C:\\Users\\sabar\\.nuget\\packages\\",
-      "outputPath": "C:\\SoftwareEnGG\\SoftwareEngineering2024\\UXModule\\obj\\",
+      "projectPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\UXModule\\UXModule.csproj",
+      "packagesPath": "C:\\Users\\shr\\.nuget\\packages\\",
+      "outputPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\UXModule\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\sabar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\shr\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -5628,20 +5629,20 @@
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "C:\\SoftwareEnGG\\SoftwareEngineering2024\\Dashboard\\Dashboard.csproj": {
-              "projectPath": "C:\\SoftwareEnGG\\SoftwareEngineering2024\\Dashboard\\Dashboard.csproj"
+            "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Dashboard\\Dashboard.csproj": {
+              "projectPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Dashboard\\Dashboard.csproj"
             },
-            "C:\\SoftwareEnGG\\SoftwareEngineering2024\\FileCloner\\FileCloner.csproj": {
-              "projectPath": "C:\\SoftwareEnGG\\SoftwareEngineering2024\\FileCloner\\FileCloner.csproj"
+            "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\FileCloner\\FileCloner.csproj": {
+              "projectPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\FileCloner\\FileCloner.csproj"
             },
-            "C:\\SoftwareEnGG\\SoftwareEngineering2024\\Networking\\Networking.csproj": {
-              "projectPath": "C:\\SoftwareEnGG\\SoftwareEngineering2024\\Networking\\Networking.csproj"
+            "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Networking\\Networking.csproj": {
+              "projectPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Networking\\Networking.csproj"
             },
-            "C:\\SoftwareEnGG\\SoftwareEngineering2024\\Screenshare\\Screenshare.csproj": {
-              "projectPath": "C:\\SoftwareEnGG\\SoftwareEngineering2024\\Screenshare\\Screenshare.csproj"
+            "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Screenshare\\Screenshare.csproj": {
+              "projectPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\Screenshare\\Screenshare.csproj"
             },
-            "C:\\SoftwareEnGG\\SoftwareEngineering2024\\ViewModel\\ViewModel.csproj": {
-              "projectPath": "C:\\SoftwareEnGG\\SoftwareEngineering2024\\ViewModel\\ViewModel.csproj"
+            "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\ViewModel\\ViewModel.csproj": {
+              "projectPath": "C:\\Mac\\Home\\Downloads\\SEGroup\\SoftwareEngineering2024\\ViewModel\\ViewModel.csproj"
             }
           }
         }
@@ -5729,7 +5730,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

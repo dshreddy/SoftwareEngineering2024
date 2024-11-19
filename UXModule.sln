@@ -11,13 +11,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Updater", "SoftwareEngineer
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolInterface", "SoftwareEngineering2024-UpdaterNew\ToolInterface\ToolInterface.csproj", "{95D42013-7799-4830-8971-9CD5D20CD889}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileCloner", "FileCloner\FileCloner.csproj", "{8161D20A-A842-4DB3-9B61-CF822C81B2F2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileCloner", "FileCloner\FileCloner.csproj", "{8161D20A-A842-4DB3-9B61-CF822C81B2F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModel", "ViewModel\ViewModel.csproj", "{5ED4F792-0C72-46BA-A6A2-750A10D7349E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ViewModel", "ViewModel\ViewModel.csproj", "{5ED4F792-0C72-46BA-A6A2-750A10D7349E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Screenshare", "Screenshare\Screenshare.csproj", "{4B650E36-A2DE-4CE7-ABAA-144CBAAD7E56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Screenshare", "Screenshare\Screenshare.csproj", "{4B650E36-A2DE-4CE7-ABAA-144CBAAD7E56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dashboard", "Dashboard\Dashboard.csproj", "{997C3B5B-99D0-404D-A5E3-FBA617685ABC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dashboard", "Dashboard\Dashboard.csproj", "{997C3B5B-99D0-404D-A5E3-FBA617685ABC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileClonerTestCases", "FileClonerTestCases\FileClonerTestCases.csproj", "{141FD064-C509-47EC-BADE-DC838D8F7701}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{997C3B5B-99D0-404D-A5E3-FBA617685ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{997C3B5B-99D0-404D-A5E3-FBA617685ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{997C3B5B-99D0-404D-A5E3-FBA617685ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{141FD064-C509-47EC-BADE-DC838D8F7701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{141FD064-C509-47EC-BADE-DC838D8F7701}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{141FD064-C509-47EC-BADE-DC838D8F7701}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{141FD064-C509-47EC-BADE-DC838D8F7701}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

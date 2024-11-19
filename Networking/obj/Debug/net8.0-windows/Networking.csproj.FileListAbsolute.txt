@@ -24,3 +24,16 @@ C:\SoftwareEnGG\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Netw
 C:\SoftwareEnGG\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\refint\Networking.dll
 C:\SoftwareEnGG\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.pdb
 C:\SoftwareEnGG\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\ref\Networking.dll
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\bin\Debug\net8.0-windows\Networking.deps.json
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\bin\Debug\net8.0-windows\Networking.dll
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\bin\Debug\net8.0-windows\Networking.pdb
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.csproj.AssemblyReference.cache
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.GeneratedMSBuildEditorConfig.editorconfig
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.AssemblyInfoInputs.cache
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.AssemblyInfo.cs
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.csproj.CoreCompileInputs.cache
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.sourcelink.json
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.dll
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\refint\Networking.dll
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\Networking.pdb
+C:\Mac\Home\Downloads\SEGroup\SoftwareEngineering2024\Networking\obj\Debug\net8.0-windows\ref\Networking.dll

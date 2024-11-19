@@ -8,7 +8,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Networking;
 using Networking.Communication;
-//using FileCloner.Models.NetworkService;
+using FileCloner.Models.NetworkService;
 
 namespace Dashboard
 {
@@ -51,7 +51,7 @@ namespace Dashboard
         public ObservableCollection<UserDetails> ServerUserList { get; private set; } = new ObservableCollection<UserDetails>();
         public ObservableCollection<UserDetails> TotalServerUserList { get; private set; } = new ObservableCollection<UserDetails>();
 
-        //public Server _fileClonerInstance = Server.GetServerInstance();
+        public Server _fileClonerInstance = Server.GetServerInstance();
 
 
         public Server_Dashboard(ICommunicator communicator, string username, string useremail, string profilePictureUrl)
@@ -259,7 +259,7 @@ namespace Dashboard
 
             _communicator.AddClient(newUserId, socket);
 
-            //_fileClonerInstance.SetUser(newUserId,socket);
+            _fileClonerInstance.SetUser(newUserId,socket);
 
             // Send only the userId to the new client
             DashboardDetails dashboardMessage = new DashboardDetails
