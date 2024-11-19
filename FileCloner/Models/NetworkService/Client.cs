@@ -17,6 +17,7 @@ using Networking.Serialization;
 using System.IO;
 using System.Text;
 using System.Diagnostics.CodeAnalysis;
+using FileCloner.FileClonerLogging;
 
 namespace FileCloner.Models.NetworkService;
 
@@ -35,6 +36,8 @@ public class Client : INotificationHandler
     private readonly Serializer _serializer;
     private readonly List<string> _responders = [];
 
+    private FileClonerLogger _logger = new("Client");
+
     /// <summary>
     /// Constructor initializes the client, sets up communication, and subscribes to the server.
     /// </summary>
@@ -46,6 +49,7 @@ public class Client : INotificationHandler
         this._logAction = logAction;
         _serializer = new Serializer();
         logAction?.Invoke("[Client] Connected to server!");
+        _logger.Log("[Client] Connected to server!");
         s_client.Subscribe(Constants.ModuleName, this, false); // Subscribe to receive notifications
     }
 
@@ -84,6 +88,7 @@ public class Client : INotificationHandler
         catch (Exception ex)
         {
             _logAction?.Invoke("[Client] Request Failed : " + ex.Message);
+            _logger.Log("[Client] Request Failed : " + ex.Message, isErrorMessage: true);
         }
     }
 
@@ -121,10 +126,12 @@ public class Client : INotificationHandler
                 // Send the message
                 s_client.Send(_serializer.Serialize<Message>(message), Constants.ModuleName, "");
                 _logAction?.Invoke($"[Client] Summary Sent to {responder}");
+                _logger.Log($"Summary sent to {responder}");
             }
             catch (Exception ex)
             {
                 _logAction?.Invoke($"[Client] Failed to send summary to {responder} : {ex.Message}");
+                _logger.Log($"[Client] Failed to send summary to {responder} : {ex.Message}", isErrorMessage: true);
             }
         }
     }
@@ -147,10 +154,12 @@ public class Client : INotificationHandler
 
             s_client.Send(_serializer.Serialize<Message>(message), Constants.ModuleName, "");
             _logAction?.Invoke($"[Client] Response Sent to {data.From}");
+            _logger.Log($"[Client] Response Sent to {data.From}");
         }
         catch (Exception ex)
         {
             _logAction?.Invoke($"[Client] Failed to send response to {data.From} : {ex.Message}");
+            _logger.Log($"[Client] Failed to send response to {data.From} : {ex.Message}", isErrorMessage: true);
         }
     }
 
@@ -165,6 +174,7 @@ public class Client : INotificationHandler
             Thread senderThread = new Thread(() => {
                 SendFilesInChunks(from, path, requesterPath);
             });
+            _logger.Log($"Starting to send file: {path} in chunks");
             senderThread.Start();
 
 
@@ -173,6 +183,7 @@ public class Client : INotificationHandler
         catch (Exception ex)
         {
             _logAction?.Invoke($"[Client] Failed to send response to from {from} : {ex.Message}");
+            _logger.Log($"[Client] Failed to send response to from {from} : {ex.Message}", isErrorMessage: true);
         }
     }
 
@@ -214,6 +225,7 @@ public class Client : INotificationHandler
                 };
 
                 s_client.Send(_serializer.Serialize<Message>(message), Constants.ModuleName, "");
+                _logger.Log($"Sent file {path} chunk Number : {indexOfChunkBeingSent}");
                 if (indexOfChunkBeingSent % 10 == 0)
                 {
                     _logAction?.Invoke($"[Client] Sent {indexOfChunkBeingSent} chunks of {path} to {from}");
@@ -225,6 +237,10 @@ public class Client : INotificationHandler
         {
             _logAction?.Invoke(
                 $"[Client] Exception occured while sending {indexOfChunkBeingSent} : {ex.Message}"
+            );
+            _logger.Log(
+                $"[Client] Exception occured while sending {indexOfChunkBeingSent} : {ex.Message}",
+                isErrorMessage: true
             );
         }
 
@@ -238,6 +254,7 @@ public class Client : INotificationHandler
     public void StopCloning()
     {
         s_requestID++;
+        _logger.Log($"Stopping Cloning, Increased s_requestID to {s_requestID}");
     }
 
     /// <summary>
@@ -249,6 +266,7 @@ public class Client : INotificationHandler
         Message data = _serializer.Deserialize<Message>(serializedData);
         string subject = data.Subject;
         string from = data.From;
+        _logger.Log($"Data received from {data.From} with subject {data.Subject}");
 
         // Prevent processing self-sent messages
         if (from != Constants.IPAddress || s_requestID != data.RequestID)
@@ -281,6 +299,7 @@ public class Client : INotificationHandler
         try
         {
             _logAction?.Invoke($"[Client] Response received from {data.From}");
+            _logger.Log($"[Client] Response received from {data.From}");
             _responders.Add(data.From);
             string savePath = Path.Combine(Constants.ReceivedFilesFolderPath, $"{data.From}.json");
             File.WriteAllText(savePath, data.Body);
@@ -288,6 +307,7 @@ public class Client : INotificationHandler
         catch (Exception e)
         {
             _logAction?.Invoke($"[Client] Failed to save response from {data.From} : {e}");
+            _logger.Log($"[Client] Failed to save response from {data.From} : {e}", isErrorMessage: true);
         }
     }
 
@@ -309,6 +329,7 @@ public class Client : INotificationHandler
                 {
                     string localPath = paths[0].Trim();
                     string requesterPath = paths[1].Trim();
+                    _logger.Log($"Starting to send file for cloning {data.From}, {localPath}, {requesterPath}");
 
                     // Send file for cloning using the specified paths
                     SendFileForCloning(data.From, localPath, requesterPath);
@@ -316,12 +337,14 @@ public class Client : INotificationHandler
                 else
                 {
                     _logAction?.Invoke($"[Client] Invalid path format in summary data: {line}");
+                    _logger.Log($"[Client] Invalid path format in summary data: {line}");
                 }
             }
         }
         catch (Exception ex)
         {
             _logAction?.Invoke($"[Client] Failed to process summary: {ex.Message}");
+            _logger.Log($"[Client] Failed to process summary: {ex.Message}", isErrorMessage: true);
         }
     }
 
@@ -330,16 +353,17 @@ public class Client : INotificationHandler
     /// </summary>
     public void OnFileForCloningReceived(Message data)
     {
-        // logAction?.Invoke($"Something received");
         try
         {
             // Extract the save path from message metadata
             string requesterPath = data.MetaData;
+            _logger.Log($"File for cloning received : meta data : {data.MetaData}");
 
             // Ensure directory exists for the requester path
             if (!Directory.Exists(Path.GetDirectoryName(requesterPath)))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(requesterPath));
+                _logger.Log($"Directory created {Path.GetDirectoryName(requesterPath)}");
             }
 
             // Write the file content to the specified path
@@ -356,6 +380,7 @@ public class Client : INotificationHandler
             }
 
             int chunkNumber = int.Parse(messageBodyList[0]);
+            _logger.Log($"Receving File {requesterPath} chunk Number : {chunkNumber}");
             string serializedFileContent = messageBodyList[1];
             FileMode fileMode = chunkNumber == Constants.ChunkStartIndex ? FileMode.Create : FileMode.Append;
             byte[] buffer = _serializer.Deserialize<byte[]>(serializedFileContent);
@@ -375,12 +400,15 @@ public class Client : INotificationHandler
             {
                 _logAction?.Invoke($"[Client] File received ({chunkNumber} chunks till now)" +
                     $" from {data.From} and saved to {requesterPath}");
+                _logger.Log($"[Client] File received ({chunkNumber} chunks till now)" +
+                    $" from {data.From} and saved to {requesterPath}");
             }
 
         }
         catch (Exception ex)
         {
             _logAction?.Invoke($"[Client] Failed to save received file from {data.From}: {ex.Message}");
+            _logger.Log($"[Client] Failed to save received file from {data.From}: {ex.Message}", isErrorMessage: true);
         }
     }
 
@@ -390,6 +418,7 @@ public class Client : INotificationHandler
     [ExcludeFromCodeCoverage]
     public void Stop()
     {
+        _logger.Log("Stopping Client");
         s_client.Stop();
     }
 }

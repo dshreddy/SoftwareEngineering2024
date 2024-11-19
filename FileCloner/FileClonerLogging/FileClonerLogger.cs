@@ -77,12 +77,16 @@ public class FileClonerLogger
             bool isErrorMessage = false)
     {
         // string logToBeWritten = $"{_moduleName}:{filePath}->{memberName}->{lineNumber} :: {message}";
-        string logToBeWritten = $"{Path.GetFileName(filePath)}->{memberName}->{lineNumber} :: {message}";
-        if (isErrorMessage)
+        try
         {
-            logToBeWritten = $"ERROR : {logToBeWritten}";
+            string logToBeWritten = $"{Path.GetFileName(filePath)}->{memberName}->{lineNumber} :: {message}";
+            if (isErrorMessage)
+            {
+                logToBeWritten = $"ERROR : {logToBeWritten}";
+            }
+            Write(logToBeWritten);
         }
-        Write(logToBeWritten);
+        catch { }
     }
 
     /// <summary>
