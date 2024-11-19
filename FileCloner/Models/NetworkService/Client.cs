@@ -174,6 +174,7 @@ public class Client : INotificationHandler
             Thread senderThread = new Thread(() => {
                 SendFilesInChunks(from, path, requesterPath);
             });
+            senderThread.IsBackground = true;
             _logger.Log($"Starting to send file: {path} in chunks");
             senderThread.Start();
 
