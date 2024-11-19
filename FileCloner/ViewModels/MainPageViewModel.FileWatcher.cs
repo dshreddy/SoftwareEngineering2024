@@ -9,6 +9,7 @@
  *               in the directory which is set now.
  *****************************************************************************/
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace FileCloner.ViewModels;

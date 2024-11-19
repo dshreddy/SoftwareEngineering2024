@@ -197,6 +197,7 @@ public class DiffGenerator
                     node.RelativePaths = node.RelativePaths + "\\" + fullPath[i];
                 }
                 Add_to_Tree(node, fullPath, index + 1, fileMetaData, node.FullPath);
+            }
         }
     }
 

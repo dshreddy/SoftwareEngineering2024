@@ -1,4 +1,4 @@
-/******************************************************************************
+﻿/******************************************************************************
  * Filename    = MainPageViewModel.TreeViewGenerator.cs
  *
  * Author(s)      = Sai Hemanth Reddy & Sarath A
@@ -45,39 +45,6 @@ partial class MainPageViewModel : ViewModelBase
         {
             // Show error if tree generation fails
             MessageBox.Show(e.Message);
-        }
-    }
-
-    /// <summary>
-    /// Parses the JSON file representing directory structure and generates the root node.
-    /// </summary>
-    /// 
-    [ExcludeFromCodeCoverage]
-    private void RootGenerator(string filePath)
-    {
-        try
-        {
-            // Clear any existing nodes in the tree and reset counters
-            Tree.Clear();
-            ResetCounts();
-            if (filePath == Constants.OutputFilePath)
-            {
-                RootGenerator(filePath);
-                return;
-            }
-
-            // Generate input file representing the structure of the root directory
-            _fileExplorerServiceProvider.GenerateInputFile(RootDirectoryPath);
-
-            // Parse the input file and create tree nodes
-            RootGenerator(Constants.InputFilePath);
-        }
-        catch (Exception e)
-        {
-            // Show error if tree generation fails
-            Dispatcher.Invoke(() => {
-                MessageBox.Show($"[TreeViewGenerator] {e.Message}");
-            });
         }
     }
 
