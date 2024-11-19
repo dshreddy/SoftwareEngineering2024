@@ -27,8 +27,7 @@ namespace UXModule
         public string? userName
         {
             get { return _userName; }
-            set
-            {
+            set {
                 if (_userName != value)
                 {
                     _userName = value;
@@ -50,8 +49,7 @@ namespace UXModule
         public string? ProfilePictureUrl
         {
             get { return _profilePictureUrl; }
-            set
-            {
+            set {
                 if (_profilePictureUrl != value)
                 {
                     _profilePictureUrl = value;
@@ -113,10 +111,8 @@ namespace UXModule
 
         public void SendInfo(string username, string useremail)
         {
-            DashboardDetails details = new DashboardDetails
-            {
-                User = new UserDetails
-                {
+            DashboardDetails details = new DashboardDetails {
+                User = new UserDetails {
                     userName = username,
                     userEmail = useremail,
                     ProfilePictureUrl = UserProfileUrl,
@@ -137,8 +133,7 @@ namespace UXModule
 
         public bool ClientLeft()
         {
-            DashboardDetails details = new DashboardDetails
-            {
+            DashboardDetails details = new DashboardDetails {
                 User = new UserDetails { userName = UserName },
                 Action = Action.ClientUserLeft
             };

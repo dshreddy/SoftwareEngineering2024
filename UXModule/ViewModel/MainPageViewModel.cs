@@ -23,8 +23,7 @@ namespace UXModule.ViewModel
         public ObservableCollection<UserDetails> UserDetailsList
         {
             get { return _userDetailsList; }
-            set
-            {
+            set {
                 if (_userDetailsList != value)
                 {
                     _userDetailsList = value;
@@ -47,8 +46,7 @@ namespace UXModule.ViewModel
         public string? UserName
         {
             get { return _userName; }
-            set
-            {
+            set {
                 _userName = value;
                 OnPropertyChanged(nameof(UserName));
             }
@@ -59,8 +57,7 @@ namespace UXModule.ViewModel
         public string? ServerIP
         {
             get { return _serverIP; }
-            set
-            {
+            set {
                 _serverIP = value;
                 OnPropertyChanged(nameof(ServerIP));
             }
@@ -69,8 +66,7 @@ namespace UXModule.ViewModel
         public string ServerPort
         {
             get { return _serverPort; }
-            set
-            {
+            set {
                 if (_serverPort != value)
                 {
                     _serverPort = value;
@@ -144,8 +140,7 @@ namespace UXModule.ViewModel
 
                 if (users != null)
                 {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
+                    Application.Current.Dispatcher.Invoke(() => {
                         UserDetailsList.Clear();
                         foreach (var user in users)
                         {
@@ -158,4 +153,4 @@ namespace UXModule.ViewModel
             }
         }
     }
-    }
+}

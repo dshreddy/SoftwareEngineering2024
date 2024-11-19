@@ -48,7 +48,7 @@ public partial class SplashScreen : Window
         StopAnimations();
         timer.Stop();
         OpenNextWindow();
-        this.Close();   
+        this.Close();
 
     }
 

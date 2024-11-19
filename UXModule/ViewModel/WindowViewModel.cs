@@ -38,8 +38,7 @@ namespace UXModule.ViewModel
         public int Resizebordersize { get { return Borderless ? 0 : 6; } }
         public Thickness ResizeBorderThickness
         {
-            get
-            {
+            get {
                 return new Thickness(Resizebordersize + OuterMarginSize);
             }
 
@@ -47,45 +46,38 @@ namespace UXModule.ViewModel
 
         public Thickness InnerContentPadding
         {
-            get
-            {
+            get {
                 return new Thickness(Resizebordersize);
             }
 
         }
         public int OuterMarginSize
         {
-            get
-            {
+            get {
                 return mwindow.WindowState == WindowState.Maximized ? 0 : mouterMarginSize;
             }
-            set
-            {
+            set {
                 mouterMarginSize = value;
             }
         }
         public Thickness OuterMarginThickness
         {
-            get
-            {
+            get {
                 return new Thickness(OuterMarginSize);
             }
         }
         public int CornerRadius
         {
-            get
-            {
+            get {
                 return mwindow.WindowState == WindowState.Maximized ? 0 : mwindowCornerSize;
             }
-            set
-            {
+            set {
                 mwindowCornerSize = value;
             }
         }
         public CornerRadius WindowCornerRadius
         {
-            get
-            {
+            get {
                 return new CornerRadius(CornerRadius);
             }
         }
@@ -93,8 +85,7 @@ namespace UXModule.ViewModel
 
         public GridLength CaptionHeightGridLength
         {
-            get
-            {
+            get {
                 return new GridLength(CaptionHeightSize);
             }
         }
@@ -125,8 +116,7 @@ namespace UXModule.ViewModel
         public ApplicationPage CurrentPage
         {
             get => _currentPage;
-            set
-            {
+            set {
                 _currentPage = value;
                 OnPropertyChanged(nameof(CurrentPage));
             }
@@ -136,8 +126,7 @@ namespace UXModule.ViewModel
             this.mwindow = Window;
             this.MainPageViewModel = viewModel;
 
-            mwindow.StateChanged += (Sender, e) =>
-            {
+            mwindow.StateChanged += (Sender, e) => {
                 OnPropertyChanged(nameof(CaptionHeightGridLength));
                 OnPropertyChanged(nameof(ResizeBorderThickness));
                 OnPropertyChanged(nameof(CornerRadius));

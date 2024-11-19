@@ -11,11 +11,13 @@
  *               and starting file cloning.
  *****************************************************************************/
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using FileCloner.Models;
 using FileCloner.Models.NetworkService;
 
 namespace FileCloner.ViewModels;
+[ExcludeFromCodeCoverage]
 
 /// <summary>
 /// ViewModel for the MainPage, handling file operations, commands, and UI bindings.

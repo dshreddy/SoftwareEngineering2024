@@ -125,7 +125,7 @@ public class Node : ViewModelBase
 
         if (IsFile)
         {
-            MainPageViewModel.UpdateSelectedFiles(IpAddress, FullFilePath, RelativePath , IsChecked);
+            MainPageViewModel.UpdateSelectedFiles(IpAddress, FullFilePath, RelativePath, IsChecked);
         }
 
         // Update static counters based on node's type and checked state

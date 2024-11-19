@@ -101,10 +101,6 @@ partial class MainPageViewModel : ViewModelBase
         if (dialog.ShowDialog() == CommonFileDialogResult.Ok && dialog.FileName != RootDirectoryPath)
         {
             RootDirectoryPath = dialog.FileName;
-            Thread watchChangedFile = new(() => {
-                WatchFile(dialog.FileName);
-            });
-            watchChangedFile.Start();
             TreeGenerator(_rootDirectoryPath);
         }
     }

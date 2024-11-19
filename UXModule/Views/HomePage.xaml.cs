@@ -48,7 +48,7 @@ namespace UXModule.Views
                 if (response == "success")
                 {
                     var serverHomePage = new ServerHomePage(_viewModel);
-                    this.NavigationService.Navigate(new MainPage("server",_viewModel,serverHomePage));
+                    this.NavigationService.Navigate(new MainPage("server", _viewModel, serverHomePage));
                 }
             }
             catch (Exception exception)
@@ -86,7 +86,7 @@ namespace UXModule.Views
                     if (response == "success")
                     {
                         var clientHomePage = new ClientHomePage(_viewModel);
-                        this.NavigationService.Navigate(new MainPage("client",_viewModel,clientHomePage));
+                        this.NavigationService.Navigate(new MainPage("client", _viewModel, clientHomePage));
                     }
                     else
                     {

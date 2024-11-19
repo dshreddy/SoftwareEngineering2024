@@ -13,7 +13,7 @@
 
         // Empty constructor
         public Packet()
-        {}
+        { }
 
         public Packet(string serializedData, string destination, string moduleOfPacket)
         {

@@ -8,7 +8,7 @@
  * Description = Generates the tree view of the directory selected, by recursively 
  *               populating node and its children with data.
  *****************************************************************************/
-﻿using FileCloner.Models;
+using FileCloner.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;

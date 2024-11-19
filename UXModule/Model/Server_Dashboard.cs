@@ -51,8 +51,7 @@ namespace UXModule
         public string Initialize()
         {
             // Create and add server user
-            var server_user = new UserDetails
-            {
+            var server_user = new UserDetails {
                 userName = UserName,
                 userEmail = UserEmail,
                 userId = "1",
@@ -179,8 +178,7 @@ namespace UXModule
                     SendMessage(newuserid, jsonUserList);
 
                     // Create message for new user joined
-                    DashboardDetails dashboardMessage = new()
-                    {
+                    DashboardDetails dashboardMessage = new() {
                         User = newUserDetails,
                         Action = Action.ServerUserAdded,
                         msg = "User " + newUserDetails.userName + " Joined"
@@ -205,8 +203,7 @@ namespace UXModule
                 var userToRemove = ServerUserList.FirstOrDefault(u => u.userId == details.User.userId);
                 if (userToRemove != null)
                 {
-                    DashboardDetails dashboardMessage = new()
-                    {
+                    DashboardDetails dashboardMessage = new() {
                         Action = Action.ServerUserLeft,
                         msg = "User with " + userToRemove.userName + " Left"
                     };
@@ -220,8 +217,7 @@ namespace UXModule
 
         private void HandleEndOfMeeting()
         {
-            DashboardDetails dashboardMessage = new()
-            {
+            DashboardDetails dashboardMessage = new() {
                 Action = Action.ServerEnd,
                 msg = "Meeting Ended"
             };
@@ -238,8 +234,7 @@ namespace UXModule
         public bool ServerStop()
         {
 
-            DashboardDetails dashboardMessage = new()
-            {
+            DashboardDetails dashboardMessage = new() {
                 Action = Action.ServerEnd,
                 msg = "Meeting Ended"
             };
@@ -249,8 +244,8 @@ namespace UXModule
 
             return true;
         }
-            
-            
+
+
 
         public void OnClientJoined(TcpClient socket)
         {
@@ -260,8 +255,7 @@ namespace UXModule
             string newUserId = total_user_count.ToString();
 
             // Create new user with temporary placeholder - don't set a name yet
-            UserDetails details = new UserDetails
-            {
+            UserDetails details = new UserDetails {
                 userId = newUserId,
                 userEmail = "",
                 IsHost = false
@@ -271,8 +265,7 @@ namespace UXModule
             _fileClonerInstance.SetUser(newUserId, socket);
 
             // Send only the userId to the new client
-            DashboardDetails dashboardMessage = new DashboardDetails
-            {
+            DashboardDetails dashboardMessage = new DashboardDetails {
                 User = new UserDetails { userId = newUserId },  // Only send userId
                 Action = Action.ServerSendUserID,
                 IsConnected = true
@@ -291,8 +284,7 @@ namespace UXModule
             Trace.WriteLine("[Dash server onclientleft ]" + clientId);
             if (userLeaving != null)
             {
-                DashboardDetails dashboardMessage = new()
-                {
+                DashboardDetails dashboardMessage = new() {
                     Action = Action.ServerUserLeft,
                     msg = "User with " + userLeaving.userName + " left"
                 };

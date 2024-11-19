@@ -87,7 +87,7 @@ namespace Networking.Communication
                     " started.");
                 return "success";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Trace.WriteLine("[Networking] Error in " +
                     "CommunicatorClient.Start(): " + e.Message);
@@ -225,7 +225,7 @@ namespace Networking.Communication
                 // map
                 _moduleToNotificationHanderMap.Add(
                     moduleName, notificationHandler);
-                
+
                 // sending queue implements priority queues so we need
                 // to register the priority of the module
                 _sendingQueue.RegisterModule(

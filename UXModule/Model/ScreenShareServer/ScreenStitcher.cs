@@ -13,40 +13,40 @@ using UXModule.ViewModel;
 
 namespace UXModule.Model
 {
-    
+
     /// Class contains implementation of the screen stitching using threads (tasks)
-    
+
     public class ScreenStitcher
     {
-        
+
         /// SharedClientScreen object.
-        
+
         private readonly SharedClientScreen _sharedClientScreen;
 
-        
+
         /// Thread to run stitcher.
-        
+
         private Task? _stitchTask;
 
-        
+
         /// A private variable to store old image.
-        
+
         private Bitmap? _oldImage;
 
-        
+
         /// Old resolution of the image.
-        
+
         private Resolution? _resolution;
 
-        
+
         /// A count to maintain the number of image stitched. Used in
         /// trace logs.
-        
+
         private int _cnt = 0;
 
-        
+
         /// Constructor for ScreenSticher.
-        
+
         public ScreenStitcher(SharedClientScreen scs)
         {
             _oldImage = null;
@@ -55,11 +55,11 @@ namespace UXModule.Model
             _sharedClientScreen = scs;
         }
 
-        
+
         /// Uses the 'diff' image curr and the previous image to find the
         /// current image. This method is used when the client sends a diff
         /// instead of entire image to server.
-        
+
 
         public static unsafe Bitmap Process(List<PixelDifference> changes, Bitmap prev)
         {
@@ -80,9 +80,9 @@ namespace UXModule.Model
             return prev;
         }
 
-        
+
         /// Method to decompress a byte array compressed by processor.
-        
+
 
         public static byte[] DecompressByteArray(byte[] data)
         {
@@ -95,11 +95,11 @@ namespace UXModule.Model
             return output.ToArray();
         }
 
-        
+
         /// Creates(if not exist) and start the task `_stitchTask`
         /// Will read the image using `_sharedClientScreen.GetFrame`
         /// and puts the final image using `_sharedClientScreen.PutFinalImage`.
-        
+
         /// <param name="taskId">
         /// Id of the task in which this function is called.
         /// </param>
@@ -107,8 +107,7 @@ namespace UXModule.Model
         {
             if (_stitchTask != null) return;
 
-            _stitchTask = new Task(() =>
-            {
+            _stitchTask = new Task(() => {
                 while (taskId == _sharedClientScreen.TaskId)
                 {
                     (string, List<PixelDifference>)? newFrame = _sharedClientScreen.GetImage(taskId);
@@ -134,9 +133,9 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully created the stitching task with id {taskId} for the client with id {_sharedClientScreen.Id}", withTimeStamp: true));
         }
 
-        
+
         /// Method to stop the stitcher task.
-        
+
         public void StopStitching()
         {
             if (_stitchTask == null) return;
@@ -156,13 +155,13 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage($"Successfully stopped the processing task for the client with id {_sharedClientScreen.Id}", withTimeStamp: true));
         }
 
-        
+
         /// Function to stitch new frame over old image. If the data sent from client
         /// has '1' in front then it is a complete image and hence the Process function
         /// is not used. Otherwise, the data will have a '0' in front of it and we will
         /// have to compute the XOR (using process function) in order to find the current
         /// image.
-        
+
         private Bitmap Stitch(Bitmap? oldImage, (string, List<PixelDifference>) newFrame)
         {
 

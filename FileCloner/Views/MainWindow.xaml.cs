@@ -7,10 +7,12 @@
  *
  * Description = Code behind for MainWindow. Initializes and navigates to MainPage.
  *****************************************************************************/
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace FileCloner.Views;
+[ExcludeFromCodeCoverage]
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

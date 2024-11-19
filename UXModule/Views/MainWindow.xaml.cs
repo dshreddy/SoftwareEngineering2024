@@ -21,14 +21,14 @@ namespace UXModule.Views
     public partial class MainWindow : Window
     {
 
-        public event PropertyChangingEventHandler? PropertyChang;  
+        public event PropertyChangingEventHandler? PropertyChang;
 
         private readonly MainPageViewModel _mainPageViewModel;
         public MainWindow()
         {
             InitializeComponent();
 
-     
+
 
             _mainPageViewModel = new MainPageViewModel();
 
@@ -40,5 +40,5 @@ namespace UXModule.Views
             //this.Close();
 
         }
-}
+    }
 }

@@ -14,9 +14,9 @@ using System.DirectoryServices.ActiveDirectory;
 using System.Windows.Media;
 namespace UXModule.Model
 {
-     
+
     // Class contains the necessary functions for taking the screenshot of the current screen.
-     
+
     public class Screenshot
     {
         private static readonly object _lock = new();
@@ -57,9 +57,9 @@ namespace UXModule.Model
             }
         }
 
-         
+
         // Core function of class for taking the screenshot. Uses SharpDX for faster image capture.
-       
+
         public Bitmap MakeScreenshot(Int32 displayIndex = 0, Int32 adapterIndex = 0, Int32 maxTimeout = 5000)
         {
             InitializeVariables(displayIndex, adapterIndex);
@@ -91,9 +91,9 @@ namespace UXModule.Model
             return SmallBitmap;
         }
 
-         
+
         // Initializes the members of the class.
-         
+
         private void InitializeVariables(Int32 displayIndex, Int32 adapterIndex, Boolean forcedInitialization = false)
         {
             Boolean displayIndexChanged = MakeScreenshot_LastDisplayIndexValue != displayIndex;
@@ -111,8 +111,7 @@ namespace UXModule.Model
                 _width = _output1.Description.DesktopBounds.Right - _output1.Description.DesktopBounds.Left;
                 _height = _output1.Description.DesktopBounds.Bottom - _output1.Description.DesktopBounds.Top;
                 _bounds = new Rectangle(Point.Empty, new Size(_width, _height));
-                _texture2DDescription = new Texture2DDescription
-                {
+                _texture2DDescription = new Texture2DDescription {
                     CpuAccessFlags = CpuAccessFlags.Read,
                     BindFlags = BindFlags.None,
                     Format = Format.B8G8R8A8_UNorm,
@@ -134,9 +133,9 @@ namespace UXModule.Model
             }
         }
 
-         
+
         // Disposes the class memebers to avoid memory hogging.
-         
+
         public void DisposeVariables()
         {
             _bitmap?.Dispose();

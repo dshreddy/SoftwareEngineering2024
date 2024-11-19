@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace UXModule.Model
 {
-     
+
     // Class contains implementation of the screen capturing using threads (tasks)
-     
+
     public class ScreenCapturer
     {
         readonly Queue<Bitmap> _capturedFrame;
@@ -31,9 +31,9 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage("[Screenshare] Successfully created an instance of ScreenCapturer.", withTimeStamp: true));
         }
 
-         
+
         // Returns the bitmap image at the front of _capturedFrame queue. 
-         
+
         public Bitmap? GetImage(ref bool cancellationToken)
         {
             while (true)
@@ -57,9 +57,9 @@ namespace UXModule.Model
             }
         }
 
-         
+
         // Returns the length of the _capturedFrame queue
-         
+
         public int GetCapturedFrameLength()
         {
             lock (_capturedFrame)
@@ -69,15 +69,14 @@ namespace UXModule.Model
             }
         }
 
-         
+
         // Creates the task for capturing screenshots and starts capturing
-         
+
         public void StartCapture()
         {
             Trace.WriteLine(Utils.GetDebugMessage($"[Screenshare] Starting Screen Capture.", withTimeStamp: true));
             _cancellationToken = false;
-            _captureTask = new Task(() =>
-            {
+            _captureTask = new Task(() => {
                 while (!_cancellationToken)
                 {
                     lock (_capturedFrame)
@@ -113,9 +112,9 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage($"[Screenshare] Screen Capture started successfully.", withTimeStamp: true));
         }
 
-         
+
         // Stops the capturing by Cancelling the task and clears the _capturedFrame queue.
-         
+
         public void StopCapture()
         {
             Trace.WriteLine(Utils.GetDebugMessage($"[Screenshare] Stopping Screen Capture.", withTimeStamp: true));

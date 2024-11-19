@@ -29,11 +29,11 @@ namespace Networking.Communication
 
         // this map will store the socket listeners, one socket
         // listener listening to one client
-        private readonly Dictionary<string, SocketListener> 
+        private readonly Dictionary<string, SocketListener>
             _clientIdToSocketListener = new();
 
         // map to store the notification handlers of subscribed modules
-        private readonly Dictionary<string, INotificationHandler> 
+        private readonly Dictionary<string, INotificationHandler>
             _moduleToNotificationHanderMap = new();
 
         // this thread will be used to accept client requests
@@ -53,7 +53,7 @@ namespace Networking.Communication
             // sends the packets whenever they comes into the queue
             // it also notifies all modules when a client disconnects
             _sendQueueListenerServer = new SendQueueListenerServer(
-                _sendingQueue, _clientIdToClientSocket, 
+                _sendingQueue, _clientIdToClientSocket,
                 _moduleToNotificationHanderMap);
 
             // receive queue listener listens to the receiving queue
@@ -105,7 +105,7 @@ namespace Networking.Communication
                 _clientConnectReuqestAcceptorThread.Start();
 
                 Trace.WriteLine("[Networking] CommunicatorServer " +
-                    "started on IP: " + ip + " and Port: "  + port);
+                    "started on IP: " + ip + " and Port: " + port);
                 return (ip + ":" + port);
             }
             catch (Exception e)
@@ -177,7 +177,7 @@ namespace Networking.Communication
                 foreach (IPAddress ipAddress in host.AddressList)
                 {
                     // check if the address is IPv4 address
-                    if (ipAddress.AddressFamily == 
+                    if (ipAddress.AddressFamily ==
                         AddressFamily.InterNetwork)
                     {
                         string address = ipAddress.ToString();
@@ -222,7 +222,7 @@ namespace Networking.Communication
                 tcpListener.Start();
 
                 // return the port number of the tcp listener
-                int port = 
+                int port =
                     ((IPEndPoint)tcpListener.LocalEndpoint).Port;
                 tcpListener.Stop();
                 return port;
@@ -251,18 +251,18 @@ namespace Networking.Communication
                     // accept client connect request, it will return
                     // the socket which can be used to communicate
                     // with the client
-                    TcpClient clientSocket = 
+                    TcpClient clientSocket =
                         _tcpClientConnectRequestListener.
                         AcceptTcpClient();
 
                     // notify all "subscribed" modules that a new
                     // client has joined
-                    foreach (var moduleToNotificationHandler in 
+                    foreach (var moduleToNotificationHandler in
                         _moduleToNotificationHanderMap)
                     {
-                        string module = 
+                        string module =
                             moduleToNotificationHandler.Key;
-                        var notificationHandler = 
+                        var notificationHandler =
                             moduleToNotificationHandler.Value;
                         notificationHandler.OnClientJoined(
                             clientSocket);
@@ -285,7 +285,7 @@ namespace Networking.Communication
                     {
                         Trace.WriteLine("[Networking] SocketException "
                             + "in CommunicatorServer." +
-                            "AcceptClientConnectRequests(): " + 
+                            "AcceptClientConnectRequests(): " +
                             e.Message);
                     }
                 }
@@ -293,7 +293,7 @@ namespace Networking.Communication
                 {
                     Trace.WriteLine("[Networking] Error in " +
                         "CommunicatorServer." +
-                        "AcceptClientConnectRequests(): " + 
+                        "AcceptClientConnectRequests(): " +
                         e.Message);
                 }
             }
@@ -427,7 +427,7 @@ namespace Networking.Communication
         /// or low priority.
         /// </param>
         /// <returns> void </returns>
-        public void Subscribe(string moduleName, INotificationHandler 
+        public void Subscribe(string moduleName, INotificationHandler
             notificationHandler, bool isHighPriority)
         {
             Trace.WriteLine("[Networking] " +
@@ -459,7 +459,8 @@ namespace Networking.Communication
         /// Returns a dictionary of all clients connected to the server.
         /// </summary>
         /// <returns>Dictionary of all clients connected to the server.</returns>
-        public Dictionary<string, TcpClient> GetClientList(){ 
+        public Dictionary<string, TcpClient> GetClientList()
+        {
             return _clientIdToClientSocket;
         }
     }

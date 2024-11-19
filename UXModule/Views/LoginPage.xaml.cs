@@ -111,8 +111,7 @@ namespace UXModule.Views
         {
             try
             {
-                await Task.Run(() =>
-                {
+                await Task.Run(() => {
                     if (File.Exists("token.json"))
                     {
                         File.Delete("token.json");
@@ -158,8 +157,7 @@ namespace UXModule.Views
 
         private async Task<Userinfo?> GetUserInfoAsync(UserCredential credential)
         {
-            var service = new Oauth2Service(new BaseClientService.Initializer
-            {
+            var service = new Oauth2Service(new BaseClientService.Initializer {
                 HttpClientInitializer = credential,
                 ApplicationName = "Google Sign-In WPF"
             });
@@ -170,8 +168,7 @@ namespace UXModule.Views
 
         private void SaveUserInfoToFile(Userinfo userInfo)
         {
-            var userData = new
-            {
+            var userData = new {
                 Name = userInfo.Name,
                 Email = userInfo.Email,
                 Picture = userInfo.Picture,
