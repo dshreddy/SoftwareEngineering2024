@@ -14,15 +14,15 @@
         <!-- Define reusable colors and styles -->
         <SolidColorBrush x:Key="ButtonBackground" Color="#c23b22"/>
         <SolidColorBrush x:Key="ButtonHoverBackground" Color="#db5856"/>
-        <SolidColorBrush x:Key="StartButtonColor" Color="Green"/>
-        <SolidColorBrush x:Key="StopButtonColor" Color="#c23b22"/>
+        <SolidColorBrush x:Key="StartButtonColor" Color="#DFB6B2"/>
+        <SolidColorBrush x:Key="StopButtonColor" Color="#854F6C"/>
 
         <!-- Reusable Button Style -->
         <Style TargetType="Button" x:Key="DefaultButtonStyle">
             <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontSize" Value="12"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
             <Setter Property="Background" Value="{StaticResource ButtonBackground}"/>
             <Setter Property="BorderBrush" Value="{StaticResource ButtonBackground}"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -38,7 +38,8 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
+                        <Border x:Name="ButtonBorder"
+                            Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
                                 CornerRadius="10">
@@ -47,6 +48,11 @@
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{StaticResource ButtonHoverBackground}"/>
+                            </Trigger>
+                            <!-- Trigger for IsEnabled property -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="DimGray" />
+                                <Setter Property="Foreground" Value="White" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -65,7 +71,7 @@
                 <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
             <TextBox Name="DirectoryPathTextBox" IsReadOnly="True" Text="{Binding RootDirectoryPath, Mode=OneWay}"/>
-            <Button Grid.Column="1" Content="..." Command="{Binding BrowseFoldersCommand}" Style="{StaticResource DefaultButtonStyle}"/>
+            <Button Grid.Column="1" Height="25" Width="30" Content=".  .  ." Command="{Binding BrowseFoldersCommand}" Style="{StaticResource DefaultButtonStyle}"/>
         </Grid>
 
         <!-- Main Content Area -->
@@ -135,7 +141,7 @@
                 <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
 
                 <!-- File Options in the right column -->
-                <StackPanel Grid.Column="2" Orientation="Vertical" Background="White">
+                <StackPanel Grid.Column="2" Orientation="Vertical" Background="#FBE4D8">
                     <StackPanel Orientation="Horizontal">
                             <Label Content="Folders:" FontWeight="SemiBold"/>
                             <Label Content="{Binding FolderCount}"/>
@@ -166,13 +172,13 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <Button Grid.Row="0" Grid.Column="0" Content="Send Request" Command="{Binding SendRequestCommand}" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsSendRequestEnabled}"/>
+                        <Button Grid.Row="0" Grid.Column="0" Content="Send Request" Command="{Binding SendRequestCommand}" Width="200" Height="30" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsSendRequestEnabled}"/>
 
-                        <Button Grid.Row="0" Grid.Column="1" Content="Summarise" Command="{Binding SummarizeCommand}" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsSummarizeEnabled}"/>
+                        <Button Grid.Row="0" Grid.Column="1" Content="Summarise" Command="{Binding SummarizeCommand}" Width="200" Height="30" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsSummarizeEnabled}"/>
 
                         <Button Grid.Row="1" Grid.Column="0" Content="Start Cloning" Command="{Binding StartCloningCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StartButtonColor}" IsEnabled="{Binding IsStartCloningEnabled}"/>
 
-                        <Button Grid.Row="1" Grid.Column="1" Content="Stop Session" Command="{Binding StopSessionCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StopButtonColor}" IsEnabled="{Binding IsStopCloningEnabled}" />
+                        <Button Grid.Row="1" Grid.Column="1" Content="Stop Session" Command="{Binding StopSessionCommand}" Width="200" Height="30" Margin="5" Style="{StaticResource DefaultButtonStyle}" Background="{StaticResource StopButtonColor}" IsEnabled="{Binding IsStopSessionEnabled}" />
                     </Grid>
                     <Label Content="Log" FontWeight="Bold"/>
                         <ListBox ItemsSource="{Binding LogMessages}" Width="450" Height="400" Margin="5" Background="LightGray"/>
