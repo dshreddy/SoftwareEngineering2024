@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
@@ -9,7 +9,7 @@ namespace FileCloner.Models;
 public class SummaryGenerator
 {
     // Dictionary to hold the summary data with relative paths as keys and metadata as values
-    private static Dictionary<string, Dictionary<string, object>> s_summary = [];
+    public static Dictionary<string, Dictionary<string, object>> Summary = [];
 
     private static FileClonerLogger s_logger = new("SummaryGenerator");
 
@@ -21,7 +21,7 @@ public class SummaryGenerator
             s_logger.Log("Generating Summary");
 
             // Clear the dictionary for a fresh start
-            s_summary.Clear();
+            Summary.Clear();
 
             // Parse the input file to add entries into the summary
             ParseInputFile(Constants.InputFilePath);
@@ -96,10 +96,10 @@ public class SummaryGenerator
                 }
 
                 // Parse file metadata and add it to the dictionary
-                if (!s_summary.ContainsKey(relativePath))
+                if (!Summary.ContainsKey(relativePath))
                 {
                     Dictionary<string, object> fileData = ParseFileMetadata(element, defaultColor, key);
-                    s_summary[relativePath] = fileData;
+                    Summary[relativePath] = fileData;
                 }
                 else
                 {
@@ -141,7 +141,7 @@ public class SummaryGenerator
     private static void UpdateEntryWithNewData(JsonElement element, string relativePath)
     {
         s_logger.Log("Updating Entry with New data");
-        if (s_summary.TryGetValue(relativePath, out Dictionary<string, object>? existingMetadata))
+        if (Summary.TryGetValue(relativePath, out Dictionary<string, object>? existingMetadata))
         {
             if (element.TryGetProperty("LAST_MODIFIED", out JsonElement newLastModifiedProp) && existingMetadata.ContainsKey("LAST_MODIFIED"))
             {
@@ -156,7 +156,7 @@ public class SummaryGenerator
                     string newColor = previousColor == "GREEN" ? "GREEN" : "RED";
 
                     Dictionary<string, object> newMetadata = ParseFileMetadata(element, newColor, relativePath);
-                    s_summary[relativePath] = newMetadata;
+                    Summary[relativePath] = newMetadata;
                 }
             }
         }
@@ -167,7 +167,7 @@ public class SummaryGenerator
         // Create a dictionary to group files by their ADDRESS, with a "CHILDREN" dictionary for each address
         var groupedByAddress = new Dictionary<string, Dictionary<string, object>>();
 
-        foreach (KeyValuePair<string, Dictionary<string, object>> entry in s_summary)
+        foreach (KeyValuePair<string, Dictionary<string, object>> entry in Summary)
         {
             Dictionary<string, object> metadata = entry.Value;
 

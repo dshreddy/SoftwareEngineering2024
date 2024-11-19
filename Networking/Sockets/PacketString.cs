@@ -62,7 +62,7 @@ namespace Networking.Sockets
             try
             {
                 // remove the "BEGIN" and "END" frame from the string
-                packetString = 
+                packetString =
                     packetString[6..(packetString.Length - 6)];
 
                 // replace "NOTEND" by "END" because we had replaced

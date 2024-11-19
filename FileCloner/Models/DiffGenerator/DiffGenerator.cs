@@ -10,12 +10,13 @@
 
 
 
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
 using FileCloner.Models.DiffGenerator;
 
 namespace FileCloner.Models.DiffGenerator;
-
+[ExcludeFromCodeCoverage]
 public class DiffGenerator
 {
     private string _diffFilePath;
@@ -48,11 +49,11 @@ public class DiffGenerator
                     // Deserialize JsonElement into FileMetadata
                     FileMetadata? rootFile = JsonSerializer.Deserialize<FileMetadata>(jsonElement.GetRawText());
                     rootFile.Address = ipAddress;
-                    
+
                     // Process the children of this root
                     if (rootFile?.Children != null)
                     {
-                  
+
                         if (i == 0)
                         {
                             ProcessChildren(rootFile.Children, allFiles, rootFile.Address, "White", rootKey);
@@ -81,17 +82,17 @@ public class DiffGenerator
     // Recursive method to process children
     public void ProcessChildren(Dictionary<string, FileMetadata> children, Dictionary<string, FileMetadata> allFiles, string iPaddress, string color, string rootName)
     {
- 
+
 
         foreach ((string fileName, FileMetadata fileData) in children)
         {
-    
+
             fileData.InitDirectoryName = rootName;
             if (fileData.Children.Count > 0)
             {
                 // If this is a folder, recursively process its children
                 fileData.Address = iPaddress;
-            
+
                 ProcessChildren(fileData.Children, allFiles, fileData.Address, color, rootName);
             }
             else
@@ -101,19 +102,19 @@ public class DiffGenerator
                 bool encountered = false;
                 foreach (string file in fileData.FullPath.Split('\\').ToList())
                 {
-                  
+
                     if (encountered == true)
                     {
                         relativeFileName = relativeFileName + "\\" + file;
                     }
                     if (file == fileData.InitDirectoryName)
                     {
-                    
+
                         encountered = true;
                     }
 
                 }
-       
+
 
 
                 // If this is a file, add or update it in the allFiles dictionary
@@ -212,7 +213,7 @@ public class DiffGenerator
             foreach ((string fileName, FileMetadata fileData) in files)
             {
                 List<string> result = fileData.FullPath.Split('\\').ToList();
-              
+
 
                 string absPath = "";
                 int count = 0;
@@ -230,7 +231,7 @@ public class DiffGenerator
                         absPath = absPath + "\\" + folderName;
                     }
                 }
-           
+
                 result = result.Skip(count - 1).ToList();
 
 

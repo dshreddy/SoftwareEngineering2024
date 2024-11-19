@@ -11,7 +11,7 @@
         /// <returns>
         /// The serialized string of the generic object
         /// </returns>
-        public string Serialize<T> (T genericObject);
+        public string Serialize<T>(T genericObject);
 
         /// <summary>
         /// Given a serialized string, the method converts it into the original object and returns it
@@ -22,6 +22,6 @@
         /// <returns>
         /// The original object after deserializing the string
         /// </returns>
-        public T Deserialize<T> (string serializedString);
+        public T Deserialize<T>(string serializedString);
     }
 }

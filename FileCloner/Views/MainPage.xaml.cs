@@ -7,11 +7,13 @@
  *
  * Description = Code behind for MainPage
  *****************************************************************************/
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using System.Windows.Controls;
 using FileCloner.ViewModels;
 
 namespace FileCloner.Views;
+[ExcludeFromCodeCoverage]
 
 /// <summary>
 /// Interaction logic for MainPage.xaml

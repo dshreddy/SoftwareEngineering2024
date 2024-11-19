@@ -83,7 +83,4 @@ public class NodeTests
         // Assert
         Assert.IsTrue(parent.IsChecked, "Parent should be marked as checked when all children are selected.");
     }
-
-    
-
 }

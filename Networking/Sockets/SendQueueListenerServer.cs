@@ -20,11 +20,11 @@ namespace Networking.Sockets
         private readonly SendingQueue _sendingQueue;
 
         // map of clientId to socket connected to the client
-        private readonly Dictionary<string, TcpClient> 
+        private readonly Dictionary<string, TcpClient>
             _clientIdToClientSocketMap;
 
         // map of module name to the module's notification handlers
-        private readonly Dictionary<string, INotificationHandler> 
+        private readonly Dictionary<string, INotificationHandler>
             _moduleToNotificationHandlerMap;
 
         /// <summary>
@@ -39,14 +39,14 @@ namespace Networking.Sockets
         /// <param name="moduleToNotificationHandlerMap">
         /// Map of module name to the module's notification handlers.
         /// </param>
-        public SendQueueListenerServer(SendingQueue sendingQueue, 
+        public SendQueueListenerServer(SendingQueue sendingQueue,
             Dictionary<string, TcpClient> clientIdToClientSocketMap,
-            Dictionary<string, INotificationHandler> 
+            Dictionary<string, INotificationHandler>
             moduleToNotificationHandlerMap)
         {
             _sendingQueue = sendingQueue;
             _clientIdToClientSocketMap = clientIdToClientSocketMap;
-            _moduleToNotificationHandlerMap = 
+            _moduleToNotificationHandlerMap =
                 moduleToNotificationHandlerMap;
         }
 
@@ -145,16 +145,16 @@ namespace Networking.Sockets
         /// <param name="bytes"> The data that is to be sent. </param>
         /// <param name="module"> The module sending the data. </param>
         /// <returns> void </returns>
-        private void SendDataToClient(string clientId, 
+        private void SendDataToClient(string clientId,
             byte[] bytes, string module)
         {
             Trace.WriteLine("[Networking] SendQueueListenerServer." +
                 "SendDataToClient() function called.");
             try
             {
-                TcpClient clientSocket = 
+                TcpClient clientSocket =
                     _clientIdToClientSocketMap[clientId];
-    
+
                 // check if the client is connected then send data
                 if (!(clientSocket.Client.Poll(
                     1, SelectMode.SelectRead)
@@ -165,7 +165,7 @@ namespace Networking.Sockets
                         "server to client: " + clientId +
                         " by module: " + module);
                 }
-                else 
+                else
                 {
                     // the client is disconnected so try to reconnect
                     Trace.WriteLine("[Networking] Client: " + clientId
@@ -196,7 +196,7 @@ namespace Networking.Sockets
         {
             Trace.WriteLine("[Networking] SendQueueListenerServer." +
                 "TryReconnectingToClient() function called.");
-            TcpClient clientSocket = 
+            TcpClient clientSocket =
                 _clientIdToClientSocketMap[clientId];
             var isSent = false;
             // try to reconnect 3 times
@@ -214,7 +214,7 @@ namespace Networking.Sockets
                         clientId + " reconnected.");
                     clientSocket.Client.Send(bytes);
                     Trace.WriteLine("[Networking] Data sent " +
-                        "from server to client: " + clientId + 
+                        "from server to client: " + clientId +
                         " by module: " + module);
                     isSent = true;
                 }
@@ -226,10 +226,10 @@ namespace Networking.Sockets
             {
                 Trace.WriteLine("[Networking] Client: " + clientId +
                     " has left. Removing client...");
-                foreach (var moduleToNotificationHandler in 
+                foreach (var moduleToNotificationHandler in
                     _moduleToNotificationHandlerMap)
                 {
-                    string moduleName = 
+                    string moduleName =
                         moduleToNotificationHandler.Key;
                     var notificationHandler =
                         moduleToNotificationHandler.Value;

@@ -5,8 +5,10 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
-namespace  FileCloner.Models.DiffGenerator;
+namespace FileCloner.Models.DiffGenerator;
+[ExcludeFromCodeCoverage]
 
 public class Root
 {

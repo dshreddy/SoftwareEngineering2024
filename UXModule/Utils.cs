@@ -10,9 +10,9 @@ using System.Windows.Media.Imaging;
 
 namespace UXModule
 {
-      
+
     // struct for storing the resolution of a image
-       
+
     public struct Resolution
     {
         public int Height { get; set; }
@@ -23,18 +23,18 @@ namespace UXModule
         public static bool operator !=(Resolution lhs, Resolution rhs) => !(lhs == rhs);
     }
 
-      
+
     // Defines various general utilities.
-       
+
     public static class Utils
     {
-          
+
         // The string representing the module identifier for screen share.
-        
+
         public const string ModuleIdentifier = "ScreenShare";
 
         // Printing debug message
-         
+
         public static string GetDebugMessage(string message, bool withTimeStamp = false)
         {
             // Get the class name and the name of the caller function
@@ -47,10 +47,10 @@ namespace UXModule
             return $"{prefix}[{className}::{methodName}] : {message}";
         }
 
-         
+
         // Convert an object of "Bitmap" to an object of type "BitmapSource"
-           
-        
+
+
         public static BitmapSource BitmapToBitmapSource(this Bitmap bitmap)
         {
             // Create new memory stream to temporarily save the bitmap there
@@ -72,9 +72,9 @@ namespace UXModule
             return result;
         }
 
-        
+
         // Convert an object to type "BitmapSource" to an object of type "BitmapImage"
-           
+
         public static BitmapImage BitmapSourceToBitmapImage(BitmapSource bitmapSource)
         {
             // Check if BitmapSource is already a BitmapImage
@@ -102,7 +102,7 @@ namespace UXModule
         }
 
         // Convert an object of "Bitmap" to an object of "BitmapImage"
-        
+
         public static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
         {
             return BitmapSourceToBitmapImage(BitmapToBitmapSource(bitmap));

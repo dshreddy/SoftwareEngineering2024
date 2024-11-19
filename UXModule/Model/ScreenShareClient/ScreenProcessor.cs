@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace UXModule.Model
 {
-    
+
     /// Class contains implementation of the screen processing using threads (tasks)
-    
+
     public class ScreenProcessor
     {
         // The queue in which the image will be enqueued after
@@ -48,10 +48,10 @@ namespace UXModule.Model
         // Stores whether diff image is being sent for the first time or not
         private int _first_xor = 0;
 
-        
+
         /// Called by ScreenshareClient.
         /// Initializes queue, oldRes, newRes, cancellation token and the previous image.
-        
+
         public ScreenProcessor(ScreenCapturer Capturer)
         {
             _capturer = Capturer;
@@ -61,10 +61,10 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage("Successfully created an instance of ScreenProcessor", withTimeStamp: true));
         }
 
-        
+
         /// Pops and return the image from the queue. If there is no image in the queue then it waits for 
         /// the queue to become not empty
-        
+
         public (string, List<PixelDifference>) GetFrame(ref bool cancellationToken)
         {
             while (true)
@@ -88,9 +88,9 @@ namespace UXModule.Model
             }
         }
 
-        
+
         /// Returns the length of the processed image queue 
-        
+
         public int GetProcessedFrameLength()
         {
             lock (_processedFrame)
@@ -100,10 +100,10 @@ namespace UXModule.Model
             }
         }
 
-        
+
         /// In this function we go through every pixel of both the images and
         /// returns a bitmap image which has xor of all the coorosponding pixels
-        
+
         public static unsafe List<PixelDifference>? Process(Bitmap curr, Bitmap prev)
         {
 
@@ -164,10 +164,10 @@ namespace UXModule.Model
             return changes;
         }
 
-        
+
         /// Main function which will run in loop and capture the image
         /// calculate the image bits differences and append it in the array
-        
+
         private void Processing()
         {
             while (!_cancellationToken)
@@ -196,10 +196,10 @@ namespace UXModule.Model
             }
         }
 
-        
+
         /// Called by ScreenshareClient when the client starts screen sharing.
         /// Creates a task for the Processing function.
-        
+
         public void StartProcessing()
         {
             // dropping one frame to set the previous image value
@@ -242,11 +242,11 @@ namespace UXModule.Model
             }
         }
 
-        
+
         /// Called by ScreenshareClient when the client stops screen sharing
         /// kill the processor task and make the processor task variable null
         /// Empty the Queue.
-        
+
         public void StopProcessing()
         {
             Debug.Assert(_processorTask != null, Utils.GetDebugMessage("_processorTask was null, cannot call cancel."));
@@ -267,15 +267,14 @@ namespace UXModule.Model
             Trace.WriteLine(Utils.GetDebugMessage("Successfully stopped image processing", withTimeStamp: true));
         }
 
-        
+
         /// Setting new resolution for sending the image. 
-        
+
         /// <param name="res"> New resolution values </param>
         public void SetNewResolution(int windowCount)
         {
             Debug.Assert(windowCount != 0, Utils.GetDebugMessage("windowCount is found 0"));
-            Resolution res = new()
-            {
+            Resolution res = new() {
                 Height = _capturedImageHeight / windowCount,
                 Width = _capturedImageWidth / windowCount
             };
@@ -289,10 +288,10 @@ namespace UXModule.Model
                 " variable", withTimeStamp: true));
         }
 
-        
+
         /// Compressing the image byte array data using Deflated stream. It provides
         /// a lossless compression.
-        
+
         /// <param name="data">Image data to be compressed</param>
         /// <returns>Compressed data</returns>
         public static byte[] CompressByteArray(byte[] data)
@@ -305,10 +304,10 @@ namespace UXModule.Model
             return output.ToArray();
         }
 
-        
+
         /// Called by StartProcessing, if the image resolution has changed then set
         /// the new image resolution
-        
+
         public (string, List<PixelDifference>) Compress(Bitmap img)
         {
             List<PixelDifference>? new_img = null;

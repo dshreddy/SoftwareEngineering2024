@@ -46,7 +46,22 @@ public class ServerClientUnitTests
 
         if (!File.Exists(s_filePath))
         {
-            File.Create(s_filePath);
+            FileStream fileStream = File.Create(s_filePath);
+            fileStream.Dispose(); // Explicitly close the stream
+        }
+
+        if (!Directory.Exists(Constants.ReceivedFilesFolderPath))
+        {
+            Directory.CreateDirectory(Constants.ReceivedFilesFolderPath);
+        }
+    }
+
+    [TestCleanup]
+    public void Cleanup()
+    {
+        if (Directory.Exists(Constants.ReceivedFilesFolderPath))
+        {
+            Directory.Delete(Constants.ReceivedFilesFolderPath, true);
         }
     }
 
@@ -76,13 +91,13 @@ public class ServerClientUnitTests
     public void TestServerMethods()
     {
         _server.OnClientLeft("");
-
     }
 
     [TestMethod]
     public void TestClientMethods()
     {
-        File.Create(Path.Combine(Constants.ReceivedFilesFolderPath, "dummy.txt"));
+        FileStream fileStream = File.Create(Path.Combine(Constants.ReceivedFilesFolderPath, "dummy.txt"));
+        fileStream.Dispose(); // Explicitly close the stream
         _client?.SendRequest();
 
         _client?.OnResponseReceived(s_message);
